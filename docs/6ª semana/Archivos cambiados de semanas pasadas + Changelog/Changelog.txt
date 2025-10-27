@@ -1,0 +1,15 @@
+Acta constitución -> Añadidos hitos de calidad.
+
+Plan de gestión de comunicaciones -> Añadido información del equipo (comunicación y nuevos recursos comunes).
+
+Lista de hitos -> Añadidos hitos de calidad.
+
+Lista de actividades -> Añadidas actividades de calidad y gestión de riesgos.
+
+Atributos de actividades -> Añadidas actividades de calidad y gestión de riesgos.
+
+Diccionario EDT -> Añadidas actividades de calidad y gestión de riesgos.
+
+Plan de gestión de recursos -> Añadidos nuevos roles a los recursos humanos (Jefe Desarrollo, Tester). 
+
+Matriz de asignación de responsabilidades -> Sintetización de las actividades para mejor comprensión
