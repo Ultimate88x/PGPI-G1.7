@@ -1,6 +1,8 @@
 # PGPI-G1.7
 Proyecto grupal para PGPI curso 2025/2026.
 
+## Mockups
+Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
 ## Para ejecutar el proyecto:
 ### Base de Datos:
   - Instalar MariaDB.
