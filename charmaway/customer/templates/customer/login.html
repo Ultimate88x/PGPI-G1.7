@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class="card">
+  <h1>Iniciar sesión</h1>
+  <div class="avatar">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="input">
+      <input type="email" name="username" placeholder="Correo electrónico" required>
+    </div>
+    <div class="input">
+      <input type="password" name="password" placeholder="Contraseña" required>
+    </div>
+    <div class="buttons">
+      <button type="button" class="btn cancel" onclick="history.back()">Cancelar</button>
+      <button type="submit" class="btn login">Iniciar sesión</button>
+    </div>
+  </form>
+
+  <p class="register">O regístrate <a href="{% url 'register' %}">aquí</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Registro{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class="card">
+  <h1>Registro</h1>
+  <div class="avatar">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <div class="form-grid">
+
+        <div class="input">
+        <input type="text" name="name" placeholder="Nombre" required>
+        </div>
+        <div class="input">
+        <input type="text" name="surnames" placeholder="Apellidos" required>
+        </div>
+        <div class="input">
+        <input type="email" name="email" placeholder="Correo electrónico" required>
+        </div>
+        <div class="input">
+        <input type="text" name="phone" placeholder="Teléfono" required>
+        </div>
+        <div class="input">
+        <input type="text" name="address" placeholder="Dirección" required>
+        </div>
+        <div class="input">
+        <input type="text" name="city" placeholder="Ciudad" required>
+        </div>
+        <div class="input">
+        <input type="text" name="zip_code" placeholder="Código Postal" required>
+        </div>
+        <div class="input">
+        <input type="password" name="password1" placeholder="Contraseña" required>
+        </div>
+        <div class="input">
+        <input type="password" name="password2" placeholder="Repetir contraseña" required>
+        </div>
+
+    </div>
+    
+    <div class="buttons">
+      <button type="button" class="btn cancel" onclick="history.back()">Cancelar</button>
+      <button type="submit" class="btn login">Registrarse</button>
+    </div>
+  </form>
+
+  <p class="register">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar sesión</a></p>
+</div>
+{% endblock %}

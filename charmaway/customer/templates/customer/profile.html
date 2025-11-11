@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<div>Aquí aparecerá el perfil
+    <p><a href="{% url 'logout' %}">Cerrar sesión</a></p>
+</div>
+
+{% endblock %}
