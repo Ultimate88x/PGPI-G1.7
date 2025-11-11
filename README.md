@@ -15,7 +15,7 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ```
   5. Crear base de datos 'charmaway'.
   ```bash
-   mysql -u root -p
+  CREATE DATABASE charmaway;
    ```
   6. Crear usuario: username = charmaway_user, password = charmaway_user
   ```bash
