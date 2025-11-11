@@ -5,12 +5,28 @@ Proyecto grupal para PGPI curso 2025/2026.
 Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
 ## Para ejecutar el proyecto:
 ### Base de Datos:
-  - Instalar MariaDB.
-  - Crear usuario:
+  1. Instalar MariaDB.
+  2. Crear usuario root:
        username = root, password = root
-  - Crear base de datos 'charmaway'.
-  - Crear y dar permisos (excepto GRANT y LOCK TABLES) sobre la base de datos 'charmaway' a un usuario:
-      username = charmaway_user, password = charmaway_user
+  3. Incluir ...\MariaDB 12.0\bin en el path.
+  4. Ejecutar MariaDB desde cmd o powershell.
+  ```bash
+   mysql -u root -p
+   ```
+  5. Crear base de datos 'charmaway'.
+  ```bash
+  CREATE DATABASE charmaway;
+   ```
+  6. Crear usuario: username = charmaway_user, password = charmaway_user
+  ```bash
+  CREATE USER 'charmaway_user'@'localhost' IDENTIFIED BY 'charmaway_user';
+   ```
+  7. Dar permisos (excepto GRANT y LOCK TABLES) sobre la base de datos 'charmaway' al usuario:
+  ```bash
+  GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, REFERENCES, EXECUTE, SHOW VIEW, CREATE VIEW, EVENT, TRIGGER ON charmaway.* TO 'charmaway_user'@'localhost';
+  FLUSH PRIVILEGES;
+  ```
+     
 ### Proyecto
 1. Crear y acceder a un entorno virtual:
    ```bash
