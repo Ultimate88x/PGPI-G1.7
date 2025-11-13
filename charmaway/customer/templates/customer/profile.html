@@ -16,7 +16,10 @@
     </div>
 
     <button class="btn">Pedidos</button>
-    <a href="{% url 'logout' %}" class="logout-link">
+     <a  href="{% url 'profile_edit' %}">
+      <button class="btn">Editar perfil</button>
+    </a>
+    <a href="{% url 'logout' %}">
       <button class="btn btn-logout">Cerrar sesión</button>
     </a>
 
