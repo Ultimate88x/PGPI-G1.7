@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'catalog.apps.CatalogConfig',
     'store',
     'customer'
 ]
@@ -82,7 +83,7 @@ DATABASES = {
     'USER':'charmaway_user',
     'PASSWORD':'charmaway_user',
     'HOST':'localhost',
-    'PORT':'',
+    'PORT':'3306',
     }
 }
 

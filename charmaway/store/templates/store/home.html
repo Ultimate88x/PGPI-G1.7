@@ -1,10 +1,445 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home - CharmAway{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Página HOME (pendiente de modificar)</h1>
-</div>
-{% endblock %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
+<!-- Hero Carousel Section -->
+<section class="hero-carousel slide-1">
+    <div class="carousel-container">
+        <div class="carousel-track">
+            <div class="carousel-slide active">
+                <div class="slide-content">
+                    <div class="slide-text">
+                        <h1>Descubre tu belleza natural</h1>
+                        <p>Los mejores productos de cosmética para ti</p>
+                        <a href="{% url 'catalog:catalog' %}" class="btn-primary">Explorar Catálogo</a>
+                    </div>
+                    <div class="slide-image">
+                        <div class="image-gradient-container">
+                            {% if featured_products %}
+                            <img src="{{ featured_products.0.images.all.0.image }}" alt="{{ featured_products.0.name }}" class="hero-product-image" onerror="this.style.display='none';">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <div class="slide-content">
+                    <div class="slide-text">
+                        <h1>Ofertas especiales</h1>
+                        <p>Hasta 50% de descuento en productos seleccionados</p>
+                        <a href="{% url 'catalog:catalog' %}" class="btn-primary">Ver Ofertas</a>
+                    </div>
+                    <div class="slide-image">
+                        <div class="image-gradient-container gradient-2">
+                            {% if offer_products %}
+                            <img src="{{ offer_products.0.images.all.0.image }}" alt="{{ offer_products.0.name }}" class="hero-product-image" onerror="this.style.display='none';">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <div class="slide-content">
+                    <div class="slide-text">
+                        <h1>Nuevos productos</h1>
+                        <p>Las últimas tendencias en cosmética</p>
+                        <a href="{% url 'catalog:catalog' %}?sort=newest" class="btn-primary">Descubrir</a>
+                    </div>
+                    <div class="slide-image">
+                        <div class="image-gradient-container gradient-3">
+                            {% if newest_products %}
+                            <img src="{{ newest_products.0.images.all.0.image }}" alt="{{ newest_products.0.name }}" class="hero-product-image" onerror="this.style.display='none';">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carousel Navigation -->
+        <button class="carousel-btn prev" onclick="moveCarousel(-1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <button class="carousel-btn next" onclick="moveCarousel(1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators">
+            <button class="indicator active" onclick="goToSlide(0)"></button>
+            <button class="indicator" onclick="goToSlide(1)"></button>
+            <button class="indicator" onclick="goToSlide(2)"></button>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="container">
+        <h2 class="section-title">Explora por categoría</h2>
+        <div class="categories-carousel-wrapper">
+            <button class="category-nav-btn prev" onclick="scrollCategories(-1)" aria-label="Anterior">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="categories-carousel" id="categoriesCarousel">
+                {% for category in categories %}
+                <a href="{% url 'catalog:catalog' %}?category={{ category.id }}" class="category-card {% if forloop.counter > 8 %}hidden{% endif %}">
+                    <div class="category-icon">
+                        {% if category.image %}
+                        <img src="{{ category.image }}" alt="{{ category.name }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="category-placeholder" {% if category.image %}style="display:none;"{% endif %}>
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3>{{ category.name }}</h3>
+                </a>
+                {% empty %}
+                <p class="no-content">No hay categorías disponibles.</p>
+                {% endfor %}
+            </div>
+
+            <button class="category-nav-btn next" onclick="scrollCategories(1)" aria-label="Siguiente">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+{% if featured_products %}
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Productos destacados</h2>
+            <a href="{% url 'catalog:catalog' %}?sort=featured" class="view-all">Ver todos</a>
+        </div>
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <article class="product-card">
+                {% if product.offer_price %}
+                <span class="product-badge discount-badge">
+                    -{{ product.discount_percentage }}%
+                </span>
+                {% endif %}
+
+                <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
+                    <div class="product-image-wrapper">
+                        {% with main_image=product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image }}" alt="{{ product.name }}" class="product-image"
+                             onerror="this.onerror=null; this.src='{% static 'images/no-image.svg' %}'; this.style.objectFit='contain'; this.style.padding='2rem';">
+                        {% else %}
+                        <img src="{% static 'images/no-image.svg' %}" alt="Sin imagen" class="product-image"
+                             style="object-fit: contain; padding: 2rem;">
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="product-info">
+                        {% if product.brand %}
+                        <p class="product-brand">{{ product.brand.name }}</p>
+                        {% endif %}
+
+                        <h3 class="product-name">{{ product.name }}</h3>
+
+                        <div class="product-pricing">
+                            {% if product.offer_price %}
+                            <span class="product-price original-price">{{ product.price }} €</span>
+                            <span class="product-price offer-price">{{ product.offer_price }} €</span>
+                            {% else %}
+                            <span class="product-price">{{ product.price }} €</span>
+                            {% endif %}
+                        </div>
+
+                        {% if product.stock > 0 %}
+                        <p class="product-stock in-stock">En stock</p>
+                        {% else %}
+                        <p class="product-stock out-of-stock">Agotado</p>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <button class="btn-add-cart">Añadir al carro</button>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Offers Section -->
+{% if offer_products %}
+<section class="offers-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Ofertas especiales</h2>
+            <a href="{% url 'catalog:catalog' %}" class="view-all">Ver todas</a>
+        </div>
+        <div class="products-grid">
+            {% for product in offer_products %}
+            <article class="product-card">
+                <span class="product-badge discount-badge">
+                    -{{ product.discount_percentage }}%
+                </span>
+
+                <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
+                    <div class="product-image-wrapper">
+                        {% with main_image=product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image }}" alt="{{ product.name }}" class="product-image"
+                             onerror="this.onerror=null; this.src='{% static 'images/no-image.svg' %}'; this.style.objectFit='contain'; this.style.padding='2rem';">
+                        {% else %}
+                        <img src="{% static 'images/no-image.svg' %}" alt="Sin imagen" class="product-image"
+                             style="object-fit: contain; padding: 2rem;">
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="product-info">
+                        {% if product.brand %}
+                        <p class="product-brand">{{ product.brand.name }}</p>
+                        {% endif %}
+
+                        <h3 class="product-name">{{ product.name }}</h3>
+
+                        <div class="product-pricing">
+                            <span class="product-price original-price">{{ product.price }} €</span>
+                            <span class="product-price offer-price">{{ product.offer_price }} €</span>
+                        </div>
+
+                        {% if product.stock > 0 %}
+                        <p class="product-stock in-stock">En stock</p>
+                        {% else %}
+                        <p class="product-stock out-of-stock">Agotado</p>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <button class="btn-add-cart">Añadir al carro</button>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- New Products Section -->
+{% if newest_products %}
+<section class="new-products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Nuevos productos</h2>
+            <a href="{% url 'catalog:catalog' %}?sort=newest" class="view-all">Ver todos</a>
+        </div>
+        <div class="products-grid">
+            {% for product in newest_products %}
+            <article class="product-card">
+                {% if product.offer_price %}
+                <span class="product-badge discount-badge">
+                    -{{ product.discount_percentage }}%
+                </span>
+                {% endif %}
+
+                <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
+                    <div class="product-image-wrapper">
+                        {% with main_image=product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image }}" alt="{{ product.name }}" class="product-image"
+                             onerror="this.onerror=null; this.src='{% static 'images/no-image.svg' %}'; this.style.objectFit='contain'; this.style.padding='2rem';">
+                        {% else %}
+                        <img src="{% static 'images/no-image.svg' %}" alt="Sin imagen" class="product-image"
+                             style="object-fit: contain; padding: 2rem;">
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="product-info">
+                        {% if product.brand %}
+                        <p class="product-brand">{{ product.brand.name }}</p>
+                        {% endif %}
+
+                        <h3 class="product-name">{{ product.name }}</h3>
+
+                        <div class="product-pricing">
+                            {% if product.offer_price %}
+                            <span class="product-price original-price">{{ product.price }} €</span>
+                            <span class="product-price offer-price">{{ product.offer_price }} €</span>
+                            {% else %}
+                            <span class="product-price">{{ product.price }} €</span>
+                            {% endif %}
+                        </div>
+
+                        {% if product.stock > 0 %}
+                        <p class="product-stock in-stock">En stock</p>
+                        {% else %}
+                        <p class="product-stock out-of-stock">Agotado</p>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <button class="btn-add-cart">Añadir al carro</button>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.carousel-slide');
+const indicators = document.querySelectorAll('.indicator');
+
+function moveCarousel(direction) {
+    currentSlide += direction;
+
+    if (currentSlide < 0) {
+        currentSlide = slides.length - 1;
+    } else if (currentSlide >= slides.length) {
+        currentSlide = 0;
+    }
+
+    updateCarousel();
+}
+
+function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+    });
+
+    indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+    });
+
+    // Update hero carousel background based on active slide
+    const heroCarousel = document.querySelector('.hero-carousel');
+    heroCarousel.classList.remove('slide-1', 'slide-2', 'slide-3');
+    heroCarousel.classList.add(`slide-${currentSlide + 1}`);
+}
+
+// Auto-play carousel disabled
+// setInterval(() => {
+//     moveCarousel(1);
+// }, 5000);
+
+// Categories carousel with scrolling one by one
+let currentStartIndex = 0;
+
+function getVisibleCards() {
+    const carousel = document.getElementById('categoriesCarousel');
+    if (!carousel) return 8;
+
+    // Get the actual available width
+    const carouselWidth = carousel.offsetWidth;
+    const cardWidth = 125; // Fixed card width
+    const gap = 24; // 1.5rem = 24px gap
+
+    // Calculate how many cards can fit: (width + gap) / (cardWidth + gap)
+    // We add gap to width to account for the last card not needing a gap after it
+    const visibleCards = Math.floor((carouselWidth + gap) / (cardWidth + gap));
+
+    // Return at least 1 card, max 8
+    return Math.max(1, Math.min(8, visibleCards));
+}
+
+function updateCategoryDisplay() {
+    const carousel = document.getElementById('categoriesCarousel');
+    const cards = Array.from(carousel.querySelectorAll('.category-card'));
+    const totalCards = cards.length;
+    const maxVisibleCards = getVisibleCards();
+
+    // Calculate actual number of cards to show (can be less than max if at the end)
+    const actualVisibleCards = Math.min(maxVisibleCards, totalCards - currentStartIndex);
+
+    // Hide all cards first
+    cards.forEach(card => card.classList.add('hidden'));
+
+    // Show only the visible cards starting from currentStartIndex
+    for (let i = currentStartIndex; i < currentStartIndex + actualVisibleCards && i < totalCards; i++) {
+        cards[i].classList.remove('hidden');
+    }
+
+    // No need to set gridTemplateColumns - cards have fixed width now
+
+    // Update button states
+    updateNavigationButtons(totalCards, maxVisibleCards);
+}
+
+function updateNavigationButtons(totalCards, visibleCards) {
+    const prevBtn = document.querySelector('.category-nav-btn.prev');
+    const nextBtn = document.querySelector('.category-nav-btn.next');
+
+    // Disable prev button if at start
+    if (currentStartIndex <= 0) {
+        prevBtn.style.opacity = '0.5';
+        prevBtn.style.cursor = 'not-allowed';
+    } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.cursor = 'pointer';
+    }
+
+    // Disable next button if at end
+    if (currentStartIndex >= totalCards - visibleCards) {
+        nextBtn.style.opacity = '0.5';
+        nextBtn.style.cursor = 'not-allowed';
+    } else {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.cursor = 'pointer';
+    }
+}
+
+function scrollCategories(direction) {
+    const carousel = document.getElementById('categoriesCarousel');
+    const cards = Array.from(carousel.querySelectorAll('.category-card'));
+    const totalCards = cards.length;
+    const visibleCards = getVisibleCards();
+
+    // Update start index
+    const newIndex = currentStartIndex + direction;
+
+    // Prevent going beyond limits
+    if (newIndex < 0) {
+        currentStartIndex = 0;
+    } else if (newIndex > totalCards - visibleCards) {
+        currentStartIndex = totalCards - visibleCards;
+    } else {
+        currentStartIndex = newIndex;
+    }
+
+    updateCategoryDisplay();
+}
+
+// Initialize: show first cards based on screen size
+document.addEventListener('DOMContentLoaded', function() {
+    updateCategoryDisplay();
+});
+
+// Re-initialize on window resize
+window.addEventListener('resize', function() {
+    currentStartIndex = 0;
+    updateCategoryDisplay();
+});
+</script>
+{% endblock %}
