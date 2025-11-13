@@ -1,11 +1,49 @@
 {% extends 'base.html' %}
-{% block title %}Iniciar sesión{% endblock %}
+{% block title %}Perfil de Cliente{% endblock %}
 {% load static %}
 
 {% block content %}
 
-<div>Aquí aparecerá el perfil
-    <p><a href="{% url 'logout' %}">Cerrar sesión</a></p>
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+<div class="profile-container">
+  <aside class="sidebar">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <button class="btn">Pedidos</button>
+    <a href="{% url 'logout' %}" class="logout-link">
+      <button class="btn btn-logout">Cerrar sesión</button>
+    </a>
+
+  </aside>
+
+  <main class="content">
+    <h1>¡Hola Cliente!</h1>
+    <div class="address-container">
+        <div> Dirección: </div>
+        <p class="address">{{ customer.address}} </p>
+    </div>
+    
+    <h2>Últimas compras</h2>
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Id pedido</th>
+          <th>Fecha estimada entrega</th>
+          <th>Importe total</th>
+        </tr>
+      </thead>
+      <tbody>
+      
+      </tbody>
+    </table>
+  </main>
 </div>
 
 {% endblock %}
