@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from .forms import CustomerRegisterForm, CustomerLoginForm
+from .forms import CustomerRegisterForm, CustomerLoginForm, CustomerUpdateForm
 
 def register(request):
     if request.method == 'POST':
@@ -31,3 +31,13 @@ def logout_(request):
 
 def profile(request):
     return render(request, 'customer/profile.html', {'customer': request.user})
+
+def profile_edit(request):
+    if request.method == 'POST':
+        form = CustomerUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = CustomerUpdateForm(instance=request.user)
+    return render(request, 'customer/profile_edit.html', {'form': form})
