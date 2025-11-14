@@ -29,6 +29,7 @@ def main():
     # List of all seeders to run in order
     seeders = [
         'seed_catalog',
+        'seed_users',
         # Add more seeders here as you create them:
         # 'seed_customers',
         # 'seed_orders',
