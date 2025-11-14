@@ -31,7 +31,7 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     creation_date = models.DateTimeField(default=timezone.now)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=20)
+    zip_code = models.CharField(max_length=5)
 
     USERNAME_FIELD = 'email'  
     REQUIRED_FIELDS = ['name', 'surnames']  

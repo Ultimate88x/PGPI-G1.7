@@ -19,29 +19,34 @@
     {% csrf_token %}
 
     <div class="form-grid">
-
-        <div class="input">
+      <div class="input" style="align-items:flex-start;">
+        <label for="name" style="font-size: 13px">Nombre</label>
         <input type="text" name="name" placeholder="Nombre" required value="{{ form.name.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="surnames" style="font-size: 13px">Apellidos</label>
         <input type="text" name="surnames" placeholder="Apellidos" required value="{{ form.surnames.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="email" style="font-size: 13px">Correo electrónico</label>
         <input type="email" name="email" placeholder="Correo electrónico" required value="{{ form.email.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="phone" style="font-size: 13px">Teléfono</label>
         <input type="text" name="phone" placeholder="Teléfono" required value="{{ form.phone.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="address" style="font-size: 13px">Dirección</label>
         <input type="text" name="address" placeholder="Dirección" required value="{{ form.address.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="city" style="font-size: 13px">Ciudad</label>
         <input type="text" name="city" placeholder="Ciudad" required value="{{ form.city.value }}">
-        </div>
-        <div class="input">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="zip_code" style="font-size: 13px">Código  postal</label>
         <input type="text" name="zip_code" placeholder="Código Postal" required value="{{ form.zip_code.value }}">
-        </div>
-
+      </div>
     </div>
 
     {% if form.errors %}

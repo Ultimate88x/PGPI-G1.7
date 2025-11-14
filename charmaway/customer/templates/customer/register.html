@@ -19,35 +19,42 @@
     {% csrf_token %}
 
     <div class="form-grid">
-
-        <div class="input">
-        <input type="text" name="name" placeholder="Nombre" required>
-        </div>
-        <div class="input">
-        <input type="text" name="surnames" placeholder="Apellidos" required>
-        </div>
-        <div class="input">
-        <input type="email" name="email" placeholder="Correo electrónico" required>
-        </div>
-        <div class="input">
-        <input type="text" name="phone" placeholder="Teléfono" required>
-        </div>
-        <div class="input">
-        <input type="text" name="address" placeholder="Dirección" required>
-        </div>
-        <div class="input">
-        <input type="text" name="city" placeholder="Ciudad" required>
-        </div>
-        <div class="input">
-        <input type="text" name="zip_code" placeholder="Código Postal" required>
-        </div>
-        <div class="input">
-        <input type="password" name="password1" placeholder="Contraseña" required>
-        </div>
-        <div class="input">
-        <input type="password" name="password2" placeholder="Repetir contraseña" required>
-        </div>
-
+      <div class="input" style="align-items:flex-start;">
+        <label for="name" style="font-size: 13px">Nombre</label>
+        <input type="text" name="name" placeholder="Nombre" required value="{% if form.name.value %}{{ form.name.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="surnames" style="font-size: 13px">Apellidos</label>
+        <input type="text" name="surnames" placeholder="Apellidos" required value="{% if form.surnames.value %}{{ form.surnames.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="email" style="font-size: 13px">Correo electrónico</label>
+        <input type="email" name="email" placeholder="Correo electrónico" required value="{% if form.email.value %}{{ form.email.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="phone" style="font-size: 13px">Teléfono</label>
+        <input type="text" name="phone" placeholder="Teléfono" required value="{% if form.phone.value %}{{ form.phone.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="address" style="font-size: 13px">Dirección</label>
+        <input type="text" name="address" placeholder="Dirección" required value="{% if form.address.value %}{{ form.address.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="city" style="font-size: 13px">Ciudad</label>
+        <input type="text" name="city" placeholder="Ciudad" required value="{% if form.city.value %}{{ form.city.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="zip_code" style="font-size: 13px">Código  postal</label>
+        <input type="text" name="zip_code" placeholder="Código Postal" required value="{% if form.zip_code.value %}{{ form.zip_code.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="password1" style="font-size: 13px">Contraseña</label>
+        <input type="password" id="password1" name="password1" placeholder="Contraseña" required value="{% if form.password1.value %}{{ form.password1.value }}{% endif %}">
+      </div>
+      <div class="input" style="align-items:flex-start;">
+        <label for="password2" style="font-size: 13px">Repetir contraseña</label>
+        <input type="password" id="password2" name="password2" placeholder="Repetir contraseña" required value="{% if form.password2.value %}{{ form.password2.value }}{% endif %}">
+      </div>
     </div>
 
     {% if form.errors %}
@@ -67,8 +74,6 @@
         </ul>
       </div>
     {% endif %}
-
-
     
     <div class="buttons">
       <button type="button" class="btn cancel" onclick="history.back()">Cancelar</button>
