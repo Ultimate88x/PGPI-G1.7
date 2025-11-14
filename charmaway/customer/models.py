@@ -33,6 +33,9 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=5)
 
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
     USERNAME_FIELD = 'email'  
     REQUIRED_FIELDS = ['name', 'surnames']  
 
