@@ -6,14 +6,9 @@
 
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 
+<div class="auth-wrapper">
 <div class="auth-container">
-  <h1>Registro</h1>
-  <div class="avatar">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
+  <h1 style="color:#ffffff;">Registro</h1>
 
   <form method="post" action="{% url 'register' %}">
     {% csrf_token %}
@@ -81,6 +76,7 @@
     </div>
   </form>
 
-  <p class="register">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar sesión</a></p>
+  <p class="register" style="color:#ffffff;">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar sesión</a></p>
+</div>
 </div>
 {% endblock %}

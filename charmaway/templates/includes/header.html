@@ -1,12 +1,12 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/header-v2.css' %}?v=20231113">
+<link rel="stylesheet" href="{% static 'css/header.css' %}?v=20231113">
 
 <header class="topbar" role="banner">
   <div class="container">
     <a class="logo" href="{% url 'home' %}" aria-label="Inicio">
-      <span style="font-weight:700; font-size:18px; color:white;">(LOGO)</span>
-      <span style="font-weight:700; font-size:18px; color:white;">CharmAway</span>
+        <img src="{% static 'images/charmaway_logo.png' %}" alt="CharmAway logo">
+        <div style="font-weight:700; font-size:18px; color:#ffffff; margin-left:68px" >CharmAway</div>
     </a>
 
     <nav class="nav">

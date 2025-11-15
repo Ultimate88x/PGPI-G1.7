@@ -5,22 +5,19 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-
+<div class="auth-wrapper" style="margin-top: 100px;">
 <div class="auth-container">
-  <h1>Iniciar sesión</h1>
-  <div class="avatar">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
+  <h1 style="color:#ffffff">Iniciar sesión</h1>
+  
 
   <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <div class="input">
+      <label for="email" style="font-size: 13px; align-self: flex-start; color:#ffffff">Correo electrónico</label>
       <input type="email" name="username" placeholder="Correo electrónico" required>
     </div>
     <div class="input">
+      <label for="password" style="font-size: 13px; align-self: flex-start; color:#ffffff"">Contraseña</label>
       <input type="password" name="password" placeholder="Contraseña" required>
     </div>
 
@@ -48,6 +45,7 @@
     </div>
   </form>
 
-  <p class="register">O regístrate <a href="{% url 'register' %}">aquí</a></p>
+  <p class="register" style="color:#ffffff">O regístrate <a href="{% url 'register' %}">aquí</a></p>
+</div>
 </div>
 {% endblock %}
