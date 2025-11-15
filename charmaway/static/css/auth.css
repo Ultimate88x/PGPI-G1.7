@@ -1,4 +1,4 @@
-.card{
+.auth-container{
   width:100%;
   max-width:560px;
   text-align:center;
@@ -18,7 +18,7 @@
 }
 .avatar svg{width:64px;height:64px}
 
-form{
+.auth-container form{
   margin-top:8px;
   display:flex;
   flex-direction:column;
