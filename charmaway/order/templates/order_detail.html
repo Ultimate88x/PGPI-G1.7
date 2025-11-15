@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Pedido #{{ order.order_id }}{% endblock %}
+{% load static %}
+
+{% block content %}
+<h1>Pedido #{{ order.order_id }}</h1>
+
+<h2>Estado: {{ order.get_status_display }}</h2>
+<p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+
+<h3>Dirección de envío</h3>
+<p>
+    {{ order.shipping_address.street }} {{ order.shipping_address.number }}<br>
+    {% if order.shipping_address.floor %}{{ order.shipping_address.floor }}<br>{% endif %}
+    {{ order.shipping_address.postal_code }} {{ order.shipping_address.city }}<br>
+    {{ order.shipping_address.state }}, {{ order.shipping_address.country }}
+</p>
+
+<h3>Productos</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.details.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price }} €</td>
+            <td>{{ item.subtotal }} €</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No hay productos en este pedido.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Resumen de pago</h3>
+<p><strong>Subtotal:</strong> {{ order.subtotal }} €</p>
+<p><strong>Gastos de envío:</strong> {{ order.shipping_cost }} €</p>
+<p><strong>Total:</strong> {{ order.final_price }} €</p>
+
+<p><strong>Método de pago:</strong> {{ order.payment_method }}</p>
+
+{% if order.notes %}
+<p><strong>Notas:</strong> {{ order.notes }}</p>
+{% endif %}
+
+<a href="{% url 'profile' %}">Volver al perfil</a>
+{% endblock %}

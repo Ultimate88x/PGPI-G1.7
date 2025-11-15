@@ -1,0 +1,21 @@
+<h1>Your Cart</h1>
+
+<ul>
+    {% for item in items %}
+        <li>
+            {{ item.product.name }} - {{ item.quantity }} x {{ item.current_price }}
+
+            <a href="{% url 'add_to_cart' item.product.id %}">+</a>
+            <a href="{% url 'decrease_from_cart' item.product.id %}">-</a>
+            <a href="{% url 'remove_from_cart' item.product.id %}">Remove</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<h3>Total: {{ total }}</h3>
+
+{% if items %}
+    <a href="{% url 'checkout' %}" class="btn-checkout">Ir a Checkout</a>
+{% endif %}
+
+<a href="{% url 'clear_cart' %}">Clear Cart</a>
