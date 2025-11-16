@@ -46,6 +46,10 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ```bash
    python manage.py migrate
    ```
+5. Aplicar seeders (datos):
+   ```bash
+   python seed_all.py
+   ```
 5. Ejecutar la aplicación:
    ```bash
    python manage.py runserver

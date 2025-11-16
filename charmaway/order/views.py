@@ -94,6 +94,7 @@ def checkout(request):
                 country=request.POST.get('country'),
             )
 
+
         order = Order.objects.create(
             customer=request.user,
             shipping_address=shipping_address,
@@ -111,10 +112,16 @@ def checkout(request):
             )
 
         order.calculate_total()
-
-        Cart.clear_cart(request.user)
-
-        return redirect("home")
+        order.save()
+        request.session['order_id_to_pay'] = order.order_id 
+        if order.payment_method == 'credit_card':
+            return redirect('payment:checkout')
+        
+        elif order.payment_method == 'paypal':
+            return redirect('paypal:process_payment') # Ejemplo
+        
+        else:
+            return redirect('payment:checkout')
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
@@ -142,3 +149,23 @@ def order_lookup(request):
                 context['error'] = "Pedido no encontrado."
 
     return render(request, "order_lookup.html", context)
+
+
+@login_required
+def payment_complete_view(request):
+    """
+    Página genérica de éxito de pago.
+    Recupera el pedido de la sesión y muestra la plantilla order_success.
+    """
+    order_id = request.session.get('order_id_to_pay')
+    
+    if order_id:
+        try:
+
+            order = Order.objects.get(order_id=order_id, customer=request.user)
+            return render(request, "order_success.html", {"order": order})
+        
+        except Order.DoesNotExist:
+            return redirect("view_cart")
+        
+    return redirect("view_cart")
