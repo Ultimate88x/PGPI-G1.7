@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/order.css' %}">
+
+<div class="order-container wide">
+
+    <div class="order-header">
+        <h1>Checkout</h1>
+    </div>
+
+    <div class="checkout-grid">
+
+        <!-- Columna 1 - Dirección -->
+        <div class="order-card">
+            <h2>Dirección de envío</h2>
+
+            {% if default_address %}
+                <p class="shipping-info">
+                    <strong>Enviando a:</strong><br>
+                    {{ default_address.street }} {{ default_address.number }}<br>
+                    {{ default_address.postal_code }} {{ default_address.city }}<br>
+                    {{ default_address.state }}, {{ default_address.country }}
+                </p>
+            {% else %}
+                <form method="post" class="order-form">
+                    {% csrf_token %}
+                    <label>Calle:</label>
+                    <input type="text" name="street" required>
+
+                    <label>Número:</label>
+                    <input type="text" name="number" required>
+
+                    <label>Piso (opcional):</label>
+                    <input type="text" name="floor">
+
+                    <label>Código Postal:</label>
+                    <input type="text" name="postal_code" required>
+
+                    <label>Ciudad:</label>
+                    <input type="text" name="city" required>
+
+                    <label>Provincia / Estado:</label>
+                    <input type="text" name="state" required>
+
+                    <label>País:</label>
+                    <input type="text" name="country" required>
+            {% endif %}
+        </div>
+
+        <!-- Columna 2 - Pago, notas, confirmar -->
+        <div class="order-card">
+
+            {% if not default_address %}
+                <!-- Cerramos el form si está abierto -->
+                {% csrf_token %}
+            {% endif %}
+
+            {% if default_address %}
+            <form method="post" class="order-form">
+                {% csrf_token %}
+            {% endif %}
+
+                <h2>Método de pago</h2>
+
+                <label>Método de pago:</label>
+                <select name="payment_method" class="select-input" required>
+                    <option value="credit_card">Tarjeta de crédito</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+
+                <h2>Notas</h2>
+                <textarea name="notes" rows="5" class="textarea-input" placeholder="Notas adicionales..."></textarea>
+
+                <button type="submit" class="btn-submit mt-2 full">Realizar pedido</button>
+
+            </form>
+        </div>
+
+    </div>
+
+    <a href="{% url 'view_cart' %}" class="btn-back">Volver al carrito</a>
+
+</div>
+
+{% endblock %}

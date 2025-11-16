@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tu Carrito{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/order.css' %}">
+
+<div class="order-container">
+
+    <div class="order-header">
+        <h1>Tu Carrito</h1>
+    </div>
+
+    {% if items %}
+    <div class="order-card cart-card">
+
+        <div class="table-wrapper">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td class="product-info">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-thumb">
+                            {% endif %}
+                            <span>{{ item.product.name }}</span>
+                        </td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.current_price }} €</td>
+                        <td class="text-end">{{ item.subtotal }} €</td>
+                        <td class="cart-actions">
+                            <a href="{% url 'add_to_cart' item.product.id %}" class="cart-btn">+</a>
+                            <a href="{% url 'decrease_from_cart' item.product.id %}" class="cart-btn">-</a>
+                            <a href="{% url 'remove_from_cart' item.product.id %}" class="cart-btn remove">✕</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-total">
+            <h3>Total: {{ total }} €</h3>
+        </div>
+
+        <div class="cart-actions-bottom">
+            <div class="left-actions">
+                <a href="javascript:history.back()" class="btn-back">Volver</a>
+                <a href="{% url 'clear_cart' %}" class="btn-clear">Vaciar Carrito</a>
+            </div>
+            <div class="right-actions">
+                <a href="{% url 'checkout' %}" class="btn-checkout">Checkout</a>
+            </div>
+        </div>
+
+    </div>
+    {% else %}
+    <p class="empty-cart">Tu carrito está vacío.</p>
+    <a href="{% url 'catalog:catalog' %}" class="btn-checkout full">Volver a comprar</a>
+    {% endif %}
+
+</div>
+
+{% endblock %}

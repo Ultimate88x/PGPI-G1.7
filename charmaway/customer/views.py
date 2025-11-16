@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+
+from order.models import Order
 from .forms import CustomerRegisterForm, CustomerLoginForm, CustomerUpdateForm
 
 def register(request):
@@ -29,8 +32,15 @@ def logout_(request):
     logout(request)
     return redirect('login')
 
+@login_required
 def profile(request):
-    return render(request, 'customer/profile.html', {'customer': request.user})
+    customer = request.user
+    orders = Order.objects.filter(customer=customer).order_by('-created_at')
+
+    return render(request, "customer/profile.html", {
+        "customer": customer,
+        "orders": orders
+    })
 
 def profile_edit(request):
     if request.method == 'POST':

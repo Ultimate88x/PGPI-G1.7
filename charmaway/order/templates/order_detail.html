@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Pedido #{{ order.order_id }}{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/order.css' %}">
+
+<div class="order-container">
+
+    <div class="order-header">
+        <h1>Pedido #{{ order.order_id }}</h1>
+        <span class="order-status">{{ order.get_status_display }}</span>
+    </div>
+
+    <div class="order-card">
+        <h2>Detalles del pedido</h2>
+        <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Método de pago:</strong> {{ order.payment_method }}</p>
+    </div>
+
+    <div class="order-card">
+        <h2>Dirección de envío</h2>
+        <p>
+            {{ order.shipping_address.street }} {{ order.shipping_address.number }}<br>
+            {% if order.shipping_address.floor %}{{ order.shipping_address.floor }}<br>{% endif %}
+            {{ order.shipping_address.postal_code }} {{ order.shipping_address.city }}<br>
+            {{ order.shipping_address.state }}, {{ order.shipping_address.country }}
+        </p>
+    </div>
+
+    <div class="order-card">
+        <h2>Productos</h2>
+
+        <div class="table-wrapper">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.details.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit_price }} €</td>
+                        <td>{{ item.subtotal }} €</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="no-products">No hay productos en este pedido.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="order-card">
+        <h2>Resumen de pago</h2>
+
+        <ul class="payment-summary">
+            <li>
+                <span>Subtotal</span>
+                <strong>{{ order.subtotal }} €</strong>
+            </li>
+            <li>
+                <span>Gastos de envío</span>
+                <strong>{{ order.shipping_cost }} €</strong>
+            </li>
+            <li class="total">
+                <span>Total</span>
+                <strong>{{ order.final_price }} €</strong>
+            </li>
+        </ul>
+
+        {% if order.notes %}
+        <div class="order-notes">
+            <h3>Notas:</h3>
+            <p>{{ order.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'profile' %}" class="btn-back">Volver al perfil</a>
+
+</div>
+
+{% endblock %}
