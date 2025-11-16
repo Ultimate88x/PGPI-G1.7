@@ -7,7 +7,10 @@ from .models import Cart, Order, OrderDetail, Address, Product
 def view_cart(request):
     """Mostrar el carrito del usuario actual."""
     items = Cart.objects.filter(customer=request.user)
-    total = Cart.calculate_total(request.user)
+    total = 0
+    for item in items:
+        item.subtotal = item.quantity * item.current_price
+        total += item.subtotal
 
     return render(request, "cart.html", {
         "items": items,
