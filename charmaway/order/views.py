@@ -5,7 +5,6 @@ from .models import Cart, Order, OrderDetail, Address, Product
 
 @login_required
 def view_cart(request):
-    """Mostrar el carrito del usuario actual."""
     items = Cart.objects.filter(customer=request.user)
     total = 0
     for item in items:
@@ -20,7 +19,6 @@ def view_cart(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    """Añadir un producto al carrito (o sumar cantidad si ya existe)."""
     product = get_object_or_404(Product, pk=product_id)
 
     try:
@@ -47,7 +45,6 @@ def add_to_cart(request, product_id):
 
 @login_required
 def decrease_from_cart(request, product_id):
-    """Restar una unidad del producto del carrito."""
     product = get_object_or_404(Product, pk=product_id)
     cart_item = get_object_or_404(Cart, customer=request.user, product=product)
 
@@ -55,7 +52,6 @@ def decrease_from_cart(request, product_id):
         cart_item.quantity -= 1
         cart_item.save()
     else:
-        # Si queda 1 y se resta, se elimina
         cart_item.delete()
 
     return redirect("view_cart")
@@ -63,7 +59,6 @@ def decrease_from_cart(request, product_id):
 
 @login_required
 def remove_from_cart(request, product_id):
-    """Eliminar completamente un producto del carrito."""
     product = get_object_or_404(Product, pk=product_id)
     cart_item = get_object_or_404(Cart, customer=request.user, product=product)
     cart_item.delete()
@@ -72,23 +67,19 @@ def remove_from_cart(request, product_id):
 
 @login_required
 def clear_cart(request):
-    """Vaciar totalmente el carrito."""
     Cart.clear_cart(request.user)
     return redirect("view_cart")
 
 
 @login_required
 def checkout(request):
-    """Vista para procesar la creación de la orden."""
     cart_items = Cart.objects.filter(customer=request.user)
     if not cart_items.exists():
-        # Si no hay items, redirige al carrito
         return redirect("view_cart")
 
     default_address = Address.objects.filter(user=request.user, is_default=True).first()
 
     if request.method == "POST":
-        # Obtener o crear dirección
         if default_address:
             shipping_address = default_address
         else:
@@ -103,7 +94,6 @@ def checkout(request):
                 country=request.POST.get('country'),
             )
 
-        # Crear la orden
         order = Order.objects.create(
             customer=request.user,
             shipping_address=shipping_address,
@@ -111,7 +101,6 @@ def checkout(request):
             notes=request.POST.get('notes', '')
         )
 
-        # Copiar items del carrito al detalle de la orden
         for item in cart_items:
             OrderDetail.objects.create(
                 order=order,
@@ -121,14 +110,11 @@ def checkout(request):
                 subtotal=item.current_price * item.quantity
             )
 
-        # Calcular totales
         order.calculate_total()
 
-        # Vaciar carrito
         Cart.clear_cart(request.user)
 
-        # Redirigir a una página de éxito o detalle de orden
-        return redirect("order_success", order_id=order.order_id)
+        return redirect("home")
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
@@ -138,22 +124,12 @@ def checkout(request):
 
 
 @login_required
-def order_success(request, order_id):
-    """Muestra un mensaje de confirmación tras crear la orden."""
-    order = Order.objects.get(order_id=order_id)
-    return render(request, "order_success.html", {"order": order})
-
-
-@login_required
 def order_detail(request, order_id):
     order = Order.objects.get(order_id=order_id)
     return render(request, "order_detail.html", {"order": order})
 
 
 def order_lookup(request):
-    """
-    Permite al usuario introducir un ID de pedido y ver su detalle.
-    """
     context = {}
 
     if request.method == "POST":
