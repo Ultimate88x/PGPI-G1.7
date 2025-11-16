@@ -79,60 +79,59 @@
 
         {% if default_address %}
             <div class="address-summary">
-                <p><strong>Shipping to:</strong><br>
+                <p><strong>Enviar a:</strong><br>
                 {{ default_address.street }}, {{ default_address.number }}<br>
                 {{ default_address.city }}</p>
             </div>
         {% else %}
             <div class="checkout-section">
-                <h3>Enter shipping address</h3>
-
-                <label class="checkout-label">Street
-                    <input class="checkout-input" type="text" name="street" required>
+                <h3>Pon tu dirección de envío</h3>
+                <label class="checkout-label">País
+                    <input class="checkout-input" type="text" name="country" required>
                 </label>
 
-                <label class="checkout-label">Number
-                    <input class="checkout-input" type="text" name="number" required>
-                </label>
-
-                <label class="checkout-label">Floor
-                    <input class="checkout-input" type="text" name="floor">
-                </label>
-
-                <label class="checkout-label">Postal Code
-                    <input class="checkout-input" type="text" name="postal_code" required>
-                </label>
-
-                <label class="checkout-label">City
-                    <input class="checkout-input" type="text" name="city" required>
-                </label>
-
-                <label class="checkout-label">State
+                <label class="checkout-label">Provincia
                     <input class="checkout-input" type="text" name="state" required>
                 </label>
 
-                <label class="checkout-label">Country
-                    <input class="checkout-input" type="text" name="country" required>
+                <label class="checkout-label">Ciudad
+                    <input class="checkout-input" type="text" name="city" required>
+                </label>
+
+                <label class="checkout-label">Código postal
+                    <input class="checkout-input" type="text" name="postal_code" required>
+                </label>
+                
+                <label class="checkout-label">Calle
+                    <input class="checkout-input" type="text" name="street" required>
+                </label>
+
+                <label class="checkout-label">Número
+                    <input class="checkout-input" type="text" name="number" required>
+                </label>
+
+                <label class="checkout-label">Piso
+                    <input class="checkout-input" type="text" name="floor">
                 </label>
             </div>
         {% endif %}
 
         <div class="checkout-section">
-            <label class="checkout-label">Payment Method
+            <label class="checkout-label">Método de pago
                 <select name="payment_method" class="checkout-select" required>
-                    <option value="credit_card">Credit Card</option>
+                    <option value="credit_card">Tarjeta de crédito</option>
                     <option value="paypal">PayPal</option>
                 </select>
             </label>
         </div>
 
         <div class="checkout-section">
-            <label class="checkout-label">Notes
+            <label class="checkout-label">Notas
                 <textarea name="notes" rows="3" class="checkout-textarea"></textarea>
             </label>
         </div>
 
-        <button type="submit" class="checkout-submit">Place Order</button>
+        <button type="submit" class="checkout-submit">Hacer pedido</button>
     </form>
 </div>
 {% endblock %}
