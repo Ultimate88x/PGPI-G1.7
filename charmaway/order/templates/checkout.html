@@ -1,35 +1,138 @@
 {% extends 'base.html' %}
 {% block title %}Checkout{% endblock %}
+
+{% block extra_head %}
+<style>
+    .checkout-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 25px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .checkout-container h1 {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+    }
+
+    .checkout-section {
+        margin-bottom: 25px;
+    }
+
+    .checkout-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .checkout-input,
+    .checkout-select,
+    .checkout-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .checkout-textarea {
+        resize: vertical;
+    }
+
+    .checkout-submit {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #ff6969;
+        color: white;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background-color .2s ease;
+    }
+
+    .checkout-submit:hover {
+        background-color: #ff4b4b;
+    }
+
+    .address-summary {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #eee;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Checkout</h1>
+<div class="checkout-container">
+    <h1>Checkout</h1>
 
-<form method="post">
-    {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
 
-    {% if default_address %}
-        <p><strong>Shipping to:</strong> {{ default_address.street }}, {{ default_address.number }}, {{ default_address.city }}</p>
-    {% else %}
-        <h3>Enter shipping address</h3>
-        <label>Street: <input type="text" name="street" required></label><br>
-        <label>Number: <input type="text" name="number" required></label><br>
-        <label>Floor: <input type="text" name="floor"></label><br>
-        <label>Postal Code: <input type="text" name="postal_code" required></label><br>
-        <label>City: <input type="text" name="city" required></label><br>
-        <label>State: <input type="text" name="state" required></label><br>
-        <label>Country: <input type="text" name="country" required></label><br>
-    {% endif %}
+        {% if default_address %}
+            <div class="address-summary">
+                <p><strong>Shipping to:</strong><br>
+                {{ default_address.street }}, {{ default_address.number }}<br>
+                {{ default_address.city }}</p>
+            </div>
+        {% else %}
+            <div class="checkout-section">
+                <h3>Enter shipping address</h3>
 
-    <label>Payment Method:
-        <select name="payment_method" required>
-            <option value="credit_card">Credit Card</option>
-            <option value="paypal">PayPal</option>
-        </select>
-    </label><br><br>
+                <label class="checkout-label">Street
+                    <input class="checkout-input" type="text" name="street" required>
+                </label>
 
-    <label>Notes:<br>
-        <textarea name="notes" rows="3"></textarea>
-    </label><br><br>
+                <label class="checkout-label">Number
+                    <input class="checkout-input" type="text" name="number" required>
+                </label>
 
-    <button type="submit">Place Order</button>
-</form>
+                <label class="checkout-label">Floor
+                    <input class="checkout-input" type="text" name="floor">
+                </label>
+
+                <label class="checkout-label">Postal Code
+                    <input class="checkout-input" type="text" name="postal_code" required>
+                </label>
+
+                <label class="checkout-label">City
+                    <input class="checkout-input" type="text" name="city" required>
+                </label>
+
+                <label class="checkout-label">State
+                    <input class="checkout-input" type="text" name="state" required>
+                </label>
+
+                <label class="checkout-label">Country
+                    <input class="checkout-input" type="text" name="country" required>
+                </label>
+            </div>
+        {% endif %}
+
+        <div class="checkout-section">
+            <label class="checkout-label">Payment Method
+                <select name="payment_method" class="checkout-select" required>
+                    <option value="credit_card">Credit Card</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="checkout-section">
+            <label class="checkout-label">Notes
+                <textarea name="notes" rows="3" class="checkout-textarea"></textarea>
+            </label>
+        </div>
+
+        <button type="submit" class="checkout-submit">Place Order</button>
+    </form>
+</div>
 {% endblock %}

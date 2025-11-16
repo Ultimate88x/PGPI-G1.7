@@ -52,7 +52,6 @@ def decrease_from_cart(request, product_id):
         cart_item.quantity -= 1
         cart_item.save()
     else:
-        # Si queda 1 y se resta, se elimina
         cart_item.delete()
 
     return redirect("view_cart")
@@ -79,13 +78,11 @@ def checkout(request):
     """Vista para procesar la creación de la orden."""
     cart_items = Cart.objects.filter(customer=request.user)
     if not cart_items.exists():
-        # Si no hay items, redirige al carrito
         return redirect("view_cart")
 
     default_address = Address.objects.filter(user=request.user, is_default=True).first()
 
     if request.method == "POST":
-        # Obtener o crear dirección
         if default_address:
             shipping_address = default_address
         else:
@@ -100,7 +97,7 @@ def checkout(request):
                 country=request.POST.get('country'),
             )
 
-        # Crear la orden
+
         order = Order.objects.create(
             customer=request.user,
             shipping_address=shipping_address,
@@ -108,7 +105,6 @@ def checkout(request):
             notes=request.POST.get('notes', '')
         )
 
-        # Copiar items del carrito al detalle de la orden
         for item in cart_items:
             OrderDetail.objects.create(
                 order=order,
@@ -118,14 +114,17 @@ def checkout(request):
                 subtotal=item.current_price * item.quantity
             )
 
-        # Calcular totales
         order.calculate_total()
-
-        # Vaciar carrito
-        Cart.clear_cart(request.user)
-
-        # Redirigir a una página de éxito o detalle de orden
-        return redirect("order_success", order_id=order.order_id)
+        order.save()
+        request.session['order_id_to_pay'] = order.order_id 
+        if order.payment_method == 'credit_card':
+            return redirect('payment:checkout')
+        
+        elif order.payment_method == 'paypal':
+            return redirect('paypal:process_payment') # Ejemplo
+        
+        else:
+            return redirect('payment:checkout')
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
@@ -163,3 +162,23 @@ def order_lookup(request):
                 context['error'] = "Pedido no encontrado."
 
     return render(request, "order_lookup.html", context)
+
+
+@login_required
+def payment_complete_view(request):
+    """
+    Página genérica de éxito de pago.
+    Recupera el pedido de la sesión y muestra la plantilla order_success.
+    """
+    order_id = request.session.get('order_id_to_pay')
+    
+    if order_id:
+        try:
+
+            order = Order.objects.get(order_id=order_id, customer=request.user)
+            return render(request, "order_success.html", {"order": order})
+        
+        except Order.DoesNotExist:
+            return redirect("view_cart")
+        
+    return redirect("view_cart")

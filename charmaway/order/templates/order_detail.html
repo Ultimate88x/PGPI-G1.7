@@ -2,56 +2,130 @@
 {% block title %}Pedido #{{ order.order_id }}{% endblock %}
 {% load static %}
 
+{% block extra_head %}
+<style>
+    .order-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 25px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .order-header {
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+    .order-section {
+        margin-bottom: 30px;
+    }
+
+    .order-section h3 {
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    table.order-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    table.order-table th,
+    table.order-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    table.order-table th {
+        background-color: #fafafa;
+        font-weight: bold;
+    }
+
+    .order-summary p {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #ff6969;
+        color: white;
+        border-radius: 6px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color .2s ease;
+    }
+
+    .back-button:hover {
+        background-color: #ff4b4b;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Pedido #{{ order.order_id }}</h1>
+<div class="order-container">
 
-<h2>Estado: {{ order.get_status_display }}</h2>
-<p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+    <div class="order-header">
+        <h1>Pedido #{{ order.order_id }}</h1>
+        <h2 style="font-size:18px; color:#555;">Estado: {{ order.get_status_display }}</h2>
+        <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+    </div>
 
-<h3>Dirección de envío</h3>
-<p>
-    {{ order.shipping_address.street }} {{ order.shipping_address.number }}<br>
-    {% if order.shipping_address.floor %}{{ order.shipping_address.floor }}<br>{% endif %}
-    {{ order.shipping_address.postal_code }} {{ order.shipping_address.city }}<br>
-    {{ order.shipping_address.state }}, {{ order.shipping_address.country }}
-</p>
+    <div class="order-section">
+        <h3>Dirección de envío</h3>
+        <p>
+            {{ order.shipping_address.street }} {{ order.shipping_address.number }}<br>
+            {% if order.shipping_address.floor %}{{ order.shipping_address.floor }}<br>{% endif %}
+            {{ order.shipping_address.postal_code }} {{ order.shipping_address.city }}<br>
+            {{ order.shipping_address.state }}, {{ order.shipping_address.country }}
+        </p>
+    </div>
 
-<h3>Productos</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in order.details.all %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.unit_price }} €</td>
-            <td>{{ item.subtotal }} €</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4">No hay productos en este pedido.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="order-section">
+        <h3>Productos</h3>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.details.all %}
+                <tr>
+                    <td><a href="{% url 'catalog:product_detail' item.product.id %}" style="color:#ff6969; text-decoration:none; font-weight:bold;">{{ item.product.name }}</a></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price }} €</td>
+                    <td>{{ item.subtotal }} €</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No hay productos en este pedido.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<h3>Resumen de pago</h3>
-<p><strong>Subtotal:</strong> {{ order.subtotal }} €</p>
-<p><strong>Gastos de envío:</strong> {{ order.shipping_cost }} €</p>
-<p><strong>Total:</strong> {{ order.final_price }} €</p>
+    <div class="order-section order-summary">
+        <h3>Resumen de pago</h3>
+        <p><strong>Subtotal:</strong> {{ order.subtotal }} €</p>
+        <p><strong>Gastos de envío:</strong> {{ order.shipping_cost }} €</p>
+        <p><strong>Total:</strong> {{ order.final_price }} €</p>
+        <p><strong>Método de pago:</strong> {{ order.payment_method }}</p>
+        {% if order.notes %}
+        <p><strong>Notas:</strong> {{ order.notes }}</p>
+        {% endif %}
+    </div>
 
-<p><strong>Método de pago:</strong> {{ order.payment_method }}</p>
-
-{% if order.notes %}
-<p><strong>Notas:</strong> {{ order.notes }}</p>
-{% endif %}
-
-<a href="{% url 'profile' %}">Volver al perfil</a>
+    <a href="{% url 'profile' %}" class="back-button">Volver al perfil</a>
+</div>
 {% endblock %}
