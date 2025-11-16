@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Order Success{% endblock %}
+
+{% block content %}
+<h1>¡Gracias por tu pedido!</h1>
+<p>Tu pedido #{{ order.order_id }} se ha creado correctamente.</p>
+<p>Total: {{ order.final_price }} €</p>
+<p>Estado: {{ order.status }}</p>
+
+<a href="{% url 'catalog:catalog' %}">Seguir comprando</a>
+{% endblock %}

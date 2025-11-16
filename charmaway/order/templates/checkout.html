@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if default_address %}
+        <p><strong>Shipping to:</strong> {{ default_address.street }}, {{ default_address.number }}, {{ default_address.city }}</p>
+    {% else %}
+        <h3>Enter shipping address</h3>
+        <label>Street: <input type="text" name="street" required></label><br>
+        <label>Number: <input type="text" name="number" required></label><br>
+        <label>Floor: <input type="text" name="floor"></label><br>
+        <label>Postal Code: <input type="text" name="postal_code" required></label><br>
+        <label>City: <input type="text" name="city" required></label><br>
+        <label>State: <input type="text" name="state" required></label><br>
+        <label>Country: <input type="text" name="country" required></label><br>
+    {% endif %}
+
+    <label>Payment Method:
+        <select name="payment_method" required>
+            <option value="credit_card">Credit Card</option>
+            <option value="paypal">PayPal</option>
+        </select>
+    </label><br><br>
+
+    <label>Notes:<br>
+        <textarea name="notes" rows="3"></textarea>
+    </label><br><br>
+
+    <button type="submit">Place Order</button>
+</form>
+{% endblock %}

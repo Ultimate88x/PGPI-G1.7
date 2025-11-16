@@ -88,7 +88,6 @@ form{
 
 @media (max-width:760px){
   .search{width:100%}
-  .nav{display:none}
   .avatar{width:130px;height:130px;border-width:8px}
   .input input{height:40px}
   .btn{min-width:100px;padding:9px 12px}

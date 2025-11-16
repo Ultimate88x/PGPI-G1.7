@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Buscar Pedido{% endblock %}
+
+{% block content %}
+<h1>Buscar Pedido</h1>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <label for="order_id">Introduce el ID del pedido:</label>
+    <input type="number" name="order_id" id="order_id" required>
+    <button type="submit">Ver pedido</button>
+</form>
+
+<a href="{% url 'profile' %}">Volver al perfil</a>
+{% endblock %}
