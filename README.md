@@ -13,17 +13,19 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
   ```bash
    mysql -u root -p
    ```
-  5. Crear base de datos 'charmaway'.
+  5. Crear base de datos 'charmaway' y 'charmaway_test'.
   ```bash
   CREATE DATABASE charmaway;
+  CREATE DATABASE charmaway_test;
    ```
   6. Crear usuario: username = charmaway_user, password = charmaway_user
   ```bash
   CREATE USER 'charmaway_user'@'localhost' IDENTIFIED BY 'charmaway_user';
    ```
-  7. Dar permisos (excepto GRANT y LOCK TABLES) sobre la base de datos 'charmaway' al usuario:
+  7. Dar permisos (excepto GRANT y LOCK TABLES) sobre las bases de datos 'charmaway' y 'charmaway_test' al usuario:
   ```bash
   GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, REFERENCES, EXECUTE, SHOW VIEW, CREATE VIEW, EVENT, TRIGGER ON charmaway.* TO 'charmaway_user'@'localhost';
+  GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, REFERENCES, EXECUTE, SHOW VIEW, CREATE VIEW, EVENT, TRIGGER ON charmaway_test.* TO 'charmaway_user'@'localhost';
   FLUSH PRIVILEGES;
   ```
      
