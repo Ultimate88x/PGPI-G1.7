@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from order.models import Order
 from .forms import CustomerRegisterForm, CustomerLoginForm, CustomerUpdateForm
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == 'POST':
@@ -42,6 +43,7 @@ def profile(request):
         "orders": orders
     })
 
+@login_required
 def profile_edit(request):
     if request.method == 'POST':
         form = CustomerUpdateForm(request.POST, instance=request.user)

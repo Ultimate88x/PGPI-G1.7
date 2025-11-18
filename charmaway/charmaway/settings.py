@@ -89,6 +89,9 @@ DATABASES = {
     'PASSWORD':'charmaway_user',
     'HOST':'localhost',
     'PORT':'3306',
+    "TEST": {
+        "NAME": "charmaway_test",
+    },
     }
 }
 
@@ -138,6 +141,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'customer.Customer'
+
+
 
 
 #Stripe configuration
