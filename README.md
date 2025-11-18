@@ -58,28 +58,39 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ```
 
 ### Stripe:   
+
 1. Para que stripe funcione y procese los pagos es necesario tener una cuenta de stripe.
+
 2. Después es importante acceder a nuestro dashboard de stripe para obtener tanto nuestor publishable token como nuestro private/secret token.
+
 3. Usa el .env.example como .env.
    ```bash
    mv .env.example .env
    ```
-5. Sustituye los campos requeridos con tus tokens.
-6. Para obtener el webhook token, debes instalar el cli de stripe.
-7. Una vez descargado y puesto en nuestro path, debemos ejecutar en una pantalla cmd.
+
+4. Sustituye los campos requeridos con tus tokens.
+
+5. Para obtener el webhook token, debes instalar el cli de stripe.
+
+6. Una vez descargado y puesto en nuestro path, debemos ejecutar en una pantalla cmd.
    ```bash
    stripe listen --forward-to localhost:<PUERTO>/webhook
    ```
-   Siendo PUERTO el puerto donde esté escuchando nuestra aplicación, en nuestro caso por defecto es el 8000.
-8. Se mostrará este mensaje o uno similar:
+
+    Siendo PUERTO el puerto donde esté escuchando nuestra aplicación, en nuestro caso por defecto es el 8000.
+
+7. Se mostrará este mensaje o uno similar:
   Ready! Your webhook signing secret is whsec_ABC123...
   whsec_ABC123... será el token que debe sustituirse en el .env.
-9.Nuestro servicio estará escuchando y podrá probarse con una tarjeta de prueba:
+
+8.Nuestro servicio estará escuchando y podrá probarse con una tarjeta de prueba:
   ```
     Tarjeta de prueba -> 4242 4242 4242 4242 11/44 111
   ```
-10. Podremos ver las llamadas que nos llegan al webhook desde el cmd donde ejecutamos nuestro comando.
-11. En nuestro dashboard de Stripe aparecerán también dichos movimientos.
+
+9. Podremos ver las llamadas que nos llegan al webhook desde el cmd donde ejecutamos nuestro comando.
+
+10. En nuestro dashboard de Stripe aparecerán también dichos movimientos.
 
 ### Tests:
 1. Para que django los detecte, los tests de cada módulo tienen que estar en un archivo llamado explícitamente 'tests.py' dentro de cada uno de los módulos correspondientes.
