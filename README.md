@@ -75,7 +75,9 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
   Ready! Your webhook signing secret is whsec_ABC123...
   whsec_ABC123... será el token que debe sustituirse en el .env.
 9.Nuestro servicio estará escuchando y podrá probarse con una tarjeta de prueba:
+
   Tarjeta de prueba -> 4242 4242 4242 4242 11/44 111
+
 10. Podremos ver las llamadas que nos llegan al webhiik desde el cmd donde ejecutamos nuestro comando.
 11. En nuestro dashboard de Stripe aparecerán también dichos movimientos.
 12. 
