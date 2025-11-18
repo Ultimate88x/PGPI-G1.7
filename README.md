@@ -65,7 +65,7 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    mv .env.example .env
    ```
 5. Sustituye los campos requeridos con tus tokens.
-6. Para obtener wl webhook token, debes instalar el cli de stripe.
+6. Para obtener el webhook token, debes instalar el cli de stripe.
 7. Una vez descargado y puesto en nuestro path, debemos ejecutar en una pantalla cmd.
    ```bash
    stripe listen --forward-to localhost:<PUERTO>/webhook
