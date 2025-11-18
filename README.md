@@ -56,3 +56,10 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ```bash
    python manage.py runserver
    ```
+
+### Tests:
+1. Para que django los detecte, los tests de cada módulo tienen que estar en un archivo llamado explícitamente 'tests.py' dentro de cada uno de los módulos correspondientes.
+2. Para ejecutar los tests:
+   ```bash
+   pytest
+   ```
