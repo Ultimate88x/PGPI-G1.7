@@ -268,7 +268,7 @@
                     </div>
                 </a>
 
-                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                <form action="{% url 'add_to_cart' product.id %}" onclick="setTimeout(() => location.reload(), 50);" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn-add-cart">Añadir al carro</button>
                 </form>

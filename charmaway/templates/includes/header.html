@@ -26,7 +26,7 @@
     </div>
 
     <div class="actions">
-      <a class="action-btn" href="{% url 'view_cart' %}">
+      <a class="action-btn" id="open-cart" style="cursor: pointer;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6h15l-1.5 9h-13L4 4H2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="cart-bubble">{{ cart_item_count }}</span>
       </a>
@@ -43,4 +43,34 @@
       </a>
     </div>
   </div>
+  <div id="cart-dropdown" class="cart-dropdown hidden">
+    <div class="cart-dropdown-content" id="cart-content">
+        Cargando carrito...
+    </div>
+  </div>
 </header>
+
+<script>
+document.getElementById("open-cart").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const dropdown = document.getElementById("cart-dropdown");
+    dropdown.classList.toggle("hidden");
+
+    fetch("{% url 'view_cart' %}?ajax=1")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cart-content").innerHTML = html;
+        });
+});
+
+document.addEventListener("click", function(e) {
+    const dropdown = document.getElementById("cart-dropdown");
+    const button = document.getElementById("open-cart");
+
+    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+        dropdown.classList.add("hidden");
+    }
+});
+</script>
+

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, Order, OrderDetail, Address, Product
@@ -10,10 +11,6 @@ def get_session_key(request):
 
 
 def get_cart_queryset(request):
-    """
-    Devuelve el queryset del carrito dependiendo si el usuario está logueado
-    o es un visitante anónimo.
-    """
     if request.user.is_authenticated:
         return Cart.objects.filter(customer=request.user)
     else:
@@ -23,10 +20,16 @@ def get_cart_queryset(request):
 def view_cart(request):
     items = get_cart_queryset(request)
 
-    total = 0
     for item in items:
         item.subtotal = item.quantity * item.current_price
-        total += item.subtotal
+
+    total = sum(item.subtotal for item in items)
+
+    if request.GET.get("ajax"):
+        return render(request, "cart_dropdown.html", {
+            "items": items,
+            "total": total
+        })
 
     return render(request, "cart.html", {
         "items": items,
@@ -63,7 +66,7 @@ def add_to_cart(request, product_id):
     cart_item.current_price = product.price
     cart_item.save()
 
-    return redirect("view_cart")
+    return HttpResponse(status=204)
 
 
 def decrease_from_cart(request, product_id):
@@ -81,7 +84,7 @@ def decrease_from_cart(request, product_id):
     else:
         cart_item.delete()
 
-    return redirect("view_cart")
+    return HttpResponse(status=204)
 
 
 def remove_from_cart(request, product_id):
@@ -94,7 +97,7 @@ def remove_from_cart(request, product_id):
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
 
     cart_item.delete()
-    return redirect("view_cart")
+    return HttpResponse(status=204)
 
 
 def clear_cart(request):
@@ -102,16 +105,13 @@ def clear_cart(request):
         Cart.objects.filter(customer=request.user).delete()
     else:
         Cart.objects.filter(session_key=get_session_key(request)).delete()
-    return redirect("view_cart")
+    return HttpResponse(status=204)
 
 
 def checkout(request):
     session_key = get_session_key(request)
 
     cart_items = get_cart_queryset(request)
-
-    if not cart_items.exists():
-        return redirect("view_cart")
 
     default_address = None
     if request.user.is_authenticated:
