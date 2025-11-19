@@ -6,6 +6,9 @@ from order.models import Order
 from .forms import CustomerRegisterForm, CustomerLoginForm, CustomerUpdateForm
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
+
+
 def register(request):
     if request.method == 'POST':
         form = CustomerRegisterForm(request.POST)
@@ -36,7 +39,7 @@ def logout_(request):
 @login_required
 def profile(request):
     customer = request.user
-    orders = Order.objects.filter(customer=customer).order_by('-created_at')
+    orders = Order.objects.filter(customer=customer).order_by('-created_at')[:5]
 
     return render(request, "customer/profile.html", {
         "customer": customer,
@@ -53,3 +56,17 @@ def profile_edit(request):
     else:
         form = CustomerUpdateForm(instance=request.user)
     return render(request, 'customer/profile_edit.html', {'form': form})
+
+@login_required
+def all_orders(request):
+    customer = request.user
+    orders_list = Order.objects.filter(customer=customer).order_by('-created_at')
+
+    # Configurar la paginación
+    paginator = Paginator(orders_list, 5)  # 5 pedidos por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "customer/orders.html", {
+        "page_obj": page_obj
+    })
