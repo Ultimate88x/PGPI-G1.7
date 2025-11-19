@@ -1,8 +1,4 @@
 *.pyc
 venv
 __pycache__/
-<<<<<<< HEAD
-charmaway/.env
-=======
 .env
->>>>>>> bfb15278a341c77ecf2e864779d6f400dd2cec80
