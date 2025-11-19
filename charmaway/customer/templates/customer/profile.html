@@ -43,7 +43,20 @@
         </tr>
       </thead>
       <tbody>
-      
+        {% for order in orders %}
+        <tr>
+          <td>
+            <a href="{% url 'order_detail' order.order_id %}">Ver</a>
+          </td>
+          <td>{{ order.order_id }}</td>
+          <td>{{ order.created_at|date:"d/m/Y" }}</td>
+          <td>{{ order.final_price }} €</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">No hay pedidos aún.</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </main>

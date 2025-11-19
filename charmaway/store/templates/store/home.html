@@ -176,7 +176,10 @@
                     </div>
                 </a>
 
-                <button class="btn-add-cart">Añadir al carro</button>
+                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-add-cart">Añadir al carro</button>
+                </form>
             </article>
             {% endfor %}
         </div>
@@ -232,7 +235,10 @@
                     </div>
                 </a>
 
-                <button class="btn-add-cart">Añadir al carro</button>
+                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-add-cart">Añadir al carro</button>
+                </form>
             </article>
             {% endfor %}
         </div>
@@ -294,7 +300,10 @@
                     </div>
                 </a>
 
-                <button class="btn-add-cart">Añadir al carro</button>
+                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-add-cart">Añadir al carro</button>
+                </form>
             </article>
             {% endfor %}
         </div>

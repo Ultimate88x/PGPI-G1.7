@@ -30,6 +30,7 @@ def main():
     seeders = [
         'seed_catalog',
         'seed_users',
+        'seed_orders',
         # Add more seeders here as you create them:
         # 'seed_customers',
         # 'seed_orders',
