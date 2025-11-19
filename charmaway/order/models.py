@@ -74,7 +74,7 @@ class Order(models.Model):
         return self.details.all()
 
     def __str__(self):
-        return f"Order #{self.order_id} - {self.user.username}"
+        return f"Order #{self.order_id} - {self.customer.name}"
 
 
 class OrderDetail(models.Model):
@@ -141,4 +141,4 @@ class Cart(models.Model):
         return sum(item.current_price * item.quantity for item in items)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product} (User: {self.user.username})"
+        return f"{self.quantity} x {self.product} (User: {self.customer.name})"
