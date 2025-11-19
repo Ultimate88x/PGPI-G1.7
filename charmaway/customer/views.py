@@ -62,8 +62,7 @@ def all_orders(request):
     customer = request.user
     orders_list = Order.objects.filter(customer=customer).order_by('-created_at')
 
-    # Configurar la paginación
-    paginator = Paginator(orders_list, 5)  # 5 pedidos por página
+    paginator = Paginator(orders_list, 7)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
