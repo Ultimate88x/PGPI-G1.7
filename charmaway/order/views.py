@@ -3,9 +3,26 @@ from django.contrib.auth.decorators import login_required
 from .models import Cart, Order, OrderDetail, Address, Product
 
 
-@login_required
+def get_session_key(request):
+    if not request.session.session_key:
+        request.session.create()
+    return request.session.session_key
+
+
+def get_cart_queryset(request):
+    """
+    Devuelve el queryset del carrito dependiendo si el usuario está logueado
+    o es un visitante anónimo.
+    """
+    if request.user.is_authenticated:
+        return Cart.objects.filter(customer=request.user)
+    else:
+        return Cart.objects.filter(session_key=get_session_key(request))
+
+
 def view_cart(request):
-    items = Cart.objects.filter(customer=request.user)
+    items = get_cart_queryset(request)
+
     total = 0
     for item in items:
         item.subtotal = item.quantity * item.current_price
@@ -17,21 +34,27 @@ def view_cart(request):
     })
 
 
-@login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    session_key = get_session_key(request)
 
     try:
         quantity = int(request.POST.get("quantity", 1))
-        if quantity < 1:
-            quantity = 1
-    except (ValueError, TypeError):
+    except:
         quantity = 1
 
+    quantity = max(1, quantity)
+
+    if request.user.is_authenticated:
+        filter_kwargs = {"customer": request.user, "product": product}
+        defaults = {"current_price": product.price, "quantity": quantity}
+    else:
+        filter_kwargs = {"session_key": session_key, "product": product}
+        defaults = {"current_price": product.price, "quantity": quantity}
+
     cart_item, created = Cart.objects.get_or_create(
-        customer=request.user,
-        product=product,
-        defaults={"current_price": product.price, "quantity": quantity}
+        defaults=defaults,
+        **filter_kwargs
     )
 
     if not created:
@@ -43,10 +66,14 @@ def add_to_cart(request, product_id):
     return redirect("view_cart")
 
 
-@login_required
 def decrease_from_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
-    cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+    session_key = get_session_key(request)
+
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+    else:
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
 
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
@@ -57,34 +84,46 @@ def decrease_from_cart(request, product_id):
     return redirect("view_cart")
 
 
-@login_required
 def remove_from_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
-    cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+    session_key = get_session_key(request)
+
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+    else:
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
+
     cart_item.delete()
     return redirect("view_cart")
 
 
-@login_required
 def clear_cart(request):
-    Cart.clear_cart(request.user)
+    if request.user.is_authenticated:
+        Cart.objects.filter(customer=request.user).delete()
+    else:
+        Cart.objects.filter(session_key=get_session_key(request)).delete()
     return redirect("view_cart")
 
 
-@login_required
 def checkout(request):
-    cart_items = Cart.objects.filter(customer=request.user)
+    session_key = get_session_key(request)
+
+    cart_items = get_cart_queryset(request)
+
     if not cart_items.exists():
         return redirect("view_cart")
 
-    default_address = Address.objects.filter(user=request.user, is_default=True).first()
+    default_address = None
+    if request.user.is_authenticated:
+        default_address = Address.objects.filter(user=request.user, is_default=True).first()
 
     if request.method == "POST":
+
         if default_address:
             shipping_address = default_address
         else:
             shipping_address = Address.objects.create(
-                user=request.user,
+                user=request.user if request.user.is_authenticated else None,
                 street=request.POST.get('street'),
                 number=request.POST.get('number'),
                 floor=request.POST.get('floor'),
@@ -94,9 +133,8 @@ def checkout(request):
                 country=request.POST.get('country'),
             )
 
-
         order = Order.objects.create(
-            customer=request.user,
+            customer=request.user if request.user.is_authenticated else None,
             shipping_address=shipping_address,
             payment_method=request.POST.get('payment_method'),
             notes=request.POST.get('notes', '')
@@ -108,31 +146,32 @@ def checkout(request):
                 product=item.product,
                 quantity=item.quantity,
                 unit_price=item.current_price,
-                subtotal=item.current_price * item.quantity
+                subtotal=item.quantity * item.current_price
             )
 
         order.calculate_total()
         order.save()
-        request.session['order_id_to_pay'] = order.order_id 
+
+        request.session['order_id_to_pay'] = order.order_id
+
+        cart_items.delete()
+
         if order.payment_method == 'credit_card':
             return redirect('payment:checkout')
-        
         elif order.payment_method == 'paypal':
-            return redirect('paypal:process_payment') # Ejemplo
-        
+            return redirect('paypal:process_payment')
         else:
             return redirect('payment:checkout')
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
-        "total": Cart.calculate_total(request.user),
+        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key),
         "default_address": default_address
     })
 
 
-@login_required
 def order_detail(request, order_id):
-    order = Order.objects.get(order_id=order_id)
+    order = get_object_or_404(Order, order_id=order_id)
     return render(request, "order_detail.html", {"order": order})
 
 
@@ -143,7 +182,7 @@ def order_lookup(request):
         order_id = request.POST.get("order_id")
         if order_id:
             try:
-                order = Order.objects.get(order_id=order_id, customer=request.user)
+                order = Order.objects.get(order_id=order_id)
                 return redirect('order_detail', order_id=order.order_id)
             except Order.DoesNotExist:
                 context['error'] = "Pedido no encontrado."
@@ -151,21 +190,14 @@ def order_lookup(request):
     return render(request, "order_lookup.html", context)
 
 
-@login_required
 def payment_complete_view(request):
-    """
-    Página genérica de éxito de pago.
-    Recupera el pedido de la sesión y muestra la plantilla order_success.
-    """
     order_id = request.session.get('order_id_to_pay')
-    
+
     if order_id:
         try:
-
-            order = Order.objects.get(order_id=order_id, customer=request.user)
+            order = Order.objects.get(order_id=order_id)
             return render(request, "order_success.html", {"order": order})
-        
         except Order.DoesNotExist:
             return redirect("view_cart")
-        
+
     return redirect("view_cart")

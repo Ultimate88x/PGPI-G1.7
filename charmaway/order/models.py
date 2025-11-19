@@ -6,7 +6,14 @@ from catalog.models import Product
 
 class Address(models.Model):
     address_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="addresses")
+
+    user = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="addresses",
+        null=True,
+        blank=True
+    )
 
     street = models.CharField(max_length=255)
     number = models.CharField(max_length=20)
@@ -19,7 +26,8 @@ class Address(models.Model):
     is_default = models.BooleanField(default=False)
 
     def set_default(self):
-        Address.objects.filter(customer=self.user).update(is_default=False)
+        if self.user:
+            Address.objects.filter(user=self.user).update(is_default=False)
         self.is_default = True
         self.save()
 
@@ -37,7 +45,15 @@ class OrderStatus(models.TextChoices):
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="orders")
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="orders",
+        null=True,
+        blank=True
+    )
+
     created_at = models.DateTimeField(default=timezone.now)
 
     status = models.CharField(
@@ -46,7 +62,10 @@ class Order(models.Model):
         default=OrderStatus.PENDING
     )
 
-    shipping_address = models.ForeignKey("Address", on_delete=models.PROTECT)
+    shipping_address = models.ForeignKey(
+        Address,
+        on_delete=models.PROTECT
+    )
 
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -74,7 +93,8 @@ class Order(models.Model):
         return self.details.all()
 
     def __str__(self):
-        return f"Order #{self.order_id} - {self.customer.name}"
+        customer_name = self.customer.name if self.customer else "Anonymous"
+        return f"Order #{self.order_id} - {customer_name}"
 
 
 class OrderDetail(models.Model):
@@ -100,7 +120,7 @@ class OrderDetail(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product}"
-    
+
 
 class Cart(models.Model):
     cart_id = models.AutoField(primary_key=True)
@@ -108,13 +128,14 @@ class Cart(models.Model):
     customer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,
-        related_name="cart_items"
+        related_name="cart_items",
+        null=True,
+        blank=True
     )
 
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE
-    )
+    session_key = models.CharField(max_length=40, null=True, blank=True)
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(default=timezone.now)
@@ -132,13 +153,21 @@ class Cart(models.Model):
         self.delete()
 
     @staticmethod
-    def clear_cart(user):
-        Cart.objects.filter(customer=user).delete()
+    def clear_cart(user_or_session):
+        if isinstance(user_or_session, Customer):
+            Cart.objects.filter(customer=user_or_session).delete()
+        else:
+            Cart.objects.filter(session_key=user_or_session).delete()
 
     @staticmethod
-    def calculate_total(user):
-        items = Cart.objects.filter(customer=user)
+    def calculate_total(user_or_session):
+        if isinstance(user_or_session, Customer):
+            items = Cart.objects.filter(customer=user_or_session)
+        else:
+            items = Cart.objects.filter(session_key=user_or_session)
+
         return sum(item.current_price * item.quantity for item in items)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product} (User: {self.customer.name})"
+        owner = self.customer.name if self.customer else f"Session {self.session_key}"
+        return f"{self.quantity} x {self.product} (Owner: {owner})"
