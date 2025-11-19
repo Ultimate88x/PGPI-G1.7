@@ -30,3 +30,6 @@ def home(request):
     }
 
     return render(request, 'store/home.html', context)
+
+def about(request):
+    return render(request, 'store/about.html')
