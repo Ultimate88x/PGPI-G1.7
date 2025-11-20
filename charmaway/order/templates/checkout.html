@@ -78,44 +78,49 @@
     <form method="post">
         {% csrf_token %}
 
-        {% if default_address %}
-            <div class="address-summary">
-                <p><strong>Enviar a:</strong><br>
-                {{ default_address.street }}, {{ default_address.number }}<br>
-                {{ default_address.city }}</p>
-            </div>
-        {% else %}
-            <div class="checkout-section">
-                <h3>Pon tu dirección de envío</h3>
-                <label class="checkout-label">País
-                    <input class="checkout-input" type="text" name="country" required>
-                </label>
+        <div class="checkout-section">
+            <h3>Pon tu dirección de envío</h3>
 
-                <label class="checkout-label">Provincia
-                    <input class="checkout-input" type="text" name="state" required>
-                </label>
+            <label class="checkout-label">Dirección
+                <input
+                    class="checkout-input"
+                    type="text"
+                    name="address"
+                    required
+                    value="{{ request.user.address|default:'' }}"
+                >
+            </label>
 
-                <label class="checkout-label">Ciudad
-                    <input class="checkout-input" type="text" name="city" required>
-                </label>
+            <label class="checkout-label">Ciudad
+                <input
+                    class="checkout-input"
+                    type="text"
+                    name="city"
+                    required
+                    value="{{ request.user.city|default:'' }}"
+                >
+            </label>
 
-                <label class="checkout-label">Código postal
-                    <input class="checkout-input" type="text" name="postal_code" required>
-                </label>
-                
-                <label class="checkout-label">Calle
-                    <input class="checkout-input" type="text" name="street" required>
-                </label>
+            <label class="checkout-label">Código postal
+                <input
+                    class="checkout-input"
+                    type="text"
+                    name="zip_code"
+                    required
+                    value="{{ request.user.zip_code|default:'' }}"
+                >
+            </label>
 
-                <label class="checkout-label">Número
-                    <input class="checkout-input" type="text" name="number" required>
-                </label>
-
-                <label class="checkout-label">Piso
-                    <input class="checkout-input" type="text" name="floor">
-                </label>
-            </div>
-        {% endif %}
+            <label class="checkout-label">Correo electrónico
+                <input
+                    class="checkout-input"
+                    type="text"
+                    name="email"
+                    required
+                    value="{{ request.user.email|default:'' }}"
+                >
+            </label>
+        </div>
 
         <div class="checkout-section">
             <label class="checkout-label">Método de pago

@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand
 from customer.models import Customer
 from catalog.models import Product
-from order.models import Cart, Order, OrderDetail, Address
+from order.models import Cart, Order, OrderDetail
 import random
 from decimal import Decimal
+import shortuuid
 
 class Command(BaseCommand):
     help = 'Seed the database with orders and carts'
@@ -18,15 +19,23 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('No hay clientes o productos para crear orders/carts'))
             return
 
-        # Vaciar carritos y pedidos existentes
         Cart.objects.all().delete()
         OrderDetail.objects.all().delete()
         Order.objects.all().delete()
 
+        fake_streets = [
+            "Calle Mayor", "Avenida del Sol", "Paseo de la Luna",
+            "Calle Jardines", "Calle Nueva", "Avenida Castilla",
+            "Paseo del Río"
+        ]
+
+        cities = ["Madrid", "Barcelona", "Sevilla", "Valencia", "Bilbao", "Málaga"]
+
         for customer in customers:
-            # Crear carrito con 1-5 productos aleatorios
+
             cart_count = random.randint(1, 5)
             cart_products = random.sample(products, k=cart_count)
+
             for product in cart_products:
                 Cart.objects.create(
                     customer=customer,
@@ -35,25 +44,28 @@ class Command(BaseCommand):
                     current_price=product.price
                 )
 
-            # Crear 1-3 pedidos
             order_count = random.randint(1, 3)
-            addresses = list(customer.addresses.all())
-            if not addresses:
-                self.stdout.write(self.style.WARNING(f'Cliente {customer.email} no tiene direcciones, saltando pedido'))
-                continue
 
             for _ in range(order_count):
-                address = random.choice(addresses)
+
+                address_text = f"{random.choice(fake_streets)} {random.randint(1, 200)}"
+                city = random.choice(cities)
+                zip_code = f"{random.randint(10000, 99999)}"
+
                 order = Order.objects.create(
+                    public_id=shortuuid.uuid()[:12],
                     customer=customer,
-                    shipping_address=address,
+                    email=customer.email,
+                    address=address_text,
+                    city=city,
+                    zip_code=zip_code,
                     shipping_cost=Decimal('5.00'),
-                    payment_method=random.choice(['Credit Card', 'PayPal', 'Bank Transfer']),
+                    payment_method=random.choice(['credit_card', 'paypal']),
                 )
 
-                # Agregar 1-4 productos al pedido
                 order_products = random.sample(products, k=random.randint(1, 4))
                 subtotal = Decimal('0.00')
+
                 for product in order_products:
                     quantity = random.randint(1, 3)
                     detail = OrderDetail.objects.create(

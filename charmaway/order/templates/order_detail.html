@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Pedido #{{ order.order_id }}{% endblock %}
+{% block title %}Pedido #{{ order.public_id }}{% endblock %}
 {% load static %}
 
 {% block extra_head %}
@@ -72,18 +72,17 @@
 <div class="order-container">
 
     <div class="order-header">
-        <h1>Pedido #{{ order.order_id }}</h1>
+        <h1>Id. Pedido: {{ order.public_id }}</h1>
         <h2 style="font-size:18px; color:#555;">Estado: {{ order.get_status_display }}</h2>
         <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Correo electrónico:</strong> {{ order.email }}</p>
     </div>
 
     <div class="order-section">
         <h3>Dirección de envío</h3>
         <p>
-            {{ order.shipping_address.street }} {{ order.shipping_address.number }}<br>
-            {% if order.shipping_address.floor %}{{ order.shipping_address.floor }}<br>{% endif %}
-            {{ order.shipping_address.postal_code }} {{ order.shipping_address.city }}<br>
-            {{ order.shipping_address.state }}, {{ order.shipping_address.country }}
+            {{ order.address }}<br>
+            {{ order.city }}, {{ order.zip_code }}
         </p>
     </div>
 

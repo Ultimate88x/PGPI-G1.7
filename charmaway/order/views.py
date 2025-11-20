@@ -1,11 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from .models import Cart, Order, OrderDetail, Address, Product
+from .models import Cart, Order, OrderDetail, Product
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -117,32 +116,34 @@ def clear_cart(request):
 
 def checkout(request):
     session_key = get_session_key(request)
-
     cart_items = get_cart_queryset(request)
 
-    default_address = None
+    address = None
+    city = None
+    zip_code = None
+    email = None
+
     if request.user.is_authenticated:
-        default_address = Address.objects.filter(user=request.user, is_default=True).first()
+        user = request.user
+        address = user.address
+        city = user.city
+        zip_code = user.zip_code
+        email = user.email
 
     if request.method == "POST":
 
-        if default_address:
-            shipping_address = default_address
-        else:
-            shipping_address = Address.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                street=request.POST.get('street'),
-                number=request.POST.get('number'),
-                floor=request.POST.get('floor'),
-                postal_code=request.POST.get('postal_code'),
-                city=request.POST.get('city'),
-                state=request.POST.get('state'),
-                country=request.POST.get('country'),
-            )
+        if not request.user.is_authenticated:
+            address = request.POST.get('address')
+            city = request.POST.get('city')
+            zip_code = request.POST.get('zip_code')
+            email = request.POST.get('email')
 
         order = Order.objects.create(
             customer=request.user if request.user.is_authenticated else None,
-            shipping_address=shipping_address,
+            address=address,
+            city=city,
+            zip_code=zip_code,
+            email=email,
             payment_method=request.POST.get('payment_method'),
             notes=request.POST.get('notes', '')
         )
@@ -160,7 +161,6 @@ def checkout(request):
         order.save()
 
         request.session['order_id_to_pay'] = order.order_id
-
         cart_items.delete()
 
         if order.payment_method == 'credit_card':
@@ -172,13 +172,12 @@ def checkout(request):
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
-        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key),
-        "default_address": default_address
+        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key)
     })
 
 
-def order_detail(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id)
+def order_detail(request, public_id):
+    order = get_object_or_404(Order, public_id=public_id)
     return render(request, "order_detail.html", {"order": order})
 
 
@@ -186,11 +185,11 @@ def order_lookup(request):
     context = {}
 
     if request.method == "POST":
-        order_id = request.POST.get("order_id")
-        if order_id:
+        order_public_id = request.POST.get("order_public_id")
+        if order_public_id:
             try:
-                order = Order.objects.get(order_id=order_id)
-                return redirect('order_detail', order_id=order.order_id)
+                order = Order.objects.get(public_id=order_public_id)
+                return redirect('order_detail', public_id=order.public_id)
             except Order.DoesNotExist:
                 context['error'] = "Pedido no encontrado."
 

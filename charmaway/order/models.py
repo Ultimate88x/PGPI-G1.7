@@ -2,37 +2,7 @@ from django.db import models
 from django.utils import timezone
 from customer.models import Customer
 from catalog.models import Product
-
-
-class Address(models.Model):
-    address_id = models.AutoField(primary_key=True)
-
-    user = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name="addresses",
-        null=True,
-        blank=True
-    )
-
-    street = models.CharField(max_length=255)
-    number = models.CharField(max_length=20)
-    floor = models.CharField(max_length=20, blank=True, null=True)
-    postal_code = models.CharField(max_length=10)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
-
-    is_default = models.BooleanField(default=False)
-
-    def set_default(self):
-        if self.user:
-            Address.objects.filter(user=self.user).update(is_default=False)
-        self.is_default = True
-        self.save()
-
-    def __str__(self):
-        return f"{self.street} {self.number}, {self.city}"
+import shortuuid
 
 
 class OrderStatus(models.TextChoices):
@@ -41,10 +11,16 @@ class OrderStatus(models.TextChoices):
     SHIPPED = "SHIPPED", "Shipped"
     DELIVERED = "DELIVERED", "Delivered"
     CANCELLED = "CANCELLED", "Cancelled"
-
+    
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
+    public_id = models.CharField(
+        max_length=12,
+        default=shortuuid.uuid()[:12],
+        unique=True,
+        editable=False
+    )
 
     customer = models.ForeignKey(
         Customer,
@@ -54,6 +30,8 @@ class Order(models.Model):
         blank=True
     )
 
+    email = models.EmailField(null=True)
+
     created_at = models.DateTimeField(default=timezone.now)
 
     status = models.CharField(
@@ -62,10 +40,9 @@ class Order(models.Model):
         default=OrderStatus.PENDING
     )
 
-    shipping_address = models.ForeignKey(
-        Address,
-        on_delete=models.PROTECT
-    )
+    address = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    zip_code = models.CharField(max_length=5, null=True, blank=True)
 
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)

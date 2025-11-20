@@ -23,7 +23,7 @@
             {% csrf_token %}
 
             <label for="order_id">Introduce el ID del pedido:</label>
-            <input type="number" name="order_id" id="order_id" required>
+            <input name="order_public_id" id="order_public_id" required>
 
             <button type="submit" class="btn-main">Ver pedido</button>
         </form>

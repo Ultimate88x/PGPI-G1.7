@@ -12,8 +12,8 @@
         <thead>
             <tr>
                 <th style="text-align:center; padding:16px 12px;  background-color:#ff9292; color: white;"></th>
-                <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Id pedido</th>
-                <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Fecha estimada entrega</th>
+                <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Id. pedido</th>
+                <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Fecha de creación</th>
                 <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Importe total</th>
                 <th style="text-align:center; padding:16px 12px;  background-color:#ff9292;color: white;">Estado</th>
             </tr>
@@ -22,14 +22,14 @@
             {% for order in page_obj %}
             <tr>
                 <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">
-                    <a href="{% url 'order_detail' order.order_id %}" 
+                    <a href="{% url 'order_detail' order.public_id %}" 
                        style="color:#000; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition: color 0.3s, transform 0.2s; font-size:20px;"
                        onmouseover="this.style.color='#007bff'; this.style.transform='scale(1.1)';"
                        onmouseout="this.style.color='#000'; this.style.transform='scale(1)';">
                        <i class="fa-solid fa-eye"></i> Ver
                     </a>
                 </td>
-                <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">{{ order.order_id }}</td>
+                <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">{{ order.public_id }}</td>
                 <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">{{ order.created_at|date:"d/m/Y" }}</td>
                 <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">{{ order.final_price }} €</td>
                 <td style="text-align:center; padding:16px 12px; border-top:1px solid #c0c0c0;">{{ order.status|capfirst }}</td>
