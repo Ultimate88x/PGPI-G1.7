@@ -152,10 +152,11 @@ STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 stripe.api_key = STRIPE_SECRET_KEY
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "charmaway.utils.email_backend.SSLContextEmailBackend"
 EMAIL_HOST = "in-v3.mailjet.com"
 EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.environ.get('MAILJET_API_KEY')
 EMAIL_HOST_PASSWORD = os.environ.get('MAILJET_SECRET_KEY')
-EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "charmaway88@gmail.com"

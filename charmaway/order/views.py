@@ -1,7 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
 from .models import Cart, Order, OrderDetail, Address, Product
+from charmaway.utils.mailjet_api import send_mail_via_mailjet
+import threading
+
 
 
 def get_session_key(request):
@@ -190,14 +197,35 @@ def order_lookup(request):
     return render(request, "order_lookup.html", context)
 
 
+def send_email_async(subject, plain_message, from_email, recipient_list, html_message=None):
+    threading.Thread(
+        target=send_mail,
+        args=(subject, plain_message, from_email, recipient_list),
+        kwargs={'html_message': html_message, 'fail_silently': False}
+    ).start()
+
+
 def payment_complete_view(request):
     order_id = request.session.get('order_id_to_pay')
 
-    if order_id:
-        try:
-            order = Order.objects.get(order_id=order_id)
-            return render(request, "order_success.html", {"order": order})
-        except Order.DoesNotExist:
-            return redirect("view_cart")
+    if not order_id:
+        return redirect("view_cart")
 
-    return redirect("view_cart")
+    try:
+        order = Order.objects.get(order_id=order_id)
+
+        subject = f"Confirmación de pedido #{order.order_id}"
+        html_message = render_to_string("order_success_for_mail.html", {
+            "order": order,
+            "user": request.user,
+        })
+
+        threading.Thread(
+            target=send_mail_via_mailjet,
+            args=(subject, html_message, [order.email])
+        ).start()
+
+        return render(request, "order_success.html", {"order": order})
+
+    except Order.DoesNotExist:
+        return redirect("view_cart")
