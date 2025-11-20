@@ -18,13 +18,11 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('No hay clientes o productos para crear orders/carts'))
             return
 
-        # Vaciar carritos y pedidos existentes
         Cart.objects.all().delete()
         OrderDetail.objects.all().delete()
         Order.objects.all().delete()
 
         for customer in customers:
-            # Crear carrito con 1-5 productos aleatorios
             cart_count = random.randint(1, 5)
             cart_products = random.sample(products, k=cart_count)
             for product in cart_products:
@@ -35,7 +33,6 @@ class Command(BaseCommand):
                     current_price=product.price
                 )
 
-            # Crear 1-3 pedidos
             order_count = random.randint(1, 3)
             addresses = list(customer.addresses.all())
             if not addresses:
@@ -51,7 +48,6 @@ class Command(BaseCommand):
                     payment_method=random.choice(['Credit Card', 'PayPal', 'Bank Transfer']),
                 )
 
-                # Agregar 1-4 productos al pedido
                 order_products = random.sample(products, k=random.randint(1, 4))
                 subtotal = Decimal('0.00')
                 for product in order_products:

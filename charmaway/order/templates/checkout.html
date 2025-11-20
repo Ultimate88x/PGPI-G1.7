@@ -110,6 +110,16 @@
                     value="{{ request.user.zip_code|default:'' }}"
                 >
             </label>
+
+            <label class="checkout-label">Correo electrónico
+                <input
+                    class="checkout-input"
+                    type="text"
+                    name="email"
+                    required
+                    value="{{ request.user.email|default:'' }}"
+                >
+            </label>
         </div>
 
         <div class="checkout-section">

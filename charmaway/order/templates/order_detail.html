@@ -75,6 +75,7 @@
         <h1>Pedido #{{ order.order_id }}</h1>
         <h2 style="font-size:18px; color:#555;">Estado: {{ order.get_status_display }}</h2>
         <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Correo electrónico:</strong> {{ order.email }}</p>
     </div>
 
     <div class="order-section">

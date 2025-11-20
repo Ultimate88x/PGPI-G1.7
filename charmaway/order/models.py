@@ -24,6 +24,8 @@ class Order(models.Model):
         blank=True
     )
 
+    email = models.EmailField(null=True)
+
     created_at = models.DateTimeField(default=timezone.now)
 
     status = models.CharField(

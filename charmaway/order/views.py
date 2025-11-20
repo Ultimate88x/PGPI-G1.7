@@ -114,12 +114,14 @@ def checkout(request):
     address = None
     city = None
     zip_code = None
+    email = None
 
     if request.user.is_authenticated:
         user = request.user
         address = user.address
         city = user.city
         zip_code = user.zip_code
+        email = user.email
 
     if request.method == "POST":
 
@@ -127,12 +129,14 @@ def checkout(request):
             address = request.POST.get('address')
             city = request.POST.get('city')
             zip_code = request.POST.get('zip_code')
+            email = request.POST.get('email')
 
         order = Order.objects.create(
             customer=request.user if request.user.is_authenticated else None,
             address=address,
             city=city,
             zip_code=zip_code,
+            email=email,
             payment_method=request.POST.get('payment_method'),
             notes=request.POST.get('notes', '')
         )
