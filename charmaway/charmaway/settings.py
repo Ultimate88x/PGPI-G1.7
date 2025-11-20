@@ -151,3 +151,11 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 stripe.api_key = STRIPE_SECRET_KEY
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "in-v3.mailjet.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('MAILJET_API_KEY')
+EMAIL_HOST_PASSWORD = os.environ.get('MAILJET_SECRET_KEY')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "charmaway88@gmail.com"
