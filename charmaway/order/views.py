@@ -169,8 +169,8 @@ def checkout(request):
     })
 
 
-def order_detail(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id)
+def order_detail(request, public_id):
+    order = get_object_or_404(Order, public_id=public_id)
     return render(request, "order_detail.html", {"order": order})
 
 
@@ -178,11 +178,11 @@ def order_lookup(request):
     context = {}
 
     if request.method == "POST":
-        order_id = request.POST.get("order_id")
-        if order_id:
+        order_public_id = request.POST.get("order_public_id")
+        if order_public_id:
             try:
-                order = Order.objects.get(order_id=order_id)
-                return redirect('order_detail', order_id=order.order_id)
+                order = Order.objects.get(public_id=order_public_id)
+                return redirect('order_detail', public_id=order.public_id)
             except Order.DoesNotExist:
                 context['error'] = "Pedido no encontrado."
 

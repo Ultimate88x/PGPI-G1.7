@@ -4,6 +4,7 @@ from catalog.models import Product
 from order.models import Cart, Order, OrderDetail
 import random
 from decimal import Decimal
+import shortuuid
 
 class Command(BaseCommand):
     help = 'Seed the database with orders and carts'
@@ -18,7 +19,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('No hay clientes o productos para crear orders/carts'))
             return
 
-        # Limpiar datos
         Cart.objects.all().delete()
         OrderDetail.objects.all().delete()
         Order.objects.all().delete()
@@ -53,6 +53,7 @@ class Command(BaseCommand):
                 zip_code = f"{random.randint(10000, 99999)}"
 
                 order = Order.objects.create(
+                    public_id=shortuuid.uuid()[:12],
                     customer=customer,
                     email=customer.email,
                     address=address_text,

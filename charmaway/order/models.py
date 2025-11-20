@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from customer.models import Customer
 from catalog.models import Product
+import shortuuid
 
 
 class OrderStatus(models.TextChoices):
@@ -10,11 +11,16 @@ class OrderStatus(models.TextChoices):
     SHIPPED = "SHIPPED", "Shipped"
     DELIVERED = "DELIVERED", "Delivered"
     CANCELLED = "CANCELLED", "Cancelled"
-
+    
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField
+    public_id = models.CharField(
+        max_length=12,
+        default=shortuuid.uuid()[:12],
+        unique=True,
+        editable=False
+    )
 
     customer = models.ForeignKey(
         Customer,
