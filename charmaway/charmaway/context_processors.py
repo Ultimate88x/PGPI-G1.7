@@ -3,9 +3,15 @@ from order.models import Cart
 
 def cart_item_count(request):
     if request.user.is_authenticated:
-        total_items = Cart.objects.filter(customer=request.user).aggregate(
-            total_quantity=Sum('quantity')
-        )['total_quantity'] or 0
+        queryset = Cart.objects.filter(customer=request.user)
     else:
-        total_items = 0
-    return {'cart_item_count': total_items}
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.save()
+            session_key = request.session.session_key
+
+        queryset = Cart.objects.filter(session_key=session_key)
+
+    total_items = queryset.aggregate(total=Sum("quantity"))["total"] or 0
+
+    return {"cart_item_count": total_items}

@@ -157,7 +157,7 @@
                     <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                     <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
                     <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
-                    <button type="submit" class="btn-add-cart" {% if product.stock == 0 %}disabled{% endif %}>
+                    <button type="submit" class="btn-add-cart" onclick="setTimeout(() => location.reload(), 50);" {% if product.stock == 0 %}disabled{% endif %}>
                         Añadir al carro
                     </button>
                 </form>

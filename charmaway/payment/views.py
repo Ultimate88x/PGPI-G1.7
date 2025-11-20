@@ -8,7 +8,6 @@ import stripe
 
 from order.models import Order, Cart, OrderStatus 
 
-@login_required
 def pagina_de_pago(request):
     """
     Muestra la página de pago de Stripe.
@@ -18,7 +17,7 @@ def pagina_de_pago(request):
         if not order_id:
             return redirect('order:view_cart')
 
-        order = Order.objects.get(order_id=order_id, customer=request.user)
+        order = Order.objects.get(order_id=order_id)
         
         if order.status != OrderStatus.PENDING:
             del request.session['order_id_to_pay']
@@ -44,7 +43,7 @@ def crear_intento_de_pago(request):
             if not order_id:
                 return JsonResponse({'error': 'No hay pedido para pagar'}, status=403)
 
-            order = Order.objects.get(order_id=order_id, customer=request.user)
+            order = Order.objects.get(order_id=order_id)
 
             monto_en_centavos = int(order.final_price * 100) 
 

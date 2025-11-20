@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+admin.site.site_header = "Administración - Tienda Charmaway"
+
+admin.site.site_title = "Charmaway Admin"
+
+admin.site.index_title = "Panel de Control"
