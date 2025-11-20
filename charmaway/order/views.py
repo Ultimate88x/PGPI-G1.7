@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from .models import Cart, Order, OrderDetail, Address, Product
+from .models import Cart, Order, OrderDetail, Product
 
 
 def get_session_key(request):
@@ -110,32 +109,30 @@ def clear_cart(request):
 
 def checkout(request):
     session_key = get_session_key(request)
-
     cart_items = get_cart_queryset(request)
 
-    default_address = None
+    address = None
+    city = None
+    zip_code = None
+
     if request.user.is_authenticated:
-        default_address = Address.objects.filter(user=request.user, is_default=True).first()
+        user = request.user
+        address = user.address
+        city = user.city
+        zip_code = user.zip_code
 
     if request.method == "POST":
 
-        if default_address:
-            shipping_address = default_address
-        else:
-            shipping_address = Address.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                street=request.POST.get('street'),
-                number=request.POST.get('number'),
-                floor=request.POST.get('floor'),
-                postal_code=request.POST.get('postal_code'),
-                city=request.POST.get('city'),
-                state=request.POST.get('state'),
-                country=request.POST.get('country'),
-            )
+        if not request.user.is_authenticated:
+            address = request.POST.get('address')
+            city = request.POST.get('city')
+            zip_code = request.POST.get('zip_code')
 
         order = Order.objects.create(
             customer=request.user if request.user.is_authenticated else None,
-            shipping_address=shipping_address,
+            address=address,
+            city=city,
+            zip_code=zip_code,
             payment_method=request.POST.get('payment_method'),
             notes=request.POST.get('notes', '')
         )
@@ -153,7 +150,6 @@ def checkout(request):
         order.save()
 
         request.session['order_id_to_pay'] = order.order_id
-
         cart_items.delete()
 
         if order.payment_method == 'credit_card':
@@ -165,8 +161,7 @@ def checkout(request):
 
     return render(request, "checkout.html", {
         "cart_items": cart_items,
-        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key),
-        "default_address": default_address
+        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key)
     })
 
 
