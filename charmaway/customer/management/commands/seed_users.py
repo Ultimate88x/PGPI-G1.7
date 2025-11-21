@@ -30,3 +30,42 @@ class Command(BaseCommand):
                 zip_code='00000'
             )
             self.stdout.write(self.style.SUCCESS('Usuario normal creado correctamente'))
+
+        if not Customer.objects.filter(email='customer1@example.com').exists():
+            Customer.objects.create_user(
+                email='customer1@example.com',
+                password='CustomerPassword',
+                name='Customer',
+                surnames='Uno',
+                phone='+34666000001',
+                address='Calle Mayor 10',
+                city='Madrid',
+                zip_code='28001'
+            )
+            self.stdout.write(self.style.SUCCESS('Customer 1 creado correctamente'))
+
+        if not Customer.objects.filter(email='customer2@example.com').exists():
+            Customer.objects.create_user(
+                email='customer2@example.com',
+                password='CustomerPassword',
+                name='Customer',
+                surnames='Dos',
+                phone='+34666000002',
+                address='Avenida Reina Mercedes 124',
+                city='Sevilla',
+                zip_code='41012'
+            )
+            self.stdout.write(self.style.SUCCESS('Customer 2 creado correctamente'))
+
+        if not Customer.objects.filter(email='customer3@example.com').exists():
+            Customer.objects.create_user(
+                email='customer3@example.com',
+                password='CustomerPassword',
+                name='Customer',
+                surnames='Tres',
+                phone='+34666000003',
+                address='Paseo de la Luna 15',
+                city='Barcelona',
+                zip_code='08001'
+            )
+            self.stdout.write(self.style.SUCCESS('Customer 3 creado correctamente'))

@@ -44,7 +44,7 @@ class Command(BaseCommand):
                     current_price=product.price
                 )
 
-            order_count = random.randint(1, 3)
+            order_count = random.randint(2, 4)
 
             for _ in range(order_count):
 
