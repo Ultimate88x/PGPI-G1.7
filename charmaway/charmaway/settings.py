@@ -84,12 +84,12 @@ WSGI_APPLICATION = 'charmaway.wsgi.application'
 
 DATABASES = {
     'default': {
-    'ENGINE': 'django.db.backends.mysql',
+    'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'charmaway',
     'USER':'charmaway_user',
-    'PASSWORD':'charmaway_user',
+    'PASSWORD':'charmaway_password',
     'HOST':'localhost',
-    'PORT':'3306',
+    'PORT':'5432',
     "TEST": {
         "NAME": "charmaway_test",
     },
