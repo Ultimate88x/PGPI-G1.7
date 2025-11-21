@@ -1,5 +1,4 @@
-# payment/views.py
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -52,7 +51,7 @@ def crear_intento_de_pago(request):
 
             intent = stripe.PaymentIntent.create(
                 amount=monto_en_centavos,
-                currency='eur', # O la moneda que uses
+                currency='eur',
                 automatic_payment_methods={'enabled': True},
                 metadata={
                     'order_id': order.order_id 

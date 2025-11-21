@@ -118,52 +118,29 @@ def checkout(request):
     session_key = get_session_key(request)
     cart_items = get_cart_queryset(request)
 
-    address = None
-    city = None
-    zip_code = None
-    email = None
-
     if request.method == "POST":
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        zip_code = request.POST.get('zip_code')
-        email = request.POST.get('email')
+        request.session['checkout_data'] = {
+            'address': request.POST.get('address'),
+            'city': request.POST.get('city'),
+            'zip_code': request.POST.get('zip_code'),
+            'email': request.POST.get('email'),
+            'payment_method': request.POST.get('payment_method'),
+            'notes': request.POST.get('notes', ''),
+        }
 
-        order = Order.objects.create(
-            customer=request.user if request.user.is_authenticated else None,
-            address=address,
-            city=city,
-            zip_code=zip_code,
-            email=email,
-            payment_method=request.POST.get('payment_method'),
-            notes=request.POST.get('notes', '')
-        )
-
-        for item in cart_items:
-            OrderDetail.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                unit_price=item.current_price,
-                subtotal=item.quantity * item.current_price
-            )
-
-        order.calculate_total()
-        order.save()
-
-        request.session['order_id_to_pay'] = order.order_id
-        cart_items.delete()
-
-        if order.payment_method == 'credit_card':
+        payment_method = request.POST.get('payment_method')
+        if payment_method == 'credit_card':
             return redirect('payment:checkout')
-        elif order.payment_method == 'paypal':
+        elif payment_method == 'paypal':
             return redirect('paypal:process_payment')
         else:
             return redirect('payment:checkout')
 
+    total = Cart.calculate_total(request.user if request.user.is_authenticated else session_key)
+
     return render(request, "checkout.html", {
         "cart_items": cart_items,
-        "total": Cart.calculate_total(request.user if request.user.is_authenticated else session_key)
+        "total": total
     })
 
 
@@ -196,26 +173,50 @@ def send_email_async(subject, plain_message, from_email, recipient_list, html_me
 
 
 def payment_complete_view(request):
-    order_id = request.session.get('order_id_to_pay')
+    cart_items = get_cart_queryset(request)
+    checkout_data = request.session.get('checkout_data')
 
-    if not order_id:
+    if not checkout_data:
         return redirect("view_cart")
 
-    try:
-        order = Order.objects.get(order_id=order_id)
-
-        subject = f"Confirmación de pedido #{order.order_id}"
-        html_message = render_to_string("order_success_for_mail.html", {
-            "order": order,
-            "user": request.user,
-        })
-
-        threading.Thread(
-            target=send_mail_via_mailjet,
-            args=(subject, html_message, [order.email])
-        ).start()
-
-        return render(request, "order_success.html", {"order": order})
-
-    except Order.DoesNotExist:
+    if not cart_items.exists():
         return redirect("view_cart")
+
+    order = Order.objects.create(
+        customer=request.user if request.user.is_authenticated else None,
+        address=checkout_data['address'],
+        city=checkout_data['city'],
+        zip_code=checkout_data['zip_code'],
+        email=checkout_data['email'],
+        payment_method=checkout_data['payment_method'],
+        notes=checkout_data.get('notes', '')
+    )
+
+    for item in cart_items:
+        OrderDetail.objects.create(
+            order=order,
+            product=item.product,
+            quantity=item.quantity,
+            unit_price=item.current_price,
+            subtotal=item.quantity * item.current_price
+        )
+
+    order.calculate_total()
+    order.save()
+
+    cart_items.delete()
+    del request.session['checkout_data']
+    request.session['order_id_to_pay'] = order.public_id
+    print(order.order_id)
+
+    subject = f"Confirmación de pedido #{order.public_id}"
+    html_message = render_to_string("order_success_for_mail.html", {
+        "order": order,
+        "user": request.user,
+    })
+    threading.Thread(
+        target=send_mail_via_mailjet,
+        args=(subject, html_message, [order.email])
+    ).start()
+
+    return render(request, "order_success.html", {"order": order})
