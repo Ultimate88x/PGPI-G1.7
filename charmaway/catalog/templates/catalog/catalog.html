@@ -219,16 +219,6 @@
         <div class="products-grid">
             {% for product in products %}
             <article class="product-card">
-                {% if product.is_featured %}
-                <span class="product-badge">Destacado</span>
-                {% endif %}
-
-                {% if product.offer_price %}
-                <span class="product-badge discount-badge">
-                    -{{ product.discount_percentage }}%
-                </span>
-                {% endif %}
-
                 <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
                     <div class="product-image-wrapper">
                         {% with main_image=product.images.all|first %}

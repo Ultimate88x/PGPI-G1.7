@@ -23,17 +23,17 @@ class Command(BaseCommand):
             {'name': 'Nivea', 'description': 'Marca de cuidado de la piel de confianza con más de 100 años de experiencia en protección cutánea', 'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400'},
             {'name': 'The Ordinary', 'description': 'Formulaciones clínicas para el cuidado de la piel con integridad y transparencia', 'image': 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400'},
             {'name': 'CeraVe', 'description': 'Cuidado de la piel desarrollado por dermatólogos con ceramidas esenciales', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
-            {'name': 'NYX Professional Makeup', 'description': 'Maquillaje de calidad profesional a precios asequibles con colores atrevidos', 'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=400'},
+            {'name': 'NYX Professional Makeup', 'description': 'Maquillaje de calidad profesional a precios asequibles con colores atrevidos', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
             {'name': 'Neutrogena', 'description': 'Cuidado de la piel recomendado por dermatólogos para una piel sana y hermosa', 'image': 'https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=400'},
-            {'name': 'Revlon', 'description': 'Marca icónica de belleza que ofrece cosméticos de color y cuidado capilar', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
+            {'name': 'Revlon', 'description': 'Marca icónica de belleza que ofrece cosméticos de color y cuidado capilar', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
             {'name': 'La Roche-Posay', 'description': 'Cuidado de la piel farmacéutico francés recomendado por dermatólogos en todo el mundo', 'image': 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400'},
             {'name': 'Vichy', 'description': 'Cuidado de la piel francés enriquecido con agua mineralizante volcánica', 'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400'},
             {'name': 'Clinique', 'description': 'Cuidado de la piel y maquillaje sin fragancia, probado contra alergias y desarrollado por dermatólogos', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
             {'name': 'MAC Cosmetics', 'description': 'Marca de maquillaje artístico profesional con productos audaces y altamente pigmentados', 'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400'},
-            {'name': 'Estée Lauder', 'description': 'Cuidado de la piel y maquillaje de lujo con tecnología avanzada antienvejecimiento', 'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=400'},
-            {'name': 'Lancôme', 'description': 'Marca de belleza de lujo francesa con cuidado de la piel innovador y fragancias', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
+            {'name': 'Estée Lauder', 'description': 'Cuidado de la piel y maquillaje de lujo con tecnología avanzada antienvejecimiento', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
+            {'name': 'Lancôme', 'description': 'Marca de belleza de lujo francesa con cuidado de la piel innovador y fragancias', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
             {'name': 'Benefit Cosmetics', 'description': 'Productos de belleza divertidos y femeninos con soluciones de belleza instantáneas', 'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400'},
-            {'name': 'Urban Decay', 'description': 'Maquillaje audaz y moderno con fórmulas de alto rendimiento', 'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=400'},
+            {'name': 'Urban Decay', 'description': 'Maquillaje audaz y moderno con fórmulas de alto rendimiento', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
             {'name': 'Kiehl\'s', 'description': 'Cuidado natural de la piel con fórmulas eficaces desde 1851', 'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400'},
             {'name': 'The Body Shop', 'description': 'Productos de belleza de inspiración natural producidos éticamente', 'image': 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400'},
             {'name': 'Bioderma', 'description': 'Experiencia dermatológica en cuidado de la piel suave y efectivo', 'image': 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400'},
@@ -59,9 +59,9 @@ class Command(BaseCommand):
             {'name': 'Perfumes', 'description': 'Fragancias para hombres y mujeres', 'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400'},
             {'name': 'Protección Solar', 'description': 'Protectores solares y productos aftersun para protección de la piel', 'image': 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400'},
             {'name': 'Cuidado de Uñas', 'description': 'Esmaltes de uñas, tratamientos y accesorios', 'image': 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=400'},
-            {'name': 'Cuidado Masculino', 'description': 'Productos especializados para el cuidado y aseo masculino', 'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=400'},
+            {'name': 'Cuidado Masculino', 'description': 'Productos especializados para el cuidado y aseo masculino', 'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400'},
             {'name': 'Cuidado de Ojos', 'description': 'Tratamientos y cremas para el delicado contorno de ojos', 'image': 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400'},
-            {'name': 'Cuidado de Labios', 'description': 'Bálsamos, tratamientos y cuidado para labios', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400'},
+            {'name': 'Cuidado de Labios', 'description': 'Bálsamos, tratamientos y cuidado para labios', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
             {'name': 'Anti-Edad', 'description': 'Productos avanzados para combatir los signos del envejecimiento', 'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'},
             {'name': 'Baño y Ducha', 'description': 'Geles, jabones y productos para baño y ducha', 'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400'},
         ]
@@ -298,7 +298,7 @@ class Command(BaseCommand):
                 'description': 'Spray fijador de larga duración que mantiene el maquillaje en su lugar todo el día',
                 'price': 8.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
                 'stock': 180, 'is_available': True, 'is_featured': False, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1617897903246-719242758050?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '60ml', 'stock': 180}]
             },
             {
@@ -306,7 +306,7 @@ class Command(BaseCommand):
                 'description': '16 tonos de sombras de ojos pigmentadas en tonos cálidos',
                 'price': 16.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
                 'stock': 100, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Tonos Cálidos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1625880213241-52e6a8748d0d?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 100}]
             },
             {
@@ -314,7 +314,7 @@ class Command(BaseCommand):
                 'description': 'Labial líquido de larga duración con acabado mate cómodo',
                 'price': 11.99, 'brand': brands['Revlon'], 'category': categories['Maquillaje'],
                 'stock': 220, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '5.9ml', 'stock': 220}]
             },
             {
@@ -330,7 +330,7 @@ class Command(BaseCommand):
                 'description': 'Perfilador de labios cremoso para labios definidos',
                 'price': 10.00, 'brand': brands['MAC Cosmetics'], 'category': categories['Maquillaje'],
                 'stock': 185, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples colores',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 185}]
             },
             {
@@ -346,7 +346,7 @@ class Command(BaseCommand):
                 'description': 'Máscara alargadora para pestañas dramáticas',
                 'price': 27.00, 'brand': brands['Benefit Cosmetics'], 'category': categories['Maquillaje'],
                 'stock': 125, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Negro',
-                'images': [{'image': 'https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '8.5g', 'stock': 125}]
             },
             {
@@ -354,7 +354,7 @@ class Command(BaseCommand):
                 'description': 'Paleta de sombras neutras con tonos rosados, 12 tonos',
                 'price': 54.00, 'offer_price': 45.00, 'brand': brands['Urban Decay'], 'category': categories['Maquillaje'],
                 'stock': 80, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Tonos Rosados',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1598452963314-b09f397a5c48?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 80}]
             },
             {
@@ -362,7 +362,7 @@ class Command(BaseCommand):
                 'description': 'Spray fijador de maquillaje de larga duración hasta 16 horas',
                 'price': 33.00, 'brand': brands['Urban Decay'], 'category': categories['Maquillaje'],
                 'stock': 135, 'is_available': True, 'is_featured': True, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '118ml', 'stock': 135}]
             },
             {
@@ -370,7 +370,7 @@ class Command(BaseCommand):
                 'description': 'Labial líquido mate de hasta 16 horas de duración',
                 'price': 9.99, 'brand': brands['Maybelline'], 'category': categories['Maquillaje'],
                 'stock': 210, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Varios tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '5ml', 'stock': 210}]
             },
             {
@@ -386,7 +386,7 @@ class Command(BaseCommand):
                 'description': 'Labial líquido mate ligero',
                 'price': 6.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
                 'stock': 195, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '8ml', 'stock': 195}]
             },
             {
@@ -394,7 +394,7 @@ class Command(BaseCommand):
                 'description': 'Delineador líquido resistente al agua con punta de pincel',
                 'price': 10.00, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
                 'stock': 170, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Negro',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 170}]
             },
             {
@@ -402,7 +402,7 @@ class Command(BaseCommand):
                 'description': 'Máscara voluminizadora de cejas para cejas de aspecto más completo',
                 'price': 12.99, 'brand': brands['Rimmel London'], 'category': categories['Maquillaje'],
                 'stock': 155, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Varios tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1583241800698-1ab6b5c22b55?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '4.5ml', 'stock': 155}]
             },
             {
@@ -410,7 +410,7 @@ class Command(BaseCommand):
                 'description': 'Labial líquido mate de larga duración',
                 'price': 8.99, 'brand': brands['Rimmel London'], 'category': categories['Maquillaje'],
                 'stock': 178, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '5.5ml', 'stock': 178}]
             },
             {
@@ -434,7 +434,7 @@ class Command(BaseCommand):
                 'description': 'Máscara voluminizadora para pestañas hasta 12 veces más grandes',
                 'price': 25.00, 'brand': brands['Lancôme'], 'category': categories['Maquillaje'],
                 'stock': 98, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Negro',
-                'images': [{'image': 'https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '10ml', 'stock': 98}]
             },
             {
@@ -442,7 +442,7 @@ class Command(BaseCommand):
                 'description': 'Labial hidratante con color intenso y brillo',
                 'price': 29.00, 'brand': brands['Lancôme'], 'category': categories['Maquillaje'],
                 'stock': 115, 'is_available': True, 'is_featured': True, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 115}]
             },
             {
@@ -458,7 +458,7 @@ class Command(BaseCommand):
                 'description': 'Labial lujoso con fórmula hidratante esculpida',
                 'price': 32.00, 'brand': brands['Estée Lauder'], 'category': categories['Maquillaje'],
                 'stock': 108, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 108}]
             },
             {
@@ -482,7 +482,7 @@ class Command(BaseCommand):
                 'description': 'Máscara de volumen y longitud intensos',
                 'price': 12.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Maquillaje'],
                 'stock': 188, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Negro',
-                'images': [{'image': 'https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1610807230992-7a15eb5e2b8c?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '6.4ml', 'stock': 188}]
             },
             {
@@ -490,7 +490,7 @@ class Command(BaseCommand):
                 'description': 'Labial mate rico con color intenso',
                 'price': 10.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Maquillaje'],
                 'stock': 192, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 192}]
             },
             {
@@ -498,7 +498,7 @@ class Command(BaseCommand):
                 'description': 'Color de labios de 24 horas con bálsamo superior',
                 'price': 13.99, 'brand': brands['Revlon'], 'category': categories['Maquillaje'],
                 'stock': 165, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Múltiples tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': 'Estándar', 'stock': 165}]
             },
             {
@@ -514,7 +514,7 @@ class Command(BaseCommand):
                 'description': 'Máscara de volumen dramático con efecto de pestañas postizas',
                 'price': 13.49, 'brand': brands['Revlon'], 'category': categories['Maquillaje'],
                 'stock': 172, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Negro',
-                'images': [{'image': 'https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '8.5ml', 'stock': 172}]
             },
 
@@ -794,7 +794,7 @@ class Command(BaseCommand):
                 'description': 'Limpiador facial energizante para hombres con mentol y vitamina C',
                 'price': 9.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Cuidado Masculino'],
                 'stock': 160, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '150ml', 'stock': 160}]
             },
             {
@@ -802,7 +802,7 @@ class Command(BaseCommand):
                 'description': 'Gel de afeitar suave con manzanilla para piel sensible',
                 'price': 7.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
                 'stock': 140, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '200ml', 'stock': 140}]
             },
             {
@@ -810,7 +810,7 @@ class Command(BaseCommand):
                 'description': 'Aceite nutritivo para barba con aceite esencial de madera de cedro',
                 'price': 12.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Cuidado Masculino'],
                 'stock': 95, 'is_available': True, 'is_featured': True, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '30ml', 'stock': 95}]
             },
             {
@@ -818,7 +818,7 @@ class Command(BaseCommand):
                 'description': 'Limpiador facial energizante con extracto de café',
                 'price': 8.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
                 'stock': 128, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '100ml', 'stock': 128}]
             },
             {
@@ -826,7 +826,7 @@ class Command(BaseCommand):
                 'description': 'Bálsamo calmante después del afeitado con manzanilla y vitamina E',
                 'price': 9.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
                 'stock': 115, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '100ml', 'stock': 115}]
             },
             {
@@ -834,7 +834,7 @@ class Command(BaseCommand):
                 'description': 'Hidratante matificante para hombres con guaraná',
                 'price': 11.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Cuidado Masculino'],
                 'stock': 108, 'is_available': True, 'is_featured': True, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '50ml', 'stock': 108}]
             },
             {
@@ -842,7 +842,7 @@ class Command(BaseCommand):
                 'description': 'Limpiador facial revitalizante para hombres con raíz de maca',
                 'price': 10.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado Masculino'],
                 'stock': 92, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1617897903246-719242758050?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '125ml', 'stock': 92}]
             },
             {
@@ -850,7 +850,7 @@ class Command(BaseCommand):
                 'description': 'Gel de ducha y champú todo en uno para hombres',
                 'price': 6.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
                 'stock': 175, 'is_available': True, 'is_featured': False, 'gender': 'Hombre',
-                'images': [{'image': 'https://images.unsplash.com/photo-1568025928327-ce85fa74c3d6?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1631730486572-226d1f595b68?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '500ml', 'stock': 175}]
             },
 
@@ -952,7 +952,7 @@ class Command(BaseCommand):
                 'description': 'Bálsamo labial hidratante clásico con dexpantenol',
                 'price': 3.99, 'brand': brands['Nivea'], 'category': categories['Cuidado de Labios'],
                 'stock': 285, 'is_available': True, 'is_featured': False, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '4.8g', 'stock': 285}]
             },
             {
@@ -960,7 +960,7 @@ class Command(BaseCommand):
                 'description': 'Bálsamo labial hidratante con color',
                 'price': 4.99, 'brand': brands['Maybelline'], 'category': categories['Cuidado de Labios'],
                 'stock': 245, 'is_available': True, 'is_featured': False, 'gender': 'Unisex', 'color': 'Varios tonos',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '4.4g', 'stock': 245}]
             },
             {
@@ -968,7 +968,7 @@ class Command(BaseCommand):
                 'description': 'Bálsamo labial protector con vitamina E y SPF',
                 'price': 5.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado de Labios'],
                 'stock': 198, 'is_available': True, 'is_featured': True, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '4.2g', 'stock': 198}]
             },
             {
@@ -976,7 +976,7 @@ class Command(BaseCommand):
                 'description': 'Bálsamo labial ultra-nutritivo con miel',
                 'price': 11.90, 'brand': brands['Nuxe'], 'category': categories['Cuidado de Labios'],
                 'stock': 125, 'is_available': True, 'is_featured': True, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '15g', 'stock': 125}]
             },
             {
@@ -984,7 +984,7 @@ class Command(BaseCommand):
                 'description': 'Tratamiento labial voluminizador con colágeno',
                 'price': 6.99, 'brand': brands['Catrice'], 'category': categories['Cuidado de Labios'],
                 'stock': 168, 'is_available': True, 'is_featured': False, 'gender': 'Unisex',
-                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '5g', 'stock': 168}]
             },
 
@@ -1028,6 +1028,440 @@ class Command(BaseCommand):
                 'stock': 188, 'is_available': True, 'is_featured': False, 'gender': 'Unisex',
                 'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
                 'sizes': [{'size': '500ml', 'stock': 188}]
+            },
+
+            # === PRODUCTOS AGOTADOS === (15 productos)
+            {
+                'name': 'Paleta de Sombras Sunset Dreams',
+                'description': 'Paleta de 12 sombras con tonos cálidos y brillantes para looks de día y noche',
+                'price': 24.99, 'offer_price': 19.99, 'brand': brands['Urban Decay'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '12 colores', 'stock': 0}]
+            },
+            {
+                'name': 'Sérum Vitamina C Ultra Concentrado',
+                'description': 'Sérum antioxidante con 20% de vitamina C pura para iluminar y unificar el tono de la piel',
+                'price': 45.00, 'brand': brands['La Roche-Posay'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
+            },
+            {
+                'name': 'Perfume Vie Est Belle Intense',
+                'description': 'Eau de parfum floral gourmand con iris, pachulí y vainilla',
+                'price': 98.50, 'brand': brands['Lancôme'], 'category': categories['Perfumes'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Mujer',
+                'images': [{'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}, {'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Máscara de Pestañas Lash Paradise Waterproof',
+                'description': 'Máscara resistente al agua con cepillo de volumen extremo',
+                'price': 12.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1622290405520-42c44a61e089?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '6.4ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema Corporal Aceite de Karité',
+                'description': 'Hidratante corporal ultra nutritiva con manteca de karité pura del comercio justo',
+                'price': 18.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado Corporal'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Champú Reparador Total Repair 5',
+                'description': 'Champú reparador para cabello dañado con ceramidas',
+                'price': 7.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Cuidado Capilar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '400ml', 'stock': 0}]
+            },
+            {
+                'name': 'Esmalte Gel Shine Last & Go',
+                'description': 'Esmalte de uñas de larga duración con efecto gel sin lámpara UV',
+                'price': 5.49, 'brand': brands['Rimmel London'], 'category': categories['Cuidado de Uñas'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Red Vibrant',
+                'images': [{'image': 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '8ml', 'stock': 0}]
+            },
+            {
+                'name': 'Bálsamo After Shave Sensitive',
+                'description': 'Bálsamo post-afeitado calmante para pieles sensibles sin alcohol',
+                'price': 8.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Hombre',
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Contorno de Ojos Regenerist',
+                'description': 'Crema para contorno de ojos con péptidos y complejo de aminoácidos',
+                'price': 22.99, 'offer_price': 18.99, 'brand': brands['Olay'], 'category': categories['Cuidado de Ojos'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '15ml', 'stock': 0}]
+            },
+            {
+                'name': 'Protector Solar Invisible SPF 50+',
+                'description': 'Protector solar facial invisible de muy alta protección para uso diario',
+                'price': 16.50, 'brand': brands['La Roche-Posay'], 'category': categories['Protección Solar'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Labial Líquido SuperStay Matte Ink',
+                'description': 'Labial líquido mate de larga duración hasta 16 horas sin transferencia',
+                'price': 11.99, 'brand': brands['Maybelline'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Voyager',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '5ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema de Noche Advanced Night Repair',
+                'description': 'Sérum de noche reparador y anti-edad con tecnología ChronoluxCB',
+                'price': 89.00, 'brand': brands['Estée Lauder'], 'category': categories['Anti-Edad'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Aceite de Argán para Cabello',
+                'description': 'Aceite puro de argán marroquí para hidratar y dar brillo al cabello',
+                'price': 14.50, 'brand': brands['Garnier'], 'category': categories['Cuidado Capilar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Exfoliante Facial de Fresa',
+                'description': 'Exfoliante facial suave con semillas de fresa reales y textura cremosa',
+                'price': 12.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '75ml', 'stock': 0}]
+            },
+            {
+                'name': 'Kit de Pinceles Profesionales',
+                'description': 'Set de 12 pinceles profesionales para maquillaje con estuche de viaje',
+                'price': 39.99, 'offer_price': 29.99, 'brand': brands['MAC Cosmetics'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '12 piezas', 'stock': 0}]
+            },
+            {
+                'name': 'Base de Maquillaje Infaillible 24H',
+                'description': 'Base de maquillaje de larga duración con cobertura total y acabado mate',
+                'price': 16.99, 'brand': brands['L\'Oréal Paris'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Beige Natural',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
+            },
+            {
+                'name': 'Agua Micelar Sensibio H2O',
+                'description': 'Agua micelar desmaquillante suave para pieles sensibles sin aclarado',
+                'price': 12.50, 'brand': brands['Bioderma'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '500ml', 'stock': 0}]
+            },
+            {
+                'name': 'Máscara Capilar Botanic Therapy',
+                'description': 'Mascarilla reparadora intensiva con aceite de ricino y almendra',
+                'price': 8.50, 'brand': brands['Garnier'], 'category': categories['Cuidado Capilar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '300ml', 'stock': 0}]
+            },
+            {
+                'name': 'Perfume Invictus Victory',
+                'description': 'Eau de parfum masculina con notas amaderadas y especiadas',
+                'price': 85.00, 'offer_price': 72.00, 'brand': brands['Revlon'], 'category': categories['Perfumes'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Hombre',
+                'images': [{'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}, {'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Corrector de Ojeras Age Rewind',
+                'description': 'Corrector líquido con aplicador de esponja para ocultar ojeras',
+                'price': 10.99, 'brand': brands['Maybelline'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Light',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '6ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema Hidratante Aqua Gel',
+                'description': 'Gel-crema hidratante ultraligero con ácido hialurónico',
+                'price': 19.99, 'brand': brands['Neutrogena'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Desodorante Roll-On Invisible Black & White',
+                'description': 'Desodorante antitranspirante que protege la ropa blanca y negra',
+                'price': 4.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Corporal'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Sérum Facial Retinol 0.5%',
+                'description': 'Tratamiento anti-edad con retinol puro para reducir arrugas y líneas finas',
+                'price': 32.00, 'brand': brands['The Ordinary'], 'category': categories['Anti-Edad'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
+            },
+            {
+                'name': 'Bruma Facial Prodigieuse',
+                'description': 'Spray facial multifunción con aceites botánicos para rostro, cuerpo y cabello',
+                'price': 14.90, 'brand': brands['Nuxe'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Sombra de Ojos Mono Chrome Intense',
+                'description': 'Sombra de ojos cremosa de alta pigmentación con acabado metálico',
+                'price': 7.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Rose Gold',
+                'images': [{'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '3g', 'stock': 0}]
+            },
+            {
+                'name': 'Leche Limpiadora Suave',
+                'description': 'Leche desmaquillante hidratante para rostro y ojos',
+                'price': 11.50, 'brand': brands['Garnier'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Loción Corporal Cuidado Intensivo',
+                'description': 'Loción corporal reparadora con Dexpantenol para piel muy seca',
+                'price': 8.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Corporal'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '400ml', 'stock': 0}]
+            },
+            {
+                'name': 'Tónico Facial Glycolic Acid 7%',
+                'description': 'Tónico exfoliante con ácido glicólico para iluminar y texturizar la piel',
+                'price': 9.50, 'brand': brands['The Ordinary'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '240ml', 'stock': 0}]
+            },
+            {
+                'name': 'Colorete Fit Me Blush',
+                'description': 'Colorete en polvo con pigmentos puros para un rubor natural',
+                'price': 6.99, 'brand': brands['Maybelline'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Peach',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '5g', 'stock': 0}]
+            },
+            {
+                'name': 'Espuma Limpiadora Men Deep',
+                'description': 'Limpiador facial profundo con carbón activo para hombres',
+                'price': 9.50, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Hombre',
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '150ml', 'stock': 0}]
+            },
+            {
+                'name': 'Aceite Desmaquillante DHC Deep Cleansing',
+                'description': 'Aceite limpiador japonés que disuelve el maquillaje y las impurezas',
+                'price': 28.00, 'brand': brands['Kiehl\'s'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Tratamiento Anti-Imperfecciones Effaclar Duo+',
+                'description': 'Cuidado anti-imperfecciones con niacinamida para piel propensa al acné',
+                'price': 18.90, 'brand': brands['La Roche-Posay'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '40ml', 'stock': 0}]
+            },
+            {
+                'name': 'Iluminador Glow Shot',
+                'description': 'Iluminador líquido para rostro y cuerpo con partículas reflectantes',
+                'price': 13.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '18ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema de Manos Ultra Rica',
+                'description': 'Crema de manos nutritiva con manteca de karité y miel',
+                'price': 10.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado Corporal'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Spray Fijador de Maquillaje Setting Spray',
+                'description': 'Spray fijador que prolonga la duración del maquillaje hasta 16 horas',
+                'price': 9.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '60ml', 'stock': 0}]
+            },
+            {
+                'name': 'Sérum Capilar Revitalizante',
+                'description': 'Sérum sin aclarado con ceramidas para fortalecer el cabello dañado',
+                'price': 11.50, 'brand': brands['L\'Oréal Paris'], 'category': categories['Cuidado Capilar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Mascarilla Purificante de Arcilla',
+                'description': 'Mascarilla facial detox con arcilla verde y eucalipto',
+                'price': 7.99, 'brand': brands['Garnier'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '100ml', 'stock': 0}]
+            },
+            {
+                'name': 'Delineador de Ojos Epic Ink',
+                'description': 'Delineador líquido negro intenso con punta de fieltro ultrafina',
+                'price': 11.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1609683680763-b7f87a7c6e42?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '1ml', 'stock': 0}]
+            },
+            {
+                'name': 'Loción Tónica Facial Pieles Mixtas',
+                'description': 'Tónico purificante que equilibra la producción de sebo',
+                'price': 6.99, 'brand': brands['Neutrogena'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Perfume Black Opium',
+                'description': 'Eau de parfum femenina con notas de café, vainilla y flores blancas',
+                'price': 92.00, 'offer_price': 79.00, 'brand': brands['Lancôme'], 'category': categories['Perfumes'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Mujer',
+                'images': [{'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}, {'size': '90ml', 'stock': 0}]
+            },
+            {
+                'name': 'Aceite Corporal Mango',
+                'description': 'Aceite nutritivo para el cuerpo con aroma tropical a mango',
+                'price': 15.00, 'brand': brands['The Body Shop'], 'category': categories['Cuidado Corporal'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '150ml', 'stock': 0}]
+            },
+            {
+                'name': 'Primer Facial Poreless Putty',
+                'description': 'Prebase de maquillaje que minimiza poros y suaviza la textura de la piel',
+                'price': 14.99, 'brand': brands['NYX Professional Makeup'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '28g', 'stock': 0}]
+            },
+            {
+                'name': 'Tratamiento Labial Overnight Lip Mask',
+                'description': 'Mascarilla labial de noche intensiva con vitamina C y antioxidantes',
+                'price': 22.00, 'brand': brands['Lancôme'], 'category': categories['Cuidado de Labios'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '20g', 'stock': 0}]
+            },
+            {
+                'name': 'Aceite Facial Midnight Recovery',
+                'description': 'Aceite nocturno restaurador con aceite de lavanda y extracto de onagra',
+                'price': 52.00, 'brand': brands['Kiehl\'s'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
+            },
+            {
+                'name': 'Acondicionador Nutritivo Botanic Therapy',
+                'description': 'Acondicionador con aceite de oliva para cabello seco y dañado',
+                'price': 6.50, 'brand': brands['Garnier'], 'category': categories['Cuidado Capilar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '400ml', 'stock': 0}]
+            },
+            {
+                'name': 'Polvo Compacto Matificante Stay Matte',
+                'description': 'Polvo compacto que controla el brillo y fija el maquillaje',
+                'price': 10.99, 'brand': brands['Rimmel London'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Translucent',
+                'images': [{'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '14g', 'stock': 0}]
+            },
+            {
+                'name': 'Crema de Noche Hydro Boost',
+                'description': 'Crema gel de noche con ácido hialurónico para hidratación intensa',
+                'price': 17.99, 'brand': brands['Neutrogena'], 'category': categories['Cuidado Facial'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '50ml', 'stock': 0}]
+            },
+            {
+                'name': 'Gel Afeitado Hydrating',
+                'description': 'Gel de afeitado hidratante con aloe vera para un afeitado suave',
+                'price': 5.99, 'brand': brands['Nivea'], 'category': categories['Cuidado Masculino'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Hombre',
+                'images': [{'image': 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Exfoliante Corporal Smoothing Salt',
+                'description': 'Exfoliante corporal con sales marinas y aceites esenciales',
+                'price': 19.00, 'brand': brands['The Body Shop'], 'category': categories['Baño y Ducha'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '250ml', 'stock': 0}]
+            },
+            {
+                'name': 'Sérum de Pestañas Crecimiento',
+                'description': 'Sérum fortalecedor para pestañas con biotina y péptidos',
+                'price': 24.99, 'brand': brands['Maybelline'], 'category': categories['Maquillaje'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1625880213241-52e6a8748d0d?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '5ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema Antiedad Redermic R',
+                'description': 'Cuidado anti-edad intensivo con retinol puro para arrugas profundas',
+                'price': 38.90, 'brand': brands['La Roche-Posay'], 'category': categories['Anti-Edad'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
+            },
+            {
+                'name': 'Esmalte Uñas Miracle Gel',
+                'description': 'Esmalte de uñas de larga duración con tecnología gel',
+                'price': 8.99, 'brand': brands['Revlon'], 'category': categories['Cuidado de Uñas'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex', 'color': 'Pink Blush',
+                'images': [{'image': 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '14.7ml', 'stock': 0}]
+            },
+            {
+                'name': 'Protector Solar Corporal SPF 30',
+                'description': 'Loción solar hidratante de protección alta para el cuerpo',
+                'price': 14.99, 'brand': brands['Nivea'], 'category': categories['Protección Solar'],
+                'stock': 0, 'is_available': False, 'is_featured': False, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '200ml', 'stock': 0}]
+            },
+            {
+                'name': 'Crema Contorno Ojos Cafeína Solution',
+                'description': 'Sérum para ojos con 5% de cafeína para reducir ojeras e hinchazón',
+                'price': 7.50, 'brand': brands['The Ordinary'], 'category': categories['Cuidado de Ojos'],
+                'stock': 0, 'is_available': False, 'is_featured': True, 'gender': 'Unisex',
+                'images': [{'image': 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800', 'is_main': True, 'order_position': 1}],
+                'sizes': [{'size': '30ml', 'stock': 0}]
             },
         ]
 

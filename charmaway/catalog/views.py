@@ -6,7 +6,7 @@ from .models import Product, Category, Brand
 
 def catalog(request):
     """Display catalog with all products, with optional filtering."""
-    products = Product.objects.filter(is_available=True).select_related('brand', 'category').prefetch_related('images')
+    products = Product.objects.all().select_related('brand', 'category').prefetch_related('images')
 
     # Get filter parameters
     category_id = request.GET.get('category')
@@ -87,7 +87,7 @@ def catalog(request):
     brands = Brand.objects.all().order_by('name')
 
     # Get available colors from products
-    available_colors = Product.objects.filter(is_available=True).values_list('color', flat=True).distinct().order_by('color')
+    available_colors = Product.objects.all().values_list('color', flat=True).distinct().order_by('color')
     available_colors = [color for color in available_colors if color]  # Remove None values
 
     context = {
@@ -114,8 +114,7 @@ def product_detail(request, product_id):
     """Display detailed information about a specific product."""
     product = get_object_or_404(
         Product.objects.select_related('brand', 'category').prefetch_related('images', 'sizes'),
-        id=product_id,
-        is_available=True
+        id=product_id
     )
 
     # Get main image or first image
@@ -129,18 +128,11 @@ def product_detail(request, product_id):
     # Get available sizes
     sizes = product.sizes.all().order_by('size')
 
-    # Get related products (same category, different product)
-    related_products = Product.objects.filter(
-        category=product.category,
-        is_available=True
-    ).exclude(id=product.id).select_related('brand', 'category').prefetch_related('images')[:4]
-
     context = {
         'product': product,
         'main_image': main_image,
         'images': images,
         'sizes': sizes,
-        'related_products': related_products,
     }
 
     return render(request, 'catalog/product_detail.html', context)
@@ -150,8 +142,7 @@ def category_list(request, category_id):
     """Display products filtered by category."""
     category = get_object_or_404(Category, id=category_id)
     products = Product.objects.filter(
-        category=category,
-        is_available=True
+        category=category
     ).select_related('brand', 'category').prefetch_related('images')
 
     context = {
@@ -166,8 +157,7 @@ def brand_list(request, brand_id):
     """Display products filtered by brand."""
     brand = get_object_or_404(Brand, id=brand_id)
     products = Product.objects.filter(
-        brand=brand,
-        is_available=True
+        brand=brand
     ).select_related('brand', 'category').prefetch_related('images')
 
     context = {

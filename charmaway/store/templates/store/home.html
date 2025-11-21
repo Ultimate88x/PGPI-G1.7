@@ -133,12 +133,6 @@
         <div class="products-grid">
             {% for product in featured_products %}
             <article class="product-card">
-                {% if product.offer_price %}
-                <span class="product-badge discount-badge">
-                    -{{ product.discount_percentage }}%
-                </span>
-                {% endif %}
-
                 <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
                     <div class="product-image-wrapper">
                         {% with main_image=product.images.all|first %}
@@ -198,10 +192,6 @@
         <div class="products-grid">
             {% for product in offer_products %}
             <article class="product-card">
-                <span class="product-badge discount-badge">
-                    -{{ product.discount_percentage }}%
-                </span>
-
                 <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
                     <div class="product-image-wrapper">
                         {% with main_image=product.images.all|first %}
@@ -257,12 +247,6 @@
         <div class="products-grid">
             {% for product in newest_products %}
             <article class="product-card">
-                {% if product.offer_price %}
-                <span class="product-badge discount-badge">
-                    -{{ product.discount_percentage }}%
-                </span>
-                {% endif %}
-
                 <a href="{% url 'catalog:product_detail' product.id %}" class="product-link">
                     <div class="product-image-wrapper">
                         {% with main_image=product.images.all|first %}
