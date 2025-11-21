@@ -18,7 +18,7 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ```bash
    psql -U postgres
    CREATE DATABASE charmaway;
-   CREATE USER charmaway_user WITH PASSWORD 'charmaway_user';
+   CREATE USER charmaway_user WITH PASSWORD 'charmaway_password';
    GRANT ALL PRIVILEGES ON DATABASE charmaway TO charmaway_user;
    \c charmaway
    GRANT ALL PRIVILEGES ON SCHEMA public TO charmaway_user;
