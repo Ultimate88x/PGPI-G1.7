@@ -12,12 +12,17 @@ class OrderStatus(models.TextChoices):
     DELIVERED = "DELIVERED", "Delivered"
     CANCELLED = "CANCELLED", "Cancelled"
     
+def generate_unique_public_id():
+    while True:
+        pid = shortuuid.uuid()[:12]
+        if not Order.objects.filter(public_id=pid).exists():
+            return pid
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     public_id = models.CharField(
         max_length=12,
-        default=shortuuid.uuid()[:12],
+        default=generate_unique_public_id,
         unique=True,
         editable=False
     )
