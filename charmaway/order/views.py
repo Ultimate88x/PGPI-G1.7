@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
@@ -24,22 +25,29 @@ def get_cart_queryset(request):
 
 
 def view_cart(request):
+    if request.user.is_authenticated:
+        user_or_session = request.user
+    else:
+        user_or_session = get_session_key(request)
+
     items = get_cart_queryset(request)
-
-    for item in items:
-        item.subtotal = item.quantity * item.current_price
-
-    total = sum(item.subtotal for item in items)
+    subtotal = Cart.calculate_total(user_or_session)
+    shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
+    total = subtotal + shipping
 
     if request.GET.get("ajax"):
         return render(request, "cart_dropdown.html", {
             "items": items,
-            "total": total
+            "subtotal": subtotal,
+            "shipping": shipping,
+            "total": total,
         })
 
     return render(request, "cart.html", {
         "items": items,
-        "total": total
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total,
     })
 
 
@@ -115,10 +123,15 @@ def clear_cart(request):
 
 
 def checkout(request):
-    session_key = get_session_key(request)
-    cart_items = get_cart_queryset(request)
-
     if request.method == "POST":
+        if request.user.is_authenticated:
+            subtotal = Cart.calculate_total(request.user)
+        else:
+            subtotal = Cart.calculate_total(get_session_key(request))
+        shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
+        total = subtotal + shipping
+
+        request.session['checkout_total'] = str(total)
         request.session['checkout_data'] = {
             'address': request.POST.get('address'),
             'city': request.POST.get('city'),
@@ -136,12 +149,7 @@ def checkout(request):
         else:
             return redirect('payment:checkout')
 
-    total = Cart.calculate_total(request.user if request.user.is_authenticated else session_key)
-
-    return render(request, "checkout.html", {
-        "cart_items": cart_items,
-        "total": total
-    })
+    return render(request, "checkout.html")
 
 
 def order_detail(request, public_id):
@@ -181,6 +189,13 @@ def payment_complete_view(request):
 
     if not cart_items.exists():
         return redirect("view_cart")
+    
+    if request.user.is_authenticated:
+        subtotal = Cart.calculate_total(request.user)
+    else:
+        subtotal = Cart.calculate_total(get_session_key(request))
+
+    shipping = 0 if subtotal > 20 else 2.99
 
     order = Order.objects.create(
         customer=request.user if request.user.is_authenticated else None,
@@ -189,7 +204,8 @@ def payment_complete_view(request):
         zip_code=checkout_data['zip_code'],
         email=checkout_data['email'],
         payment_method=checkout_data['payment_method'],
-        notes=checkout_data.get('notes', '')
+        notes=checkout_data.get('notes', ''),
+        shipping_cost=shipping,
     )
 
     for item in cart_items:
@@ -206,8 +222,7 @@ def payment_complete_view(request):
 
     cart_items.delete()
     del request.session['checkout_data']
-    request.session['order_id_to_pay'] = order.public_id
-    print(order.order_id)
+    request.session['order_id_to_pay'] = order.order_id
 
     subject = f"Confirmación de pedido #{order.public_id}"
     html_message = render_to_string("order_success_for_mail.html", {

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.utils import timezone
 from customer.models import Customer
@@ -6,7 +7,6 @@ import shortuuid
 
 
 class OrderStatus(models.TextChoices):
-    PENDING = "PENDING", "Pending"
     PROCESSING = "PROCESSING", "Processing"
     SHIPPED = "SHIPPED", "Shipped"
     DELIVERED = "DELIVERED", "Delivered"
@@ -42,7 +42,7 @@ class Order(models.Model):
     status = models.CharField(
         max_length=20,
         choices=OrderStatus.choices,
-        default=OrderStatus.PENDING
+        default=OrderStatus.PROCESSING
     )
 
     address = models.CharField(max_length=255, null=True, blank=True)
@@ -64,7 +64,7 @@ class Order(models.Model):
     def calculate_total(self):
         details = self.details.all()
         self.subtotal = sum(d.subtotal for d in details)
-        self.final_price = self.subtotal + self.shipping_cost
+        self.final_price = Decimal(self.subtotal) + Decimal(self.shipping_cost)
         self.save()
 
     def cancel(self):
