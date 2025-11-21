@@ -8,7 +8,7 @@ header.topbar .container{
   width: 100% !important;
   margin: 0 !important;
   display: grid !important;
-  grid-template-columns: minmax(auto, 200px) minmax(auto, 200px) 1fr minmax(auto, 150px) !important;
+  grid-template-columns: minmax(auto, 200px) minmax(auto, 400px) 1fr minmax(auto, 150px) !important;
   align-items: center !important;
   column-gap: 40px !important;
   padding: 0 !important;
