@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Editar {{ product.name }}{% endblock %}
+{% block title %}
+    {% if product.pk %}
+        Editar {{ product.name }}
+    {% else %}
+        Crear Nuevo Producto
+    {% endif %}
+{% endblock %}
+
 {% load static %}
 
 {% block content %}
@@ -19,14 +26,20 @@
 
     <main>
         <div class="admin-header">
-            <h1 class="admin-title">Editando: {{ product.name }}</h1>
+            <h1 class="admin-title">
+                {% if product.pk %}
+                    Editando: <span style="color: var(--coral);">{{ product.name }}</span>
+                {% else %}
+                    Creando Nuevo Producto
+                {% endif %}
+            </h1>
         </div>
 
         <div class="edit-wrapper">
             <form method="post">
                 {% csrf_token %}
                 
-                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información General</h4>
+                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información General del Producto</h4>
                 
                 <div class="form-group full-width">
                     <label class="form-label">Nombre del Producto</label>
@@ -78,6 +91,7 @@
                 <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 2rem 0;">
 
                 <h4 style="margin-bottom: 1rem; color: var(--coral);">Galería de Imágenes</h4>
+
                 <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
                     {{ image_formset.management_form }}
                     
@@ -87,9 +101,9 @@
                                 <th style="padding-bottom: 0.5rem;">URL Imagen</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="images-tbody">
                             {% for subform in image_formset %}
-                            <tr>
+                            <tr class="image-row">
                                 {% for hidden in subform.hidden_fields %}
                                     {{ hidden }}
                                 {% endfor %}
@@ -104,8 +118,77 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <small style="color: var(--muted);">* Pega la URL de la imagen.</small>
+
+                    <button type="button" id="add-image-btn" style="margin-top: 1rem; background: #e2e6ea; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; color: #495057;">
+                        + Añadir otra imagen
+                    </button>
+
+                    <small style="color: var(--muted); display: block; margin-top: 0.5rem;">* Pega la URL de la imagen (ej: https://...)</small>
                 </div>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const imageBtn = document.getElementById('add-image-btn');
+                    const imageTableBody = document.getElementById('images-tbody');
+                    const totalImagesInput = document.querySelector('input[name="{{ image_formset.prefix }}-TOTAL_FORMS"]');
+
+                    const MAX_IMAGENES = 1;
+
+                    function checkLimit() {
+                        const currentRows = imageTableBody.querySelectorAll('tr.image-row').length;
+                        
+                        if (currentRows >= MAX_IMAGENES) {
+                            imageBtn.style.display = 'none';
+                        } else {
+                            imageBtn.style.display = 'inline-block';
+                        }
+                    }
+
+                    checkLimit();
+
+                    imageBtn.addEventListener('click', function() {
+                        if (imageTableBody.querySelectorAll('tr.image-row').length >= MAX_IMAGENES) return;
+                        const count = parseInt(totalImagesInput.value);
+                        
+                        const imgInput = `{{ image_formset.empty_form.image|escapejs }}`;
+                        const orderInput = `{{ image_formset.empty_form.order_position|escapejs }}`;
+                        const mainInput = `{{ image_formset.empty_form.is_main|escapejs }}`;
+                        const idInput = `{{ image_formset.empty_form.id|escapejs }}`;
+                        
+                        let newRowHtml = `
+                            <tr class="image-row">
+                                <td style="padding: 0.5rem 0.5rem 0.5rem 0;">
+                                    ${idInput}
+                                    ${imgInput}
+                                </td>
+                                <td style="padding: 0.5rem;">${orderInput}</td>
+                                <td style="padding: 0.5rem;">${mainInput}</td>
+                                <td style="padding: 0.5rem; text-align: center;">
+                                    <button type="button" class="remove-img-btn" style="border:none; background:none; color:var(--danger); font-weight:bold; cursor:pointer; font-size: 1.2rem;">&times;</button>
+                                </td>
+                            </tr>
+                        `;
+
+                        newRowHtml = newRowHtml.replace(/__prefix__/g, count);
+
+                        imageTableBody.insertAdjacentHTML('beforeend', newRowHtml);
+
+                        totalImagesInput.value = count + 1;
+
+                        checkLimit();
+                    });
+
+                    imageTableBody.addEventListener('click', function(e) {
+                        if (e.target && e.target.classList.contains('remove-img-btn')) {
+                            const row = e.target.closest('tr');
+                            if (row) {
+                                row.remove();
+                                checkLimit();
+                            }
+                        }
+                    });
+                });
+                </script>
 
                 <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 2rem 0;">
 

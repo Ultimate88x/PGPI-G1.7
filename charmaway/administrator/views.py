@@ -15,6 +15,31 @@ def product_list(request):
     products = Product.objects.all().select_related('brand', 'category')
     return render(request, 'administrator/product/product_list.html', {'products': products})
 
+def product_create(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        image_formset = ImageFormSet(request.POST)
+        size_formset = SizeFormSet(request.POST)
+        if form.is_valid() and image_formset.is_valid() and size_formset.is_valid():
+            product = form.save()
+            image_formset.instance = product
+            image_formset.save()
+            size_formset.instance = product
+            size_formset.save()
+            return redirect('administrator:product_list')
+    else:
+        form = ProductForm()
+        image_formset = ImageFormSet()
+        size_formset = SizeFormSet()
+    
+    context = {
+        'form': form,
+        'image_formset': image_formset,
+        'size_formset': size_formset
+    }
+    
+    return render(request, 'administrator/product/product_edit.html', context)
+
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -44,5 +69,4 @@ def product_edit(request, pk):
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
-    # Redirige de vuelta a la lista después de borrar
     return redirect('administrator:product_list')

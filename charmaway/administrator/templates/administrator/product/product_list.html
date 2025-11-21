@@ -6,7 +6,7 @@
 
 <div class="admin-container">
     <aside class="admin-sidebar">
-        <a href="#" class="admin-menu-link active create">+ Nuevo Producto</a>
+        <a href="{% url 'administrator:product_create' %}" class="admin-menu-link active create">+ Nuevo Producto</a>
 
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Inventario</h3>
@@ -58,12 +58,7 @@
 
                     <h3 class="card-title">{{ product.name }}</h3>
                     <div class="card-price">
-                        {% if product.offer_price %}
-                            <span style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">${{ product.price }}</span>
-                            <span>${{ product.offer_price }}</span>
-                        {% else %}
                             ${{ product.price }}
-                        {% endif %}
                     </div>
                     <small style="color: var(--muted);">Stock: {{ product.stock }}</small>
                 </div>
