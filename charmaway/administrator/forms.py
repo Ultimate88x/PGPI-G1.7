@@ -32,6 +32,7 @@ class ProductForm(ModelForm):
         ('Grisáceo', 'Grisáceo'),
         ('Tonos Cálidos', 'Tonos Cálidos'),
         ('Tonos Rosados', 'Tonos Rosados'),
+        ('Tonos Fríos', 'Tonos Fríos'),
     ]
     
     gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))

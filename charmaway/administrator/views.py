@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from catalog.models import Product
+from catalog.models import Product, Brand, Category
 from .forms import ProductForm, ImageFormSet, SizeFormSet
 from django.shortcuts import get_object_or_404, redirect
 
@@ -70,3 +70,69 @@ def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect('administrator:product_list')
+
+def category_list(request):
+    categories = Category.objects.all().order_by('name')
+    context = {
+        'categories': categories
+    }
+    return render(request, 'administrator/category/category_list.html', context)
+
+def category_create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Category.objects.create(name=name)
+            return redirect('administrator:category_list')
+    return render(request, 'administrator/category/category_edit.html')
+
+def category_delete(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    category.delete()
+    return redirect('administrator:category_list')
+
+def category_edit(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            category.name = name
+            category.save()
+            return redirect('administrator:category_list')
+    context = {
+        'category': category
+    }
+    return render(request, 'administrator/category/category_edit.html', context)
+
+def brand_list(request):
+    brands = Brand.objects.all().order_by('name')
+    context = {
+        'brands': brands
+    }
+    return render(request, 'administrator/brand/brand_list.html', context)
+
+def brand_create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Brand.objects.create(name=name)
+            return redirect('administrator:brand_list')
+    return render(request, 'administrator/brand/brand_edit.html')
+
+def brand_delete(request, pk):
+    brand = get_object_or_404(Brand, pk=pk)
+    brand.delete()
+    return redirect('administrator:brand_list')
+
+def brand_edit(request, pk):
+    brand = get_object_or_404(Brand, pk=pk)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            brand.name = name
+            brand.save()
+            return redirect('administrator:brand_list')
+    context = {
+        'brand': brand
+    }
+    return render(request, 'administrator/brand/brand_edit.html', context)
