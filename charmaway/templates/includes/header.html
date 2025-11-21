@@ -13,6 +13,9 @@
       <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'catalog:catalog' %}">Catálogo</a>
       <a href="{% url 'about' %}">Sobre nosotros</a>
+      {% if user.is_staff %}
+      <a href="{% url 'administrator:admin_dashboard' %}">Admin</a>
+      {% endif %}
     </nav>
 
     <div class="search-wrap">
