@@ -123,20 +123,11 @@ def checkout(request):
     zip_code = None
     email = None
 
-    if request.user.is_authenticated:
-        user = request.user
-        address = user.address
-        city = user.city
-        zip_code = user.zip_code
-        email = user.email
-
     if request.method == "POST":
-
-        if not request.user.is_authenticated:
-            address = request.POST.get('address')
-            city = request.POST.get('city')
-            zip_code = request.POST.get('zip_code')
-            email = request.POST.get('email')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        zip_code = request.POST.get('zip_code')
+        email = request.POST.get('email')
 
         order = Order.objects.create(
             customer=request.user if request.user.is_authenticated else None,
