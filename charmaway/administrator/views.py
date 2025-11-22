@@ -3,9 +3,11 @@ from catalog.models import Product, Brand, Category
 from customer.models import Customer
 from order.models import Order
 from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm
+from .decorators import admin_required
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 
+@admin_required
 def admin_dashboard(request):
     total_products = Product.objects.count()
     
@@ -14,10 +16,12 @@ def admin_dashboard(request):
     }
     return render(request, 'administrator/admin_dashboard.html', context)
 
+@admin_required
 def product_list(request):
     products = Product.objects.all().select_related('brand', 'category')
     return render(request, 'administrator/product/product_list.html', {'products': products})
 
+@admin_required
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -43,6 +47,7 @@ def product_create(request):
     
     return render(request, 'administrator/product/product_edit.html', context)
 
+@admin_required
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -69,6 +74,7 @@ def product_edit(request, pk):
     
     return render(request, 'administrator/product/product_edit.html', context)
 
+@admin_required
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -89,6 +95,7 @@ def product_delete(request, pk):
         
     return redirect('administrator:product_list')
 
+@admin_required
 def category_list(request):
     categories = Category.objects.all().order_by('name')
     context = {
@@ -96,6 +103,7 @@ def category_list(request):
     }
     return render(request, 'administrator/category/category_list.html', context)
 
+@admin_required
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -109,11 +117,13 @@ def category_create(request):
     }
     return render(request, 'administrator/category/category_edit.html', context)
 
+@admin_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     return redirect('administrator:category_list')
 
+@admin_required
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -129,6 +139,7 @@ def category_edit(request, pk):
     }
     return render(request, 'administrator/category/category_edit.html', context)
 
+@admin_required
 def brand_list(request):
     brands = Brand.objects.all().order_by('name')
     context = {
@@ -136,6 +147,7 @@ def brand_list(request):
     }
     return render(request, 'administrator/brand/brand_list.html', context)
 
+@admin_required
 def brand_create(request):
     if request.method == 'POST':
         form = BrandForm(request.POST)
@@ -149,11 +161,13 @@ def brand_create(request):
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
 
+@admin_required
 def brand_delete(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     brand.delete()
     return redirect('administrator:brand_list')
 
+@admin_required
 def brand_edit(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     if request.method == 'POST':
@@ -169,6 +183,7 @@ def brand_edit(request, pk):
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
 
+@admin_required
 def customer_list(request):
     customers = Customer.objects.all().order_by('-is_superuser')
     context = {
@@ -176,6 +191,7 @@ def customer_list(request):
     }
     return render(request, 'administrator/customer/customer_list.html', context)
 
+@admin_required
 def customer_edit(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
@@ -192,6 +208,7 @@ def customer_edit(request, pk):
     }
     return render(request, 'administrator/customer/customer_edit.html', context)
 
+@admin_required
 def customer_delete(request, pk):
     if request.user.pk == pk:
         return redirect('administrator:customer_list')
@@ -199,6 +216,7 @@ def customer_delete(request, pk):
     customer.delete()
     return redirect('administrator:customer_list')
 
+@admin_required
 def customer_create(request):
     if request.method == 'POST':
         form = CustomerCreateForm(request.POST)
@@ -212,6 +230,7 @@ def customer_create(request):
     }
     return render(request, 'administrator/customer/customer_edit.html', context)
 
+@admin_required
 def order_list(request):
     orders = Order.objects.all().order_by('-created_at').select_related('customer')
     context = {
@@ -219,6 +238,7 @@ def order_list(request):
     }
     return render(request, 'administrator/order/order_list.html', context)
 
+@admin_required
 def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk)
     
