@@ -20,9 +20,11 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    CREATE DATABASE charmaway;
    CREATE USER charmaway_user WITH PASSWORD 'charmaway_password';
    GRANT ALL PRIVILEGES ON DATABASE charmaway TO charmaway_user;
+   ALTER USER charmaway_user CREATEDB;
    \c charmaway
    GRANT ALL PRIVILEGES ON SCHEMA public TO charmaway_user;
    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO charmaway_user;
+   \q
    ```
      
 ### Proyecto
@@ -51,4 +53,13 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
 5. Ejecutar la aplicación:
    ```bash
    python manage.py runserver
+   ```
+6. Ejecutar las pruebas
+   - Para ejecutar todos los tests del proyecto (todas las aplicaciones):
+   ```bash
+   python manage.py test
+   ```
+   - Para ejecutar los tests de una aplicación específica (por ejemplo, `administrator`):
+   ```bash
+   python manage.py test administrator
    ```
