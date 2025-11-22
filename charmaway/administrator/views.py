@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CustomerBaseForm, CustomerCreateForm
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 
@@ -156,7 +156,7 @@ def brand_edit(request, pk):
     return render(request, 'administrator/brand/brand_edit.html', context)
 
 def customer_list(request):
-    customers = Customer.objects.all().order_by('name')
+    customers = Customer.objects.all().order_by('-is_superuser')
     context = {
         'customers': customers
     }
@@ -165,49 +165,41 @@ def customer_list(request):
 def customer_edit(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
-        customer.name = request.POST.get('name', customer.name)
-        customer.surnames = request.POST.get('surnames', customer.surnames)
-        customer.email = request.POST.get('email', customer.email)
-        customer.phone = request.POST.get('phone', customer.phone)
-        customer.address = request.POST.get('address', customer.address)
-        customer.city = request.POST.get('city', customer.city)
-        customer.zip_code = request.POST.get('zip_code', customer.zip_code)
-        customer.save()
-        return redirect('administrator:customer_list')
+        form = CustomerBaseForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:customer_list')
+    else:
+        form = CustomerBaseForm(instance=customer)
+
     context = {
-        'customer': customer
+        'customer': customer,
+        'form': form
     }
     return render(request, 'administrator/customer/customer_edit.html', context)
 
 def customer_delete(request, pk):
+    if request.user.pk == pk:
+        return redirect('administrator:customer_list')
     customer = get_object_or_404(Customer, pk=pk)
     customer.delete()
     return redirect('administrator:customer_list')
 
 def customer_create(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        surnames = request.POST.get('surnames')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        zip_code = request.POST.get('zip_code')
-        if name and surnames and email:
-            Customer.objects.create(
-                name=name,
-                surnames=surnames,
-                email=email,
-                phone=phone,
-                address=address,
-                city=city,
-                zip_code=zip_code
-            )
+        form = CustomerCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:customer_list')
-    return render(request, 'administrator/customer/customer_edit.html')
+    else:
+        form = CustomerCreateForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/customer/customer_edit.html', context)
 
 def order_list(request):
-    orders = Order.objects.all().order_by('created_at')
+    orders = Order.objects.all().order_by('-created_at')
     context = {
         'orders': orders
     }

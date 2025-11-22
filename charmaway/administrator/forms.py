@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
 from catalog.models import Product, ProductImage, ProductSize
+from customer.models import Customer
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -76,3 +77,40 @@ SizeFormSet = inlineformset_factory(
         'stock': forms.NumberInput(attrs={'class': 'form-control'}),
     }
 )
+
+class CustomerBaseForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = [
+            'name', 'surnames', 'email', 'phone', 'address', 'city', 'zip_code', 'is_active'
+        ]
+        
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'surnames': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}), 
+        }
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+        cust = Customer.objects.filter(email=email)
+        
+        if self.instance.pk:
+            cust = cust.exclude(pk=self.instance.pk)
+            
+        if cust.exists():
+            raise forms.ValidationError("Este correo electrónico ya está registrado por otro cliente.")
+            
+        return email
+    
+class CustomerCreateForm(CustomerBaseForm):
+    class Meta(CustomerBaseForm.Meta):
+        fields = CustomerBaseForm.Meta.fields + ['is_superuser']
+        widgets = CustomerBaseForm.Meta.widgets.copy()
+        widgets['is_superuser'] = forms.CheckboxInput(attrs={'class': 'form-check-input'})
