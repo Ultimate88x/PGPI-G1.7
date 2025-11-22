@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
-from catalog.models import Product, ProductImage, ProductSize
+from catalog.models import Product, ProductImage, ProductSize, Category, Brand
+from customer.models import Customer
+from order.models import Order
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -50,6 +52,54 @@ class ProductForm(ModelForm):
             'brand': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
         }
+        
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Calzado, Camisetas...'
+            })
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        cat = Category.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            cat = cat.exclude(pk=self.instance.pk)
+            
+        if cat.exists():
+            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
+            
+        return name
+    
+class BrandForm(forms.ModelForm):
+    class Meta:
+        model = Brand
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Nike, Adidas...'
+            })
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        brand = Brand.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            brand = brand.exclude(pk=self.instance.pk)
+            
+        if brand.exists():
+            raise forms.ValidationError(f"La marca '{name}' ya existe.")
+            
+        return name
        
 ImageFormSet = inlineformset_factory(
     Product, 
@@ -76,3 +126,48 @@ SizeFormSet = inlineformset_factory(
         'stock': forms.NumberInput(attrs={'class': 'form-control'}),
     }
 )
+
+class CustomerBaseForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = [
+            'name', 'surnames', 'email', 'phone', 'address', 'city', 'zip_code', 'is_active'
+        ]
+        
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'surnames': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}), 
+        }
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+        cust = Customer.objects.filter(email=email)
+        
+        if self.instance.pk:
+            cust = cust.exclude(pk=self.instance.pk)
+            
+        if cust.exists():
+            raise forms.ValidationError("Este correo electrónico ya está registrado por otro cliente.")
+            
+        return email
+    
+class CustomerCreateForm(CustomerBaseForm):
+    class Meta(CustomerBaseForm.Meta):
+        fields = CustomerBaseForm.Meta.fields + ['is_superuser']
+        widgets = CustomerBaseForm.Meta.widgets.copy()
+        widgets['is_superuser'] = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        
+class OrderStatusForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-select'})
+        }

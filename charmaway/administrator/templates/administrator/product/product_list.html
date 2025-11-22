@@ -26,6 +26,22 @@
     </aside>
 
     <main>
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <div class="alert">
+                        {% if message.tags == 'success' %}
+                            <strong>¡Éxito!</strong>
+                        {% endif %}
+                        {% if message.tags == 'error' %}
+                            <strong>¡Error!</strong>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="admin-header">
             <h1 class="admin-title">Productos ({{ products|length }})</h1>
             <div class="search-box">

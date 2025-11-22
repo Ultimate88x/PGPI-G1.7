@@ -1,8 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category
-from .forms import ProductForm, ImageFormSet, SizeFormSet
-from django.shortcuts import get_object_or_404, redirect
+from customer.models import Customer
+from order.models import Order
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm
+from .decorators import admin_required
+from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 
+@admin_required
 def admin_dashboard(request):
     total_products = Product.objects.count()
     
@@ -11,10 +16,12 @@ def admin_dashboard(request):
     }
     return render(request, 'administrator/admin_dashboard.html', context)
 
+@admin_required
 def product_list(request):
     products = Product.objects.all().select_related('brand', 'category')
     return render(request, 'administrator/product/product_list.html', {'products': products})
 
+@admin_required
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -40,6 +47,7 @@ def product_create(request):
     
     return render(request, 'administrator/product/product_edit.html', context)
 
+@admin_required
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -66,11 +74,28 @@ def product_edit(request, pk):
     
     return render(request, 'administrator/product/product_edit.html', context)
 
+@admin_required
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    product.delete()
+    
+    try:
+        product.delete()
+        messages.success(request, "El producto ha sido eliminado correctamente.")
+        
+    except ProtectedError as e:
+        objetos_bloqueantes = e.args[1]
+        ids_pedidos = set(detalle.order.order_id for detalle in objetos_bloqueantes)
+        lista_pedidos_str = ", ".join(str(id) for id in ids_pedidos)
+        mensaje_error = (
+            f"⚠️ No se puede eliminar '{product.name}'. "
+            f"Aparece en los siguientes Pedidos (IDs): {lista_pedidos_str} ."
+        )
+        
+        messages.error(request, mensaje_error)
+        
     return redirect('administrator:product_list')
 
+@admin_required
 def category_list(request):
     categories = Category.objects.all().order_by('name')
     context = {
@@ -78,32 +103,43 @@ def category_list(request):
     }
     return render(request, 'administrator/category/category_list.html', context)
 
+@admin_required
 def category_create(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            Category.objects.create(name=name)
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:category_list')
-    return render(request, 'administrator/category/category_edit.html')
+    else:
+        form = CategoryForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/category/category_edit.html', context)
 
+@admin_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     return redirect('administrator:category_list')
 
+@admin_required
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            category.name = name
-            category.save()
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:category_list')
+    else:
+        form = CategoryForm(instance=category)
     context = {
+        'form': form,
         'category': category
     }
     return render(request, 'administrator/category/category_edit.html', context)
 
+@admin_required
 def brand_list(request):
     brands = Brand.objects.all().order_by('name')
     context = {
@@ -111,28 +147,112 @@ def brand_list(request):
     }
     return render(request, 'administrator/brand/brand_list.html', context)
 
+@admin_required
 def brand_create(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            Brand.objects.create(name=name)
+        form = BrandForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:brand_list')
-    return render(request, 'administrator/brand/brand_edit.html')
+    else:
+        form = BrandForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/brand/brand_edit.html', context)
 
+@admin_required
 def brand_delete(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     brand.delete()
     return redirect('administrator:brand_list')
 
+@admin_required
 def brand_edit(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            brand.name = name
-            brand.save()
+        form = BrandForm(request.POST, instance=brand)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:brand_list')
+    else:
+        form = BrandForm(instance=brand)
     context = {
+        'form': form,
         'brand': brand
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
+
+@admin_required
+def customer_list(request):
+    customers = Customer.objects.all().order_by('-is_superuser')
+    context = {
+        'customers': customers
+    }
+    return render(request, 'administrator/customer/customer_list.html', context)
+
+@admin_required
+def customer_edit(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == 'POST':
+        form = CustomerBaseForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:customer_list')
+    else:
+        form = CustomerBaseForm(instance=customer)
+
+    context = {
+        'form': form,
+        'customer': customer
+    }
+    return render(request, 'administrator/customer/customer_edit.html', context)
+
+@admin_required
+def customer_delete(request, pk):
+    if request.user.pk == pk:
+        return redirect('administrator:customer_list')
+    customer = get_object_or_404(Customer, pk=pk)
+    customer.delete()
+    return redirect('administrator:customer_list')
+
+@admin_required
+def customer_create(request):
+    if request.method == 'POST':
+        form = CustomerCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:customer_list')
+    else:
+        form = CustomerCreateForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/customer/customer_edit.html', context)
+
+@admin_required
+def order_list(request):
+    orders = Order.objects.all().order_by('-created_at').select_related('customer')
+    context = {
+        'orders': orders
+    }
+    return render(request, 'administrator/order/order_list.html', context)
+
+@admin_required
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    
+    if request.method == 'POST':
+        form = OrderStatusForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:order_detail', pk=pk)
+    else:
+        form = OrderStatusForm(instance=order)
+
+    context = {
+        'form': form,
+        'order': order,
+        'details': order.details.all().select_related('product')
+    }
+    return render(request, 'administrator/order/order_detail.html', context)

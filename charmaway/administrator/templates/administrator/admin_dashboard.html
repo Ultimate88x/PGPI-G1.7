@@ -22,8 +22,8 @@
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Negocio</h3>
             <ul class="admin-menu-list">
-                <li><a href="#" class="admin-menu-link">Clientes</a></li>
-                <li><a href="#" class="admin-menu-link">Pedidos</a></li>
+                <li><a href="{% url 'administrator:customer_list' %}" class="admin-menu-link">Clientes</a></li>
+                <li><a href="{% url 'administrator:order_list' %}" class="admin-menu-link">Pedidos</a></li>
                 <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link active">Dashboard Principal</a></li>
             </ul>
         </div>
@@ -32,7 +32,7 @@
     <main>
         <div class="admin-header">
             <h1 class="admin-title">Panel de Control</h1>
-            <div style="color: var(--muted);">Bienvenido de nuevo, {{ user.name }}</div>
+            <div style="color: var(--muted);">Bienvenido de nuevo, {{ user.name|default:"Usuario Sin Nombre" }}</div>
         </div>
 
         <h3 style="margin-bottom: 1.5rem; color: var(--dark-btn);">Gestión Principal</h3>
@@ -57,7 +57,7 @@
                         <h3 class="card-title" style="font-size: 1.8rem;">Clientes</h3>
                         <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Usuarios y perfiles.</p>
                     </div>
-                    <a href="#" class="btn-create" style="background-color: #50e3c2; margin-bottom: 0; font-size: 1.1rem;">Ver Clientes</a>
+                    <a href="{% url 'administrator:customer_list' %}" class="btn-create" style="background-color: #50e3c2; margin-bottom: 0; font-size: 1.1rem;">Ver Clientes</a>
                 </div>
             </article>
 
@@ -68,7 +68,7 @@
                         <h3 class="card-title" style="font-size: 1.8rem;">Pedidos</h3>
                         <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Órdenes y envíos.</p>
                     </div>
-                    <a href="#" class="btn-create" style="background-color: #f5a623; margin-bottom: 0; font-size: 1.1rem;">Ver Pedidos</a>
+                    <a href="{% url 'administrator:order_list' %}" class="btn-create" style="background-color: #f5a623; margin-bottom: 0; font-size: 1.1rem;">Ver Pedidos</a>
                 </div>
             </article>
 
