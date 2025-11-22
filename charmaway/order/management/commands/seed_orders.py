@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         def calculate_shipping(subtotal):
-            return Decimal('2.99') if subtotal > Decimal('20.00') else Decimal('0.00')
+            return Decimal('2.99') if subtotal < Decimal('20.00') else Decimal('0.00')
 
         customers = list(Customer.objects.all()[:7])
 
