@@ -38,16 +38,28 @@
             </h1>
         </div>
 
-        <div class="edit-wrapper" style="max-width: 600px;"> <form method="post" enctype="multipart/form-data">
+        <div class="edit-wrapper" style="max-width: 600px;"> 
+            <form method="post">
                 {% csrf_token %}
                 
-                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información de Categoría</h4>
+                {% if form.non_field_errors %}
+                    <div style="color: white; background: var(--danger); padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                
+                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información de la Categoría</h4>
                 
                 <div class="form-group full-width">
                     <label class="form-label">Nombre de la Categoría</label>
-                    <input type="text" name="name" class="form-control" required 
-                           value="{{ category.name|default:'' }}" 
-                           placeholder="Ej: Calzado, Camisetas...">
+                    
+                    {{ form.name }}
+
+                    {% if form.name.errors %}
+                        <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.4rem; font-weight: 500;">
+                            {{ form.name.errors }}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 2rem 0;">

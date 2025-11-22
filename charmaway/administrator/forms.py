@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
-from catalog.models import Product, ProductImage, ProductSize
+from catalog.models import Product, ProductImage, ProductSize, Category, Brand
 from customer.models import Customer
 
 class ProductImageForm(ModelForm):
@@ -51,6 +51,54 @@ class ProductForm(ModelForm):
             'brand': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
         }
+        
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Calzado, Camisetas...'
+            })
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        cat = Category.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            cat = cat.exclude(pk=self.instance.pk)
+            
+        if cat.exists():
+            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
+            
+        return name
+    
+class BrandForm(forms.ModelForm):
+    class Meta:
+        model = Brand
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Nike, Adidas...'
+            })
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        brand = Brand.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            brand = brand.exclude(pk=self.instance.pk)
+            
+        if brand.exists():
+            raise forms.ValidationError(f"La marca '{name}' ya existe.")
+            
+        return name
        
 ImageFormSet = inlineformset_factory(
     Product, 

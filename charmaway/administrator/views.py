@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CustomerBaseForm, CustomerCreateForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 
@@ -98,11 +98,16 @@ def category_list(request):
 
 def category_create(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            Category.objects.create(name=name)
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:category_list')
-    return render(request, 'administrator/category/category_edit.html')
+    else:
+        form = CategoryForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/category/category_edit.html', context)
 
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
@@ -112,12 +117,14 @@ def category_delete(request, pk):
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            category.name = name
-            category.save()
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:category_list')
+    else:
+        form = CategoryForm(instance=category)
     context = {
+        'form': form,
         'category': category
     }
     return render(request, 'administrator/category/category_edit.html', context)
@@ -131,11 +138,16 @@ def brand_list(request):
 
 def brand_create(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            Brand.objects.create(name=name)
+        form = BrandForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:brand_list')
-    return render(request, 'administrator/brand/brand_edit.html')
+    else:
+        form = BrandForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/brand/brand_edit.html', context)
 
 def brand_delete(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
@@ -145,12 +157,14 @@ def brand_delete(request, pk):
 def brand_edit(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            brand.name = name
-            brand.save()
+        form = BrandForm(request.POST, instance=brand)
+        if form.is_valid():
+            form.save()
             return redirect('administrator:brand_list')
+    else:
+        form = BrandForm(instance=brand)
     context = {
+        'form': form,
         'brand': brand
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
@@ -173,8 +187,8 @@ def customer_edit(request, pk):
         form = CustomerBaseForm(instance=customer)
 
     context = {
-        'customer': customer,
-        'form': form
+        'form': form,
+        'customer': customer
     }
     return render(request, 'administrator/customer/customer_edit.html', context)
 
