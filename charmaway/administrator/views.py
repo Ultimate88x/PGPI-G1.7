@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category
+from customer.models import Customer
+from order.models import Order
 from .forms import ProductForm, ImageFormSet, SizeFormSet
-from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 
 def admin_dashboard(request):
     total_products = Product.objects.count()
@@ -68,7 +71,22 @@ def product_edit(request, pk):
 
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    product.delete()
+    
+    try:
+        product.delete()
+        messages.success(request, "El producto ha sido eliminado correctamente.")
+        
+    except ProtectedError as e:
+        objetos_bloqueantes = e.args[1]
+        ids_pedidos = set(detalle.order.order_id for detalle in objetos_bloqueantes)
+        lista_pedidos_str = ", ".join(str(id) for id in ids_pedidos)
+        mensaje_error = (
+            f"⚠️ No se puede eliminar '{product.name}'. "
+            f"Aparece en los siguientes Pedidos (IDs): {lista_pedidos_str} ."
+        )
+        
+        messages.error(request, mensaje_error)
+        
     return redirect('administrator:product_list')
 
 def category_list(request):
@@ -136,3 +154,73 @@ def brand_edit(request, pk):
         'brand': brand
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
+
+def customer_list(request):
+    customers = Customer.objects.all().order_by('name')
+    context = {
+        'customers': customers
+    }
+    return render(request, 'administrator/customer/customer_list.html', context)
+
+def customer_edit(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == 'POST':
+        customer.name = request.POST.get('name', customer.name)
+        customer.surnames = request.POST.get('surnames', customer.surnames)
+        customer.email = request.POST.get('email', customer.email)
+        customer.phone = request.POST.get('phone', customer.phone)
+        customer.address = request.POST.get('address', customer.address)
+        customer.city = request.POST.get('city', customer.city)
+        customer.zip_code = request.POST.get('zip_code', customer.zip_code)
+        customer.save()
+        return redirect('administrator:customer_list')
+    context = {
+        'customer': customer
+    }
+    return render(request, 'administrator/customer/customer_edit.html', context)
+
+def customer_delete(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    customer.delete()
+    return redirect('administrator:customer_list')
+
+def customer_create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        surnames = request.POST.get('surnames')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        zip_code = request.POST.get('zip_code')
+        if name and surnames and email:
+            Customer.objects.create(
+                name=name,
+                surnames=surnames,
+                email=email,
+                phone=phone,
+                address=address,
+                city=city,
+                zip_code=zip_code
+            )
+            return redirect('administrator:customer_list')
+    return render(request, 'administrator/customer/customer_edit.html')
+
+def order_list(request):
+    orders = Order.objects.all().order_by('created_at')
+    context = {
+        'orders': orders
+    }
+    return render(request, 'administrator/order/order_list.html', context)
+
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    context = {
+        'order': order
+    }
+    return render(request, 'administrator/order/order_detail.html', context)
+
+def order_delete(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.delete()
+    return redirect('administrator:order_list')
