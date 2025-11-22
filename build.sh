@@ -6,3 +6,4 @@ pip install -r requirements.txt
 cd charmaway/
 python manage.py collectstatic --no-input
 python manage.py migrate
+python seed_all.py
