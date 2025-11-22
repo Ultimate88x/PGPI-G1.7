@@ -15,7 +15,8 @@
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">Dashboard</a></li>
                 <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Productos</a></li>
-                <li><a href="#" class="admin-menu-link active">Clientes</a></li> <li><a href="#" class="admin-menu-link">Pedidos</a></li>
+                <li><a href="{% url 'administrator:customer_list' %}" class="admin-menu-link active">Clientes</a></li>
+                <li><a href="{% url 'administrator:order_list' %}" class="admin-menu-link">Pedidos</a></li>
             </ul>
         </div>
     </aside>

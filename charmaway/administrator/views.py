@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 
@@ -213,7 +213,7 @@ def customer_create(request):
     return render(request, 'administrator/customer/customer_edit.html', context)
 
 def order_list(request):
-    orders = Order.objects.all().order_by('-created_at')
+    orders = Order.objects.all().order_by('-created_at').select_related('customer')
     context = {
         'orders': orders
     }
@@ -221,12 +221,18 @@ def order_list(request):
 
 def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    
+    if request.method == 'POST':
+        form = OrderStatusForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:order_detail', pk=pk)
+    else:
+        form = OrderStatusForm(instance=order)
+
     context = {
-        'order': order
+        'form': form,
+        'order': order,
+        'details': order.details.all().select_related('product')
     }
     return render(request, 'administrator/order/order_detail.html', context)
-
-def order_delete(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    order.delete()
-    return redirect('administrator:order_list')

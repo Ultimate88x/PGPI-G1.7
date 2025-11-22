@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm, inlineformset_factory
 from catalog.models import Product, ProductImage, ProductSize, Category, Brand
 from customer.models import Customer
+from order.models import Order
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -162,3 +163,11 @@ class CustomerCreateForm(CustomerBaseForm):
         fields = CustomerBaseForm.Meta.fields + ['is_superuser']
         widgets = CustomerBaseForm.Meta.widgets.copy()
         widgets['is_superuser'] = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        
+class OrderStatusForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-select'})
+        }
