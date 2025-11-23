@@ -107,7 +107,7 @@ form.addEventListener("submit", async (event) => {
         elements,
         confirmParams: {
 
-            return_url: "http://127.0.0.1:8000/order/payment-complete/", 
+            return_url: "https://https://charmaway.onrender.com/order/payment-complete/", 
         },
     });
 

@@ -10,6 +10,8 @@ urlpatterns = [
     path("cart/checkout/", views.checkout, name="checkout"),
     path("lookup/", views.order_lookup, name="order_lookup"),
     path("payment-complete/", views.payment_complete_view, name="payment_complete"),
+    path("payment-success-cod/", views.payment_success_cod, name="payment_success_cod"),
     path("<str:public_id>/", views.order_detail, name="order_detail"),
+    
 ]
 
