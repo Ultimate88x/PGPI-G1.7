@@ -161,6 +161,7 @@ def test_checkout_post_cod_redirects(client, db, customer, product):
     )
 
     client.login(email=customer.email, password="password1234")
+
     session = client.session
     session['checkout_data'] = {
         "delivery_option": "DELIVERY",
@@ -168,16 +169,24 @@ def test_checkout_post_cod_redirects(client, db, customer, product):
         "city": "Madrid",
         "zip_code": "28001",
         "email": customer.email,
-        "payment_method": "COD",
+        "payment_method": "contrarreembolso",
         "notes": ""
     }
     session.save()
 
     url = reverse("checkout")
-    data = {"payment_method": "COD", "delivery_option": "DELIVERY"}
+    data = {
+        "payment_method": "contrarreembolso",
+        "delivery_option": "DELIVERY",
+        "address": "Calle Falsa 123",
+        "city": "Madrid",
+        "zip_code": "28001",
+        "email": customer.email,
+        "notes": ""
+    }
     response = client.post(url, data)
     assert response.status_code == 302
-    assert response.url.startswith("/payment/checkout/")
+    assert response.url == reverse("payment_success_cod")
 
 
 # ------------------------------
