@@ -23,13 +23,14 @@ def customer(db):
 # REGISTRO
 # ------------------------------
 
+@pytest.mark.django_db
 def test_register_get(client):
     url = reverse("register")
     response = client.get(url)
     assert response.status_code == 200
     assert "form" in response.context
 
-
+@pytest.mark.django_db
 def test_register_post_correct(client, db):#############
     url = reverse("register")
 
@@ -52,7 +53,7 @@ def test_register_post_correct(client, db):#############
     created = Customer.objects.filter(email="ana@example.com").exists()
     assert created
 
-
+@pytest.mark.django_db
 def test_register_post_invalid(client, db):
     url = reverse("register")
     data = {
@@ -69,13 +70,14 @@ def test_register_post_invalid(client, db):
 # LOGIN
 # ------------------------------
 
+@pytest.mark.django_db
 def test_login_get(client):
     url = reverse("login")
     response = client.get(url)
     assert response.status_code == 200
     assert "form" in response.context
 
-
+@pytest.mark.django_db
 def test_login_post_correct(client, customer):
     url = reverse("login")
     data = {"username": customer.email, "password": "password1234"}
@@ -83,7 +85,7 @@ def test_login_post_correct(client, customer):
     assert response.status_code == 302
     assert response.url == reverse("profile")
 
-
+@pytest.mark.django_db
 def test_login_post_invalid(client, customer):
     url = reverse("login")
     data = {"username": customer.email, "password": "incorrecta"}
@@ -96,6 +98,7 @@ def test_login_post_invalid(client, customer):
 # LOGOUT
 # ------------------------------
 
+@pytest.mark.django_db
 def test_logout(client, customer):
     client.login(email=customer.email, password="password1234")
     url = reverse("logout")
@@ -108,12 +111,13 @@ def test_logout(client, customer):
 # PROFILE VIEW
 # ------------------------------
 
+@pytest.mark.django_db
 def test_profile_requires_login(client): #############
     url = reverse("profile")
     response = client.get(url)
     assert response.status_code == 302
 
-
+@pytest.mark.django_db
 def test_profile_logged_in(client, customer):
     client.login(email=customer.email, password="password1234")
     url = reverse("profile")
@@ -126,6 +130,7 @@ def test_profile_logged_in(client, customer):
 # PROFILE EDIT
 # ------------------------------
 
+@pytest.mark.django_db
 def test_profile_edit_get(client, customer):
     client.login(email=customer.email, password="password1234")
     url = reverse("profile_edit")
@@ -133,7 +138,7 @@ def test_profile_edit_get(client, customer):
     assert response.status_code == 200
     assert "form" in response.context
 
-
+@pytest.mark.django_db
 def test_profile_edit_post_correct(client, customer):
     client.login(email=customer.email, password="password1234")
     url = reverse("profile_edit")
@@ -146,6 +151,7 @@ def test_profile_edit_post_correct(client, customer):
         "address": customer.address,
         "city": customer.city,
         "zip_code": customer.zip_code,
+        "prefered_payment_method": customer.prefered_payment_method,
     }
 
     response = client.post(url, data)
@@ -155,7 +161,7 @@ def test_profile_edit_post_correct(client, customer):
     customer.refresh_from_db()
     assert customer.name == "NuevoNombre"
 
-
+@pytest.mark.django_db
 def test_profile_edit_post_invalid(client, customer):
     client.login(email=customer.email, password="password1234")
     url = reverse("profile_edit")

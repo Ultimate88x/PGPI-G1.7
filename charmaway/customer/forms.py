@@ -11,7 +11,7 @@ class CustomerRegisterForm(UserCreationForm):
 class CustomerUpdateForm(ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'surnames', 'email', 'phone', 'address', 'city', 'zip_code']
+        fields = ['name', 'surnames', 'email', 'phone', 'address', 'city', 'zip_code', 'prefered_payment_method']
 
 class CustomerLoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email')
