@@ -157,7 +157,7 @@
                     <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                     <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
                     <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
-                    <button type="submit" class="btn-add-cart" onclick="setTimeout(() => location.reload(), 50);" {% if product.stock == 0 %}disabled{% endif %}>
+                    <button type="submit" class="btn-add-cart" {% if product.stock <= 0 %}disabled{% endif %}>
                         Añadir al carro
                     </button>
                 </form>
@@ -256,5 +256,35 @@ function decreaseQty() {
         input.value = currentValue - 1;
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form.quantity-selector");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        const input = document.getElementById("quantity");
+        const max = parseInt(input.max);
+        const value = parseInt(input.value);
+
+        let oldError = document.getElementById("qty-error");
+        if (oldError) oldError.remove();
+
+        if (value > max) {
+            e.preventDefault();
+
+            let error = document.createElement("div");
+            error.id = "qty-error";
+            error.style.color = "red";
+            error.style.marginTop = "8px";
+            error.style.fontWeight = "bold";
+            error.textContent = `Solo puedes añadir un máximo de ${max} unidades.`;
+
+            input.insertAdjacentElement("afterend", error);
+            input.focus();
+        } else {
+            setTimeout(() => location.reload(), 50);
+        }
+    });
+});
 </script>
 {% endblock %}

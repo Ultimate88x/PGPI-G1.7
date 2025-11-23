@@ -62,23 +62,29 @@ def add_to_cart(request, product_id):
 
     quantity = max(1, quantity)
 
+    if product.stock < quantity:
+        return HttpResponse("Not enough stock", status=400)
+
     if request.user.is_authenticated:
         filter_kwargs = {"customer": request.user, "product": product}
-        defaults = {"current_price": product.price, "quantity": quantity}
     else:
         filter_kwargs = {"session_key": session_key, "product": product}
-        defaults = {"current_price": product.price, "quantity": quantity}
 
     cart_item, created = Cart.objects.get_or_create(
-        defaults=defaults,
+        defaults={"current_price": product.price, "quantity": quantity},
         **filter_kwargs
     )
 
     if not created:
+        if product.stock < quantity:
+            return HttpResponse("Not enough stock", status=400)
         cart_item.quantity += quantity
 
     cart_item.current_price = product.price
     cart_item.save()
+
+    product.stock -= quantity
+    product.save()
 
     return HttpResponse(status=204)
 
@@ -91,6 +97,9 @@ def decrease_from_cart(request, product_id):
         cart_item = get_object_or_404(Cart, customer=request.user, product=product)
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
+
+    product.stock += 1
+    product.save()
 
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
@@ -110,15 +119,24 @@ def remove_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
 
+    product.stock += cart_item.quantity
+    product.save()
+
     cart_item.delete()
     return HttpResponse(status=204)
 
 
 def clear_cart(request):
     if request.user.is_authenticated:
-        Cart.objects.filter(customer=request.user).delete()
+        items = Cart.objects.filter(customer=request.user)
     else:
-        Cart.objects.filter(session_key=get_session_key(request)).delete()
+        items = Cart.objects.filter(session_key=get_session_key(request))
+
+    for item in items:
+        item.product.stock += item.quantity
+        item.product.save()
+
+    items.delete()
     return HttpResponse(status=204)
 
 
