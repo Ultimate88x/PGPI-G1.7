@@ -49,6 +49,12 @@ class Order(models.Model):
         default=OrderStatus.PROCESSING
     )
 
+    delivery_option = models.CharField(
+        max_length=20,
+        choices=DeliveryOption.choices,
+        default=DeliveryOption.DELIVERY
+    )
+
     address = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     zip_code = models.CharField(max_length=5, null=True, blank=True)
