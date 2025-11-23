@@ -32,6 +32,7 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=5)
+    prefered_payment_method = models.CharField(max_length=50, default='Tarjeta de crédito')
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
