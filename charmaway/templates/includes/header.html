@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/header.css' %}?v=20231113">
+<link rel="stylesheet" href="{% static 'css/header.css' %}?v=202501231645">
 
 <header class="topbar" role="banner">
   <div class="container">
@@ -12,16 +12,34 @@
     <nav class="nav">
       <a href="{% url 'home' %}">Home</a>
       <a href="{% url 'catalog:catalog' %}">Catálogo</a>
+      <a href="{% url 'services:services_catalog' %}">Servicios</a>
       <a href="{% url 'about' %}">Sobre nosotros</a>
     </nav>
 
     <div class="search-wrap">
-      <form action="{% url 'catalog:catalog' %}" method="get" class="search" role="search">
-        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M21 21l-4.35-4.35" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="11" cy="11" r="6" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <input type="search" name="q" placeholder="Buscar producto" aria-label="Buscar producto" value="{{ request.GET.q }}" />
+      <form action="{% url 'catalog:catalog' %}" method="get" class="search" role="search" id="search-form">
+        <select name="department" class="search-filter" aria-label="Filtrar por departamento">
+          <option value="">Todos los departamentos</option>
+          {% for department in all_departments %}
+          <option value="{{ department.id }}" {% if request.GET.department == department.id|stringformat:'s' %}selected{% endif %}>{{ department.name }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="brand" class="search-filter" id="brand-filter" aria-label="Filtrar por marca">
+          <option value="">Todas las marcas</option>
+          {% for brand in all_brands %}
+          <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:'s' %}selected{% endif %}>{{ brand.name }}</option>
+          {% endfor %}
+        </select>
+
+        <input type="search" name="q" id="search-input" placeholder="Buscar producto" aria-label="Buscar producto" value="{{ request.GET.q }}" />
+
+        <button type="submit" class="search-btn" aria-label="Buscar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21l-4.35-4.35" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="11" cy="11" r="6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </form>
     </div>
 
@@ -51,6 +69,7 @@
 </header>
 
 <script>
+// Cart dropdown functionality
 document.getElementById("open-cart").addEventListener("click", function (e) {
     e.preventDefault();
 
@@ -72,5 +91,37 @@ document.addEventListener("click", function(e) {
         dropdown.classList.add("hidden");
     }
 });
+
+// Search form dynamic routing based on department
+const searchForm = document.getElementById("search-form");
+const departmentSelect = searchForm.querySelector('select[name="department"]');
+const brandFilter = document.getElementById("brand-filter");
+const searchInput = document.getElementById("search-input");
+
+// Get department ID for "Servicios"
+const serviciosDepartmentId = {% if all_departments %}{% for dept in all_departments %}{% if dept.name == "Servicios" %}"{{ dept.id }}"{% endif %}{% endfor %}{% endif %};
+
+function updateSearchForm(isServiciosDepartment) {
+    if (isServiciosDepartment) {
+        searchForm.action = "{% url 'services:services_catalog' %}";
+        brandFilter.style.display = "none";
+        searchInput.style.width = "420px";
+        searchInput.placeholder = "Buscar servicio";
+        searchInput.setAttribute("aria-label", "Buscar servicio");
+    } else {
+        searchForm.action = "{% url 'catalog:catalog' %}";
+        brandFilter.style.display = "";
+        searchInput.style.width = "";
+        searchInput.placeholder = "Buscar producto";
+        searchInput.setAttribute("aria-label", "Buscar producto");
+    }
+}
+
+departmentSelect.addEventListener("change", function() {
+    updateSearchForm(this.value === serviciosDepartmentId);
+});
+
+// Set initial form state based on current selection
+updateSearchForm(departmentSelect.value === serviciosDepartmentId);
 </script>
 

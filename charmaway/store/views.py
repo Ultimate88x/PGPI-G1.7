@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from catalog.models import Product, Category, Brand
+from catalog.models import Product, Category, Brand, Department
 
 def home(request):
     # Get featured products
@@ -8,8 +8,8 @@ def home(request):
         is_featured=True
     ).select_related('brand', 'category').prefetch_related('images')[:8]
 
-    # Get all categories
-    categories = Category.objects.all()
+    # Get all departments
+    departments = Department.objects.all().order_by('order_position', 'name')
 
     # Get products with offers
     offer_products = Product.objects.filter(
@@ -24,7 +24,7 @@ def home(request):
 
     context = {
         'featured_products': featured_products,
-        'categories': categories,
+        'departments': departments,
         'offer_products': offer_products,
         'newest_products': newest_products,
     }

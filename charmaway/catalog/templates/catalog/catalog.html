@@ -3,15 +3,33 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}?v=202501231730">
 
 <div class="catalog-container">
     <aside class="filters-sidebar">
-        <h2 class="filters-title">Filtros</h2>
-
+        {% if department_obj %}
         <!-- Category Filter -->
         <div class="filter-section">
-            <h3 class="filter-heading">Categoría</h3>
+            <h3 class="filter-heading">{{ department_obj.name|upper }}</h3>
+            <ul class="filter-list">
+                <li>
+                    <a href="?department={{ selected_department }}" class="filter-link {% if not selected_category %}active{% endif %}">
+                        Todas
+                    </a>
+                </li>
+                {% for category in categories %}
+                <li>
+                    <a href="?department={{ selected_department }}&category={{ category.id }}" class="filter-link {% if selected_category == category.id|stringformat:'s' %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <!-- No department selected -->
+        <div class="filter-section">
+            <h3 class="filter-heading">CATEGORÍAS</h3>
             <ul class="filter-list">
                 <li>
                     <a href="{% url 'catalog:catalog' %}" class="filter-link {% if not selected_category %}active{% endif %}">
@@ -27,154 +45,25 @@
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
 
-        <!-- Advanced Filters -->
-        <div class="advanced-filters">
-            <div class="advanced-filters-header">
-                <h3 class="filter-heading">Filtrado por</h3>
-                {% if selected_brand or selected_price_range or selected_availability or selected_gender or selected_colors %}
-                <button type="button" class="clear-filters-btn" onclick="clearAdvancedFilters()">
-                    Limpiar filtros
-                </button>
-                {% endif %}
-            </div>
-
-            <form id="advanced-filters-form" method="get">
-                {% if selected_category %}
-                <input type="hidden" name="category" value="{{ selected_category }}">
-                {% endif %}
-                {% if search_query %}
-                <input type="hidden" name="q" value="{{ search_query }}">
-                {% endif %}
-                {% if sort_by %}
-                <input type="hidden" name="sort" value="{{ sort_by }}">
-                {% endif %}
-                {% if per_page %}
-                <input type="hidden" name="per_page" value="{{ per_page }}">
-                {% endif %}
-
-                <!-- Brand Filter -->
-                <div class="collapsible-filter">
-                    <button type="button" class="filter-toggle" onclick="toggleFilter(this)">
-                        <span>Marca</span>
-                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="filter-content">
-                        <div class="checkbox-list">
-                            {% for brand in brands %}
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="brand" value="{{ brand.id }}" {% if brand.id|stringformat:'s' in selected_brands %}checked{% endif %} onchange="submitFilters()">
-                                <span>{{ brand.name }}</span>
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Price Range Filter -->
-                <div class="collapsible-filter">
-                    <button type="button" class="filter-toggle" onclick="toggleFilter(this)">
-                        <span>Rango de precio</span>
-                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="filter-content">
-                        <div class="checkbox-list">
-                            <label class="checkbox-item">
-                                <input type="radio" name="price_range" value="0-20" {% if selected_price_range == '0-20' %}checked{% endif %} onchange="submitFilters()">
-                                <span>Menos de 20€</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="radio" name="price_range" value="20-50" {% if selected_price_range == '20-50' %}checked{% endif %} onchange="submitFilters()">
-                                <span>20€ - 50€</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="radio" name="price_range" value="50-100" {% if selected_price_range == '50-100' %}checked{% endif %} onchange="submitFilters()">
-                                <span>50€ - 100€</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="radio" name="price_range" value="100-200" {% if selected_price_range == '100-200' %}checked{% endif %} onchange="submitFilters()">
-                                <span>100€ - 200€</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="radio" name="price_range" value="200+" {% if selected_price_range == '200+' %}checked{% endif %} onchange="submitFilters()">
-                                <span>Más de 200€</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Availability Filter -->
-                <div class="collapsible-filter">
-                    <button type="button" class="filter-toggle" onclick="toggleFilter(this)">
-                        <span>Disponibilidad</span>
-                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="filter-content">
-                        <div class="checkbox-list">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="availability" value="in_stock" {% if 'in_stock' in selected_availability %}checked{% endif %} onchange="submitFilters()">
-                                <span>En stock</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="availability" value="out_of_stock" {% if 'out_of_stock' in selected_availability %}checked{% endif %} onchange="submitFilters()">
-                                <span>Agotado</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gender Filter -->
-                <div class="collapsible-filter">
-                    <button type="button" class="filter-toggle" onclick="toggleFilter(this)">
-                        <span>Género</span>
-                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="filter-content">
-                        <div class="checkbox-list">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="gender" value="Male" {% if 'Male' in selected_genders %}checked{% endif %} onchange="submitFilters()">
-                                <span>Hombre</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="gender" value="Female" {% if 'Female' in selected_genders %}checked{% endif %} onchange="submitFilters()">
-                                <span>Mujer</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="gender" value="Unisex" {% if 'Unisex' in selected_genders %}checked{% endif %} onchange="submitFilters()">
-                                <span>Unisex</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Color Filter -->
-                <div class="collapsible-filter">
-                    <button type="button" class="filter-toggle" onclick="toggleFilter(this)">
-                        <span>Color</span>
-                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="filter-content">
-                        <div class="checkbox-list">
-                            {% for color in available_colors %}
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="color" value="{{ color }}" {% if color in selected_colors %}checked{% endif %} onchange="submitFilters()">
-                                <span>{{ color }}</span>
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </form>
+        <!-- Brand Filter -->
+        <div class="filter-section">
+            <h3 class="filter-heading">MARCA</h3>
+            <ul class="filter-list">
+                <li>
+                    <a href="?{% if selected_department %}department={{ selected_department }}{% if selected_category or search_query %}&{% endif %}{% endif %}{% if selected_category %}category={{ selected_category }}{% if search_query %}&{% endif %}{% endif %}{% if search_query %}q={{ search_query }}{% endif %}" class="filter-link {% if not selected_brands %}active{% endif %}">
+                        Todas
+                    </a>
+                </li>
+                {% for brand in brands %}
+                <li>
+                    <a href="?{% if selected_department %}department={{ selected_department }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}brand={{ brand.id }}" class="filter-link {% if brand.id|stringformat:'s' in selected_brands %}active{% endif %}">
+                        {{ brand.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </aside>
 
@@ -198,8 +87,6 @@
                         <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Nombre</option>
                         <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Precio: Menor a Mayor</option>
                         <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Precio: Mayor a Menor</option>
-                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Más Recientes</option>
-                        <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Destacados</option>
                     </select>
                 </div>
 
@@ -335,44 +222,6 @@ function updatePerPage(value) {
     url.searchParams.set('per_page', value);
     url.searchParams.delete('page');
     window.location.href = url.toString();
-}
-
-function toggleFilter(button) {
-    const filter = button.parentElement;
-    const isOpen = filter.classList.contains('open');
-
-    // Close all other filters
-    document.querySelectorAll('.collapsible-filter.open').forEach(f => {
-        if (f !== filter) {
-            f.classList.remove('open');
-        }
-    });
-
-    // Toggle current filter
-    filter.classList.toggle('open');
-}
-
-function submitFilters() {
-    document.getElementById('advanced-filters-form').submit();
-}
-
-function clearAdvancedFilters() {
-    const url = new URL(window.location);
-    const category = url.searchParams.get('category');
-    const q = url.searchParams.get('q');
-
-    // Clear all params
-    const newUrl = new URL(window.location.origin + window.location.pathname);
-
-    // Keep only category and search query
-    if (category) {
-        newUrl.searchParams.set('category', category);
-    }
-    if (q) {
-        newUrl.searchParams.set('q', q);
-    }
-
-    window.location.href = newUrl.toString();
 }
 </script>
 {% endblock %}

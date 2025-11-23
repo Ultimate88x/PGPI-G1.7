@@ -28,12 +28,12 @@ def main():
 
     # List of all seeders to run in order
     seeders = [
-        'seed_catalog',
+        'seed_catalog_simple',  # Using simplified seeder with new categories
+        'seed_services',  # Seed services after catalog to ensure categories exist
         'seed_users',
         'seed_orders',
         # Add more seeders here as you create them:
         # 'seed_customers',
-        # 'seed_orders',
         # 'seed_reviews',
     ]
 

@@ -290,26 +290,22 @@ section {
 .categories-carousel-wrapper {
     position: relative;
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
     box-sizing: border-box;
 }
 
 .categories-carousel {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1.5rem;
     padding: 0.5rem 0;
-    flex: 1;
-    overflow: hidden;
     box-sizing: border-box;
-    justify-content: space-between;
+    justify-items: center;
 }
 
 .category-card {
     background: white;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 1.5rem 1rem;
     text-decoration: none;
     color: var(--dark-btn);
     transition: all 0.3s ease;
@@ -317,14 +313,11 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 125px;
-    height: 220px;
+    gap: 1rem;
+    width: 100%;
+    max-width: 160px;
     box-sizing: border-box;
     text-align: center;
-}
-
-.category-card.hidden {
-    display: none;
 }
 
 .category-card:hover {
@@ -334,25 +327,7 @@ section {
 }
 
 .category-nav-btn {
-    background: white;
-    border: 2px solid var(--input-border);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--dark-btn);
-    flex-shrink: 0;
-}
-
-.category-nav-btn:hover {
-    background: var(--coral);
-    color: white;
-    border-color: var(--coral);
-    transform: scale(1.1);
+    display: none;
 }
 
 .category-icon {
@@ -493,6 +468,13 @@ section {
     overflow: hidden;
 }
 
+.product-category {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: auto;
+    margin-bottom: 0.25rem;
+}
+
 .product-pricing {
     display: flex;
     align-items: center;
@@ -628,9 +610,8 @@ section {
         gap: 1rem;
     }
 
-    .category-nav-btn {
-        width: 40px;
-        height: 40px;
+    .categories-carousel {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .products-grid {
@@ -669,13 +650,19 @@ section {
         font-size: 1.25rem;
     }
 
-    .category-nav-btn {
-        width: 35px;
-        height: 35px;
+    .categories-carousel {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 1rem;
     }
 
     .category-card {
         padding: 1rem 0.5rem;
+        max-width: 120px;
+    }
+
+    .category-icon {
+        width: 80px;
+        height: 80px;
     }
 
     .category-card h3 {

@@ -13,7 +13,7 @@
         <a href="{% url 'catalog:catalog' %}">Catálogo</a>
         {% if product.category %}
         <span class="separator">/</span>
-        <a href="{% url 'catalog:category' product.category.id %}">{{ product.category.name }}</a>
+        <a href="{% url 'catalog:catalog' %}?{% if product.category.department %}department={{ product.category.department.id }}&{% endif %}category={{ product.category.id }}{% if product.brand %}&brand={{ product.brand.id }}{% endif %}">{{ product.category.name }}</a>
         {% endif %}
         <span class="separator">/</span>
         <span class="current">{{ product.name }}</span>
@@ -53,7 +53,7 @@
             {% if product.category %}
             <p class="product-category">
                 <span class="label">Categoría:</span>
-                <a href="{% url 'catalog:category' product.category.id %}">{{ product.category.name }}</a>
+                <a href="{% url 'catalog:catalog' %}?{% if product.category.department %}department={{ product.category.department.id }}&{% endif %}category={{ product.category.id }}{% if product.brand %}&brand={{ product.brand.id }}{% endif %}">{{ product.category.name }}</a>
             </p>
             {% endif %}
 

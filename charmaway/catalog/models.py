@@ -2,6 +2,19 @@ from django.db import models
 from django.utils import timezone
 
 
+class Department(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    image = models.CharField(max_length=255, blank=True)
+    order_position = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['order_position', 'name']
+
+
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.CharField(max_length=255, blank=True)
@@ -18,13 +31,15 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     image = models.CharField(max_length=255, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='categories', null=True, blank=True)
+    order_position = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = 'Categories'
-        ordering = ['name']
+        ordering = ['order_position', 'name']
 
 
 class Product(models.Model):

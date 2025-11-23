@@ -90,141 +90,36 @@
     font-weight: 500;
 }
 
-/* Advanced Filters */
-.advanced-filters {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--input-border);
-}
-
-.advanced-filters-header {
+/* Department Badge */
+.department-badge {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    gap: 0.5rem;
-}
-
-.advanced-filters-header .filter-heading {
-    margin: 0;
-    padding: 0;
-    border-bottom: none;
-    flex-shrink: 0;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    display: flex;
-    align-items: center;
-}
-
-.clear-filters-btn {
-    background: var(--coral);
+    background: linear-gradient(135deg, var(--coral) 0%, #ff8a8a 100%);
     color: white;
-    border: none;
-    padding: 0.35rem 0.65rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-    line-height: 1.6;
-    display: flex;
-    align-items: center;
-    align-self: center;
-}
-
-.clear-filters-btn:hover {
-    background: var(--dark-btn);
-}
-
-/* Collapsible Filters */
-.collapsible-filter {
-    margin-bottom: 0.75rem;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.filter-toggle {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 0.75rem 1rem;
-    background: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--dark-btn);
-    transition: background 0.2s ease;
-}
-
-.filter-toggle:hover {
-    background: #f5f7f9;
-}
-
-.filter-toggle .chevron {
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-}
-
-.collapsible-filter.open .filter-toggle .chevron {
-    transform: rotate(180deg);
-}
-
-.filter-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    background: #f5f7f9;
-}
-
-.collapsible-filter.open .filter-content {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.filter-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.filter-content::-webkit-scrollbar-track {
-    background: #e9ecef;
-}
-
-.filter-content::-webkit-scrollbar-thumb {
-    background: var(--muted);
-    border-radius: 3px;
-}
-
-.checkbox-list {
-    padding: 1rem;
-}
-
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
-    cursor: pointer;
-}
-
-.checkbox-item input[type="checkbox"],
-.checkbox-item input[type="radio"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--coral);
-}
-
-.checkbox-item span {
-    color: var(--dark-btn);
+    border-radius: 6px;
     font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(255, 105, 105, 0.2);
 }
 
-.checkbox-item:hover span {
-    color: var(--coral);
+.department-badge strong {
+    font-weight: 600;
+}
+
+.department-badge .clear-dept {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0 0.25rem;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.department-badge .clear-dept:hover {
+    transform: scale(1.2);
 }
 
 /* Main Catalog Area */
@@ -440,11 +335,12 @@
 .product-category {
     font-size: 0.85rem;
     color: var(--muted);
-    margin: 0.25rem 0;
+    margin-top: auto;
+    margin-bottom: 0.25rem;
 }
 
 .product-pricing {
-    margin: 0.75rem 0;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;

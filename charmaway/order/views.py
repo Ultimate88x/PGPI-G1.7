@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from .models import Cart, Order, OrderDetail, Product
+from services.models import Service
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -228,3 +229,55 @@ def payment_complete_view(request):
 
     except Order.DoesNotExist:
         return redirect("view_cart")
+
+
+# Service cart functions
+def add_to_cart_service(request, service_id):
+    """Add a service to cart by creating a temporary product representation"""
+    service = get_object_or_404(Service, pk=service_id)
+    session_key = get_session_key(request)
+
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except:
+        quantity = 1
+
+    quantity = max(1, quantity)
+
+    # Create or get a virtual product for this service
+    # We'll store it with a special naming convention
+    product_name = f"[SERVICIO] {service.name}"
+    product, created = Product.objects.get_or_create(
+        name=product_name,
+        defaults={
+            'description': service.description,
+            'price': service.get_final_price(),
+            'stock': 999,  # Services don't have stock limits
+            'is_available': service.is_available,
+        }
+    )
+
+    # Update price in case it changed
+    if not created:
+        product.price = service.get_final_price()
+        product.save()
+
+    if request.user.is_authenticated:
+        filter_kwargs = {"customer": request.user, "product": product}
+        defaults = {"current_price": service.get_final_price(), "quantity": quantity}
+    else:
+        filter_kwargs = {"session_key": session_key, "product": product}
+        defaults = {"current_price": service.get_final_price(), "quantity": quantity}
+
+    cart_item, created = Cart.objects.get_or_create(
+        defaults=defaults,
+        **filter_kwargs
+    )
+
+    if not created:
+        cart_item.quantity += quantity
+
+    cart_item.current_price = service.get_final_price()
+    cart_item.save()
+
+    return HttpResponse(status=204)
