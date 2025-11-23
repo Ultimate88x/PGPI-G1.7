@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from .models import Cart, Order, OrderDetail, Product, DeliveryOption
-from services.models import Service
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -282,3 +281,47 @@ def payment_success_cod(request):
 
     if not cart_items.exists():
         return redirect("view_cart")
+
+    if request.user.is_authenticated:
+        subtotal = Cart.calculate_total(request.user)
+    else:
+        subtotal = Cart.calculate_total(get_session_key(request))
+
+    shipping = 0 if subtotal > 20 else 2.99
+
+    order = Order.objects.create(
+        customer=request.user if request.user.is_authenticated else None,
+        address=checkout_data['address'],
+        city=checkout_data['city'],
+        zip_code=checkout_data['zip_code'],
+        email=checkout_data['email'],
+        payment_method="contrarreembolso",
+        notes=checkout_data.get('notes', ''),
+        shipping_cost=shipping,
+    )
+
+    for item in cart_items:
+        OrderDetail.objects.create(
+            order=order,
+            product=item.product,
+            quantity=item.quantity,
+            unit_price=item.current_price,
+            subtotal=item.quantity * item.current_price
+        )
+
+    order.calculate_total()
+    order.save()
+
+    cart_items.delete()
+    del request.session['checkout_data']
+
+    subject = f"Pedido a contrarreembolso #{order.public_id}"
+    html_message = render_to_string("order_success_cod_mail.html", {
+        "order": order
+    })
+    threading.Thread(
+        target=send_mail_via_mailjet,
+        args=(subject, html_message, [order.email])
+    ).start()
+
+    return render(request, "order_success_cod.html", {"order": order})
