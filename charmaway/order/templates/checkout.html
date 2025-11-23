@@ -4,9 +4,15 @@
 
 {% block extra_head %}
 <style>
-    .checkout-container {
-        max-width: 700px;
+    .checkout-wrapper {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+        max-width: 1100px;
         margin: 40px auto;
+    }
+
+    .checkout-container {
         padding: 25px;
         background-color: #fff;
         border-radius: 10px;
@@ -40,10 +46,6 @@
         margin-top: 5px;
     }
 
-    .checkout-textarea {
-        resize: vertical;
-    }
-
     .checkout-submit {
         display: inline-block;
         padding: 12px 25px;
@@ -61,83 +63,180 @@
         background-color: #ff4b4b;
     }
 
-    .address-summary {
-        background: #fafafa;
-        padding: 15px;
+    .cart-summary {
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        height: fit-content;
+        text-align: left;
+    }
+
+    .cart-summary h3 {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+    }
+
+    .cart-item div {
+        text-align: left;
+    }
+
+    .cart-summary p,
+    .cart-summary strong {
+        margin: 5px 0;
+        text-align: left;
+    }
+
+    .cart-totals {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .cart-item img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
         border-radius: 6px;
-        border: 1px solid #eee;
-        margin-bottom: 20px;
+        margin-right: 10px;
     }
 </style>
+
+<script>
+function updateShipping() {
+    const subtotal = parseFloat(document.getElementById("cart-subtotal").dataset.subtotal);
+    const delivery = document.querySelector("select[name='delivery_option']").value;
+
+    let shipping = 0;
+    if (delivery === "DELIVERY") {
+        shipping = subtotal > 20 ? 0 : 2.99;
+    }
+
+    document.getElementById("shipping-value").innerText = shipping.toFixed(2);
+    document.getElementById("total-value").innerText = (subtotal + shipping).toFixed(2);
+}
+</script>
 {% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <h1>Checkout</h1>
 
-    <form method="post">
-        {% csrf_token %}
+<div class="checkout-wrapper">
 
-        <div class="checkout-section">
-            <h3>Pon tu dirección de envío</h3>
+    <div class="checkout-container">
+        <h1>Checkout</h1>
 
-            <label class="checkout-label">Dirección
-                <input
-                    class="checkout-input"
-                    type="text"
-                    name="address"
-                    required
-                    value="{{ request.user.address|default:'' }}"
-                >
-            </label>
+        <form method="post">
+            {% csrf_token %}
 
-            <label class="checkout-label">Ciudad
-                <input
-                    class="checkout-input"
-                    type="text"
-                    name="city"
-                    required
-                    value="{{ request.user.city|default:'' }}"
-                >
-            </label>
+            <div class="checkout-section">
+                <h3>Pon tu dirección de envío</h3>
 
-            <label class="checkout-label">Código postal
-                <input
-                    class="checkout-input"
-                    type="text"
-                    name="zip_code"
-                    required
-                    value="{{ request.user.zip_code|default:'' }}"
-                >
-            </label>
+                <label class="checkout-label">Dirección
+                    <input class="checkout-input" type="text" name="address"
+                           required value="{{ request.user.address|default:'' }}">
+                </label>
 
-            <label class="checkout-label">Correo electrónico
-                <input
-                    class="checkout-input"
-                    type="text"
-                    name="email"
-                    required
-                    value="{{ request.user.email|default:'' }}"
-                >
-            </label>
-        </div>
+                <label class="checkout-label">Ciudad
+                    <input class="checkout-input" type="text" name="city"
+                           required value="{{ request.user.city|default:'' }}">
+                </label>
 
-        <div class="checkout-section">
-            <label class="checkout-label">Método de pago
-                <select name="payment_method" class="checkout-select" required>
-                    <option value="credit_card">Tarjeta de crédito</option>
-                    <option value="paypal">PayPal</option>
+                <label class="checkout-label">Código postal
+                    <input class="checkout-input" type="text" name="zip_code"
+                           required value="{{ request.user.zip_code|default:'' }}">
+                </label>
+
+                <label class="checkout-label">Correo electrónico
+                    <input class="checkout-input" type="text" name="email"
+                           required value="{{ request.user.email|default:'' }}">
+                </label>
+            </div>
+
+            <div class="checkout-section">
+                <label class="checkout-label">Método de entrega</label>
+                <select name="delivery_option" class="checkout-select" required onchange="updateShipping()">
+                    <option value="DELIVERY">Envío</option>
+                    <option value="PICK_UP">Recogida en tienda</option>
                 </select>
-            </label>
-        </div>
+            </div>
 
-        <div class="checkout-section">
-            <label class="checkout-label">Notas
-                <textarea name="notes" rows="3" class="checkout-textarea"></textarea>
-            </label>
-        </div>
+            <div class="checkout-section">
+                <label class="checkout-label">Método de pago
+                    <select name="payment_method" class="checkout-select" required>
+                        <option value="credit_card">Tarjeta de crédito</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
+                </label>
+            </div>
 
-        <button type="submit" class="checkout-submit">Hacer pedido</button>
-    </form>
+            <div class="checkout-section">
+                <label class="checkout-label">Notas
+                    <textarea name="notes" rows="3" class="checkout-textarea"></textarea>
+                </label>
+            </div>
+
+            <button type="submit" class="checkout-submit">Hacer pedido</button>
+        </form>
+    </div>
+
+    <div class="cart-summary">
+        <h3>Tu Carrito</h3>
+        <hr>
+
+        {% if items %}
+            {% for item in items %}
+                <div class="cart-item">
+                    <img src="{{ item.product.images.first.image|default:'/static/images/no-image.svg' }}">
+                    <div style="flex-grow:1; text-align:left;">
+                        <strong>{{ item.product.name }}</strong>
+                    </div>
+                    <div style="text-align:right;">
+                        {{ item.quantity }} x {{ item.current_price|floatformat:2 }} €
+                    </div>
+                </div>
+            {% endfor %}
+
+            <hr>
+            <div class="cart-totals">
+                <p id="cart-subtotal" data-subtotal="{{ subtotal|stringformat:'f' }}">Subtotal: {{ subtotal|floatformat:2 }} €</p>
+                <p>Gastos de envío: <span id="shipping-value">{{ shipping|floatformat:2 }}</span> €</p>
+                <strong>Total: <span id="total-value">{{ total|floatformat:2 }}</span> €</strong>
+            </div>
+        {% else %}
+            <p>Tu carrito está vacío.</p>
+        {% endif %}
+    </div>
+
 </div>
+
+<script>
+    function updateShipping() {
+        const subtotal = parseFloat(document.getElementById("cart-subtotal").dataset.subtotal);
+        const delivery = document.querySelector("select[name='delivery_option']").value;
+
+        let shipping = 0;
+        if (delivery === "DELIVERY") {
+            shipping = subtotal > 20 ? 0 : 2.99;
+        } else {
+            shipping = 0;
+        }
+
+        const total = subtotal + shipping;
+
+        document.getElementById("shipping-value").innerText = shipping.toFixed(2);
+        document.getElementById("total-value").innerText = total.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', updateShipping);
+
+    document.querySelector("select[name='delivery_option']").addEventListener('change', updateShipping);
+</script>
+
 {% endblock %}

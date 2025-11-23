@@ -3,9 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.conf import settings
-from .models import Cart, Order, OrderDetail, Product
+from .models import Cart, Order, OrderDetail, Product, DeliveryOption
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -141,14 +139,21 @@ def clear_cart(request):
 
 
 def checkout(request):
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            subtotal = Cart.calculate_total(request.user)
-        else:
-            subtotal = Cart.calculate_total(get_session_key(request))
-        shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
-        total = subtotal + shipping
+    if request.user.is_authenticated:
+        user_or_session = request.user
+    else:
+        user_or_session = get_session_key(request)
 
+    items = get_cart_queryset(request)
+
+    if not items.exists():
+        return redirect('view_cart')
+
+    subtotal = Cart.calculate_total(user_or_session)
+    shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
+    total = subtotal + shipping
+
+    if request.method == "POST":
         request.session['checkout_total'] = str(total)
         request.session['checkout_data'] = {
             'address': request.POST.get('address'),
@@ -157,6 +162,7 @@ def checkout(request):
             'email': request.POST.get('email'),
             'payment_method': request.POST.get('payment_method'),
             'notes': request.POST.get('notes', ''),
+            'delivery_option': request.POST.get('delivery_option'),
         }
 
         payment_method = request.POST.get('payment_method')
@@ -167,7 +173,12 @@ def checkout(request):
         else:
             return redirect('payment:checkout')
 
-    return render(request, "checkout.html")
+    return render(request, "checkout.html", {
+        "items": items,
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total
+    })
 
 
 def order_detail(request, public_id):
@@ -201,6 +212,7 @@ def send_email_async(subject, plain_message, from_email, recipient_list, html_me
 def payment_complete_view(request):
     cart_items = get_cart_queryset(request)
     checkout_data = request.session.get('checkout_data')
+    delivery_option = checkout_data.get("delivery_option")
 
     if not checkout_data:
         return redirect("view_cart")
@@ -213,7 +225,10 @@ def payment_complete_view(request):
     else:
         subtotal = Cart.calculate_total(get_session_key(request))
 
-    shipping = 0 if subtotal > 20 else 2.99
+    if delivery_option == DeliveryOption.DELIVERY:
+        shipping = 0 if subtotal > 20 else 2.99
+    else:
+        shipping = 0
 
     order = Order.objects.create(
         customer=request.user if request.user.is_authenticated else None,
@@ -224,6 +239,7 @@ def payment_complete_view(request):
         payment_method=checkout_data['payment_method'],
         notes=checkout_data.get('notes', ''),
         shipping_cost=shipping,
+        delivery_option=delivery_option,
     )
 
     for item in cart_items:

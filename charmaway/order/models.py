@@ -7,10 +7,14 @@ import shortuuid
 
 
 class OrderStatus(models.TextChoices):
-    PROCESSING = "PROCESSING", "Processing"
-    SHIPPED = "SHIPPED", "Shipped"
-    DELIVERED = "DELIVERED", "Delivered"
-    CANCELLED = "CANCELLED", "Cancelled"
+    PROCESSING = "PROCESSING", "Procesándose"
+    SHIPPED = "SHIPPED", "Enviado"
+    DELIVERED = "DELIVERED", "Entregado"
+    CANCELLED = "CANCELLED", "Cancelado"
+
+class DeliveryOption(models.TextChoices):
+    DELIVERY = "DELIVERY", "Envío"
+    PICKUP = "PICK_UP", "Recogida en tienda"
     
 def generate_unique_public_id():
     while True:
