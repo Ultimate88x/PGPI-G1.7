@@ -1,0 +1,41 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/header.css' %}">
+{% if items %}
+    <h3>Tu Carrito</h3>
+    <hr>
+
+    {% for item in items %}
+        <div style="display:flex; align-items:center; margin:10px 0;">
+            <img src="{{ item.product.images.first.image|default:'/static/images/no-image.svg' }}"
+                 style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin-right:10px;">
+            
+            <div style="flex-grow:1;">
+                <strong>{{ item.product.name }}</strong><br>
+                <p>{{ item.quantity }} x {{ item.current_price|floatformat:2 }} €</p>
+            </div>
+
+            <div class="cart-item-actions">
+                <div class="btn-row">
+                    <a href="{% url 'add_to_cart' item.product.id %}" onclick="setTimeout(() => location.reload(), 50);" class="btn-adjust">+</a>
+                    <a href="{% url 'decrease_from_cart' item.product.id %}" onclick="setTimeout(() => location.reload(), 50);" class="btn-adjust">-</a>
+                </div>
+                <a href="{% url 'remove_from_cart' item.product.id %}" onclick="setTimeout(() => location.reload(), 50);" class="btn-remove">Eliminar</a>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <hr>
+    <p style="margin-bottom:2px;">Subtotal: {{ subtotal|floatformat:2 }} €</p>
+    <p style="margin-top:2px; margin-bottom:12px;">Gastos de envío: {{ shipping|floatformat:2 }} €</p>
+    <strong style="font-size:1.2em; display:block; margin-top:10px;">Total: {{ total|floatformat:2 }} €</strong>
+
+    <div class="cart-final-actions">
+        <a href="{% url 'clear_cart' %}" onclick="setTimeout(() => location.reload(), 50);" class="btn-clear">Vaciar Carrito</a>
+        <a href="{% url 'checkout' %}" class="btn-checkout">Ir a Checkout</a>
+    </div>
+
+{% else %}
+    <p>Tu carrito está vacío.</p>
+{% endif %}
