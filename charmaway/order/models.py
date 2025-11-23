@@ -7,10 +7,14 @@ import shortuuid
 
 
 class OrderStatus(models.TextChoices):
-    PROCESSING = "PROCESSING", "Processing"
-    SHIPPED = "SHIPPED", "Shipped"
-    DELIVERED = "DELIVERED", "Delivered"
-    CANCELLED = "CANCELLED", "Cancelled"
+    PROCESSING = "PROCESSING", "Procesándose"
+    SHIPPED = "SHIPPED", "Enviado"
+    DELIVERED = "DELIVERED", "Entregado"
+    CANCELLED = "CANCELLED", "Cancelado"
+
+class DeliveryOption(models.TextChoices):
+    DELIVERY = "DELIVERY", "Envío"
+    PICKUP = "PICK_UP", "Recogida en tienda"
     
 def generate_unique_public_id():
     while True:
@@ -43,6 +47,12 @@ class Order(models.Model):
         max_length=20,
         choices=OrderStatus.choices,
         default=OrderStatus.PROCESSING
+    )
+
+    delivery_option = models.CharField(
+        max_length=20,
+        choices=DeliveryOption.choices,
+        default=DeliveryOption.DELIVERY
     )
 
     address = models.CharField(max_length=255, null=True, blank=True)

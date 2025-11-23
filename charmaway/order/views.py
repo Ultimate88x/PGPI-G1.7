@@ -3,9 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.conf import settings
-from .models import Cart, Order, OrderDetail, Product
+from .models import Cart, Order, OrderDetail, Product, DeliveryOption
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -62,23 +60,29 @@ def add_to_cart(request, product_id):
 
     quantity = max(1, quantity)
 
+    if product.stock < quantity:
+        return HttpResponse("Not enough stock", status=400)
+
     if request.user.is_authenticated:
         filter_kwargs = {"customer": request.user, "product": product}
-        defaults = {"current_price": product.price, "quantity": quantity}
     else:
         filter_kwargs = {"session_key": session_key, "product": product}
-        defaults = {"current_price": product.price, "quantity": quantity}
 
     cart_item, created = Cart.objects.get_or_create(
-        defaults=defaults,
+        defaults={"current_price": product.price, "quantity": quantity},
         **filter_kwargs
     )
 
     if not created:
+        if product.stock < quantity:
+            return HttpResponse("Not enough stock", status=400)
         cart_item.quantity += quantity
 
     cart_item.current_price = product.price
     cart_item.save()
+
+    product.stock -= quantity
+    product.save()
 
     return HttpResponse(status=204)
 
@@ -91,6 +95,9 @@ def decrease_from_cart(request, product_id):
         cart_item = get_object_or_404(Cart, customer=request.user, product=product)
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
+
+    product.stock += 1
+    product.save()
 
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
@@ -110,27 +117,43 @@ def remove_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
 
+    product.stock += cart_item.quantity
+    product.save()
+
     cart_item.delete()
     return HttpResponse(status=204)
 
 
 def clear_cart(request):
     if request.user.is_authenticated:
-        Cart.objects.filter(customer=request.user).delete()
+        items = Cart.objects.filter(customer=request.user)
     else:
-        Cart.objects.filter(session_key=get_session_key(request)).delete()
+        items = Cart.objects.filter(session_key=get_session_key(request))
+
+    for item in items:
+        item.product.stock += item.quantity
+        item.product.save()
+
+    items.delete()
     return HttpResponse(status=204)
 
 
 def checkout(request):
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            subtotal = Cart.calculate_total(request.user)
-        else:
-            subtotal = Cart.calculate_total(get_session_key(request))
-        shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
-        total = subtotal + shipping
+    if request.user.is_authenticated:
+        user_or_session = request.user
+    else:
+        user_or_session = get_session_key(request)
 
+    items = get_cart_queryset(request)
+
+    if not items.exists():
+        return redirect('view_cart')
+
+    subtotal = Cart.calculate_total(user_or_session)
+    shipping = Decimal('0.00') if subtotal > Decimal('20.00') else Decimal('2.99')
+    total = subtotal + shipping
+
+    if request.method == "POST":
         request.session['checkout_total'] = str(total)
         request.session['checkout_data'] = {
             'address': request.POST.get('address'),
@@ -139,6 +162,7 @@ def checkout(request):
             'email': request.POST.get('email'),
             'payment_method': request.POST.get('payment_method'),
             'notes': request.POST.get('notes', ''),
+            'delivery_option': request.POST.get('delivery_option'),
         }
 
         payment_method = request.POST.get('payment_method', '').lower()
@@ -150,7 +174,12 @@ def checkout(request):
         else:
             return redirect('view_cart') 
 
-    return render(request, "checkout.html")
+    return render(request, "checkout.html", {
+        "items": items,
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total
+    })
 
 
 def order_detail(request, public_id):
@@ -184,6 +213,7 @@ def send_email_async(subject, plain_message, from_email, recipient_list, html_me
 def payment_complete_view(request):
     cart_items = get_cart_queryset(request)
     checkout_data = request.session.get('checkout_data')
+    delivery_option = checkout_data.get("delivery_option")
 
     if not checkout_data:
         return redirect("view_cart")
@@ -196,7 +226,10 @@ def payment_complete_view(request):
     else:
         subtotal = Cart.calculate_total(get_session_key(request))
 
-    shipping = 0 if subtotal > 20 else 2.99
+    if delivery_option == DeliveryOption.DELIVERY:
+        shipping = 0 if subtotal > 20 else 2.99
+    else:
+        shipping = 0
 
     order = Order.objects.create(
         customer=request.user if request.user.is_authenticated else None,
@@ -207,6 +240,7 @@ def payment_complete_view(request):
         payment_method=checkout_data['payment_method'],
         notes=checkout_data.get('notes', ''),
         shipping_cost=shipping,
+        delivery_option=delivery_option,
     )
 
     for item in cart_items:
