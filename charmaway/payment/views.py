@@ -1,5 +1,5 @@
-# payment/views.py
-from django.shortcuts import render, get_object_or_404, redirect
+from decimal import Decimal
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,24 +13,15 @@ def pagina_de_pago(request):
     Muestra la página de pago de Stripe.
     """
     try:
-        order_id = request.session.get('order_id_to_pay')
-        if not order_id:
-            return redirect('order:view_cart')
-
-        order = Order.objects.get(order_id=order_id)
-        
-        if order.status != OrderStatus.PENDING:
-            del request.session['order_id_to_pay']
-            return redirect('order:order_detail', order_id=order.order_id)
-            
+        total = request.session.get('checkout_total')
         context = {
             'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
-            'order_total': order.final_price 
+            'order_total': total
         }
         return render(request, 'payment/checkout.html', context)
     
     except Order.DoesNotExist:
-        return redirect('order:view_cart')
+        return redirect('view_cart')
 
 
 def crear_intento_de_pago(request):
@@ -39,24 +30,21 @@ def crear_intento_de_pago(request):
     """
     if request.method == 'POST':
         try:
-            order_id = request.session.get('order_id_to_pay')
-            if not order_id:
-                return JsonResponse({'error': 'No hay pedido para pagar'}, status=403)
+            total = request.session.get('checkout_total')
+            if total is None:
+                return JsonResponse({'error': 'No hay total para pagar'}, status=403)
 
-            order = Order.objects.get(order_id=order_id)
-
-            monto_en_centavos = int(order.final_price * 100) 
+            monto_en_centavos = int(Decimal(total) * 100)
+            if monto_en_centavos <= 0:
+                return JsonResponse({'error': 'El monto debe ser positivo'}, status=400)
 
             if monto_en_centavos <= 0:
                  return JsonResponse({'error': 'El monto debe ser positivo'}, status=400)
 
             intent = stripe.PaymentIntent.create(
                 amount=monto_en_centavos,
-                currency='eur', # O la moneda que uses
+                currency='eur',
                 automatic_payment_methods={'enabled': True},
-                metadata={
-                    'order_id': order.order_id 
-                }
             )
             
             return JsonResponse({'clientSecret': intent.client_secret})

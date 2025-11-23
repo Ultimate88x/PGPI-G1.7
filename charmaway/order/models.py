@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.utils import timezone
 from customer.models import Customer
@@ -6,18 +7,26 @@ import shortuuid
 
 
 class OrderStatus(models.TextChoices):
-    PENDING = "PENDING", "Pending"
-    PROCESSING = "PROCESSING", "Processing"
-    SHIPPED = "SHIPPED", "Shipped"
-    DELIVERED = "DELIVERED", "Delivered"
-    CANCELLED = "CANCELLED", "Cancelled"
+    PROCESSING = "PROCESSING", "Procesándose"
+    SHIPPED = "SHIPPED", "Enviado"
+    DELIVERED = "DELIVERED", "Entregado"
+    CANCELLED = "CANCELLED", "Cancelado"
+
+class DeliveryOption(models.TextChoices):
+    DELIVERY = "DELIVERY", "Envío"
+    PICKUP = "PICK_UP", "Recogida en tienda"
     
+def generate_unique_public_id():
+    while True:
+        pid = shortuuid.uuid()[:12]
+        if not Order.objects.filter(public_id=pid).exists():
+            return pid
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     public_id = models.CharField(
         max_length=12,
-        default=shortuuid.uuid()[:12],
+        default=generate_unique_public_id,
         unique=True,
         editable=False
     )
@@ -37,7 +46,13 @@ class Order(models.Model):
     status = models.CharField(
         max_length=20,
         choices=OrderStatus.choices,
-        default=OrderStatus.PENDING
+        default=OrderStatus.PROCESSING
+    )
+
+    delivery_option = models.CharField(
+        max_length=20,
+        choices=DeliveryOption.choices,
+        default=DeliveryOption.DELIVERY
     )
 
     address = models.CharField(max_length=255, null=True, blank=True)
@@ -59,7 +74,7 @@ class Order(models.Model):
     def calculate_total(self):
         details = self.details.all()
         self.subtotal = sum(d.subtotal for d in details)
-        self.final_price = self.subtotal + self.shipping_cost
+        self.final_price = Decimal(self.subtotal) + Decimal(self.shipping_cost)
         self.save()
 
     def cancel(self):

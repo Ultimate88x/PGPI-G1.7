@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Marcas{% endblock %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <a href="{% url 'administrator:brand_create' %}" class="admin-menu-link active create">+ Nueva Marca</a>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Inventario</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Todos los Productos</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Gestión</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link">Categorías</a></li>
+                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link active">Marcas</a></li>
+                <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">← Volver al Dashboard</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main>
+        <div class="admin-header">
+            <h1 class="admin-title">Marcas ({{ brands|length }})</h1>
+        </div>
+
+        <div class="admin-grid">
+            {% for brand in brands %}
+            <article class="admin-card">
+
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">{{ brand.name }}</h3>
+                    <p style="text-align: center; color: var(--muted); font-size: 0.85rem;">
+                        ID: {{ brand.id }}
+                    </p>
+                </div>
+
+                <div class="card-footer" style="display: flex; justify-content: space-between; gap: 0.5rem;">
+                    <a href="{% url 'administrator:brand_edit' brand.pk %}" class="btn-sm btn-edit" style="flex: 1; text-align: center;">Editar</a>
+                    
+                    <a href="{% url 'administrator:brand_delete' brand.pk %}" 
+                    class="btn-sm btn-delete" 
+                    style="flex: 1; text-align: center;"
+                    onclick="return confirm('¿Estás seguro de que quieres eliminar la marca: {{ brand.name }}? Esta acción no se puede deshacer.');">
+                    Eliminar
+                    </a>
+                </div>
+            </article>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                <p style="color: var(--muted);">No hay marcas registradas.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

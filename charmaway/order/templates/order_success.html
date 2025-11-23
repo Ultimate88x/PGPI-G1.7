@@ -56,8 +56,7 @@
 
     <h1 class="success-title">¡Gracias por tu pedido!</h1>
 
-    <p class="success-info">Tu pedido <strong>#{{ order.order_id }}</strong> se ha creado correctamente.</p>
-    <p class="success-info"><strong>Total:</strong> {{ order.final_price }} €</p>
+    <p class="success-info">Tu pedido <strong>#{{ order.public_id }}</strong> se ha creado correctamente.</p>
     <p class="success-info"><strong>Estado:</strong> {{ order.status }}</p>
     <p class="success-info"><strong>Identificador:</strong> {{ order.public_id }}</p>
 
@@ -66,9 +65,17 @@
         {% for detail in order.details.all %}
             <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0f0f0;">
                 <span>{{ detail.product.name }} (x{{ detail.quantity }})</span>
-                <span>{{ detail.subtotal }} €</span>
+                <span>{{ detail.subtotal|floatformat:2 }} €</span>
             </div>
         {% endfor %}
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-top:1px solid #ccc; margin-top:10px;">
+            <strong>Gastos de envío:</strong>
+            <strong>{{ order.shipping_cost|floatformat:2 }} €</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-top:1px solid #000; margin-top:5px;">
+            <strong>Total:</strong>
+            <strong>{{ order.final_price|floatformat:2 }} €</strong>
+        </div>
     </div>
 
     <a href="{% url 'catalog:catalog' %}" class="success-button">Seguir comprando</a>

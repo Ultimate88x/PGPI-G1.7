@@ -145,9 +145,15 @@
                     </div>
                 </a>
 
-                <form action="{% url 'add_to_cart' product.id %}" onclick="setTimeout(() => location.reload(), 50);" method="post">
+                <form action="{% url 'add_to_cart' product.id %}" 
+                    onclick="setTimeout(() => location.reload(), 50);" 
+                    method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn-add-cart">Añadir al carro</button>
+                    <button type="submit" 
+                            class="btn-add-cart"
+                            {% if product.stock <= 0 %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}>
+                        Añadir al carro
+                    </button>
                 </form>
             </article>
             {% empty %}
