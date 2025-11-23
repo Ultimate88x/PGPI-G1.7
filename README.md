@@ -27,8 +27,7 @@ Puede encontrarlos [aquí](https://marvelapp.com/prototype/agedh8d)
    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO charmaway_user;
    \q
    ```
->>>>>>> .merge_file_5m6caM
-     
+   
 ### Proyecto
 1. Crear y acceder a un entorno virtual:
    ```bash

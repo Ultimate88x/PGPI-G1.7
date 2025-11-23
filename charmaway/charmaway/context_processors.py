@@ -3,14 +3,13 @@ from order.models import Cart
 from catalog.models import Department, Category, Brand
 
 def cart_item_count(request):
+    session_key = request.session.session_key
+
     if request.user.is_authenticated:
         queryset = Cart.objects.filter(customer=request.user)
+    elif session_key is None:
+        return {"cart_item_count": 0}
     else:
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.save()
-            session_key = request.session.session_key
-
         queryset = Cart.objects.filter(session_key=session_key)
 
     total_items = queryset.aggregate(total=Sum("quantity"))["total"] or 0

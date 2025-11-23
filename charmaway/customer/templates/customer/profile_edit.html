@@ -42,6 +42,13 @@
           <label for="zip_code" style="font-size: 13px">Código  postal</label>
           <input type="text" name="zip_code" placeholder="Código Postal" required value="{{ form.zip_code.value }}">
         </div>
+        <div class="input" style="align-items:flex-start;">
+          <label for="prefered_payment_method" style="font-size: 13px">Método de pago preferido</label>
+          <select name="prefered_payment_method" required style="height:38px; padding:8px 12px; border-radius:6px; border:1px solid var(--input-border); outline:none; font-size:14px; background:white;">
+            <option value="tarjeta_credito" {% if form.prefered_payment_method.value == "tarjeta_credito" %}selected{% endif %}>Tarjeta de crédito</option>
+            <option value="contrarreembolso" {% if form.prefered_payment_method.value == "contrarreembolso" %}selected{% endif %}>Contrareembolso</option>
+          </select>
+        </div>
       </div>
 
       {% if form.errors %}
