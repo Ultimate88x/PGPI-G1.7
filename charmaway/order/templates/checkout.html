@@ -4,129 +4,126 @@
 
 {% block extra_head %}
 <style>
-    .checkout-wrapper {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 30px;
-        max-width: 1100px;
-        margin: 40px auto;
-    }
-
-    .checkout-container {
-        padding: 25px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .checkout-container h1 {
-        margin-bottom: 20px;
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 10px;
-    }
-
-    .checkout-section {
-        margin-bottom: 25px;
-    }
-
-    .checkout-label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-    }
-
-    .checkout-input,
-    .checkout-select,
-    .checkout-textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-    .checkout-submit {
-        display: inline-block;
-        padding: 12px 25px;
-        background-color: #ff6969;
-        color: white;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        transition: background-color .2s ease;
-    }
-
-    .checkout-submit:hover {
-        background-color: #ff4b4b;
-    }
-
-    .cart-summary {
-        padding: 20px;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        height: fit-content;
-        text-align: left;
-    }
-
-    .cart-summary h3 {
-        margin-bottom: 10px;
-        text-align: left;
-    }
-
-    .cart-item {
-        display: flex;
-        align-items: center;
-        margin: 10px 0;
-    }
-
-    .cart-item div {
-        text-align: left;
-    }
-
-    .cart-summary p,
-    .cart-summary strong {
-        margin: 5px 0;
-        text-align: left;
-    }
-
-    .cart-totals {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .cart-item img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 6px;
-        margin-right: 10px;
-    }
-</style>
-
-<script>
-function updateShipping() {
-    const subtotal = parseFloat(document.getElementById("cart-subtotal").dataset.subtotal);
-    const delivery = document.querySelector("select[name='delivery_option']").value;
-
-    let shipping = 0;
-    if (delivery === "DELIVERY") {
-        shipping = subtotal > 20 ? 0 : 2.99;
-    }
-
-    document.getElementById("shipping-value").innerText = shipping.toFixed(2);
-    document.getElementById("total-value").innerText = (subtotal + shipping).toFixed(2);
+.checkout-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    max-width: 1100px;
+    margin: 40px auto;
 }
-</script>
+
+.checkout-container {
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.checkout-container h1 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.checkout-section {
+    margin-bottom: 25px;
+}
+
+.checkout-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.checkout-input,
+.checkout-select,
+.checkout-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.checkout-input:disabled {
+    background-color: #f2f2f2;
+    color: #888;
+}
+
+.checkout-submit {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #ff6969;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+
+.checkout-submit:hover {
+    background-color: #ff4b4b;
+}
+
+.cart-summary {
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    height: fit-content;
+    text-align: left;
+}
+
+.cart-summary h3 {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.cart-item div {
+    text-align: left;
+}
+
+.cart-item-price {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.cart-totals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cart-totals .subtotal-line,
+.cart-totals .shipping-line {
+    margin: 2px 0;
+}
+
+.cart-totals .total-line {
+    margin-top: 15px;
+    font-size: 1.2em;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
-
 <div class="checkout-wrapper">
 
     <div class="checkout-container">
@@ -136,35 +133,33 @@ function updateShipping() {
             {% csrf_token %}
 
             <div class="checkout-section">
-                <h3>Pon tu dirección de envío</h3>
-
-                <label class="checkout-label">Dirección
-                    <input class="checkout-input" type="text" name="address"
-                           required value="{{ request.user.address|default:'' }}">
-                </label>
-
-                <label class="checkout-label">Ciudad
-                    <input class="checkout-input" type="text" name="city"
-                           required value="{{ request.user.city|default:'' }}">
-                </label>
-
-                <label class="checkout-label">Código postal
-                    <input class="checkout-input" type="text" name="zip_code"
-                           required value="{{ request.user.zip_code|default:'' }}">
-                </label>
-
-                <label class="checkout-label">Correo electrónico
-                    <input class="checkout-input" type="text" name="email"
-                           required value="{{ request.user.email|default:'' }}">
-                </label>
-            </div>
-
-            <div class="checkout-section">
                 <label class="checkout-label">Método de entrega</label>
-                <select name="delivery_option" class="checkout-select" required onchange="updateShipping()">
+                <select name="delivery_option" id="delivery-select" class="checkout-select" required onchange="updateShippingAndAddress()">
                     <option value="DELIVERY">Envío</option>
                     <option value="PICK_UP">Recogida en tienda</option>
                 </select>
+            </div>
+
+            <div class="checkout-section">
+                <label class="checkout-label">Dirección
+                    <input class="checkout-input" type="text" id="address-input" name="address"
+                           data-original="{{ request.user.address|default:'' }}" value="{{ request.user.address|default:'' }}">
+                </label>
+
+                <label class="checkout-label">Ciudad
+                    <input class="checkout-input" type="text" id="city-input" name="city"
+                           data-original="{{ request.user.city|default:'' }}" value="{{ request.user.city|default:'' }}">
+                </label>
+
+                <label class="checkout-label">Código postal
+                    <input class="checkout-input" type="text" id="zip-input" name="zip_code"
+                           data-original="{{ request.user.zip_code|default:'' }}" value="{{ request.user.zip_code|default:'' }}">
+                </label>
+
+                <label class="checkout-label">Correo electrónico
+                    <input class="checkout-input" type="text" id="email-input" name="email"
+                           value="{{ request.user.email|default:'' }}">
+                </label>
             </div>
 
             <div class="checkout-section">
@@ -197,7 +192,7 @@ function updateShipping() {
                     <div style="flex-grow:1; text-align:left;">
                         <strong>{{ item.product.name }}</strong>
                     </div>
-                    <div style="text-align:right;">
+                    <div class="cart-item-price">
                         {{ item.quantity }} x {{ item.current_price|floatformat:2 }} €
                     </div>
                 </div>
@@ -205,9 +200,11 @@ function updateShipping() {
 
             <hr>
             <div class="cart-totals">
-                <p id="cart-subtotal" data-subtotal="{{ subtotal|stringformat:'f' }}">Subtotal: {{ subtotal|floatformat:2 }} €</p>
-                <p>Gastos de envío: <span id="shipping-value">{{ shipping|floatformat:2 }}</span> €</p>
-                <strong>Total: <span id="total-value">{{ total|floatformat:2 }}</span> €</strong>
+                <p class="subtotal-line" id="cart-subtotal" data-subtotal="{{ subtotal|stringformat:'f' }}">
+                    Subtotal: {{ subtotal|floatformat:2 }} €
+                </p>
+                <p class="shipping-line">Gastos de envío: <span id="shipping-value">{{ shipping|floatformat:2 }}</span> €</p>
+                <strong class="total-line">Total: <span id="total-value">{{ total|floatformat:2 }}</span> €</strong>
             </div>
         {% else %}
             <p>Tu carrito está vacío.</p>
@@ -217,26 +214,30 @@ function updateShipping() {
 </div>
 
 <script>
-    function updateShipping() {
+    function updateShippingAndAddress() {
         const subtotal = parseFloat(document.getElementById("cart-subtotal").dataset.subtotal);
-        const delivery = document.querySelector("select[name='delivery_option']").value;
+        const delivery = document.getElementById("delivery-select").value;
 
         let shipping = 0;
         if (delivery === "DELIVERY") {
             shipping = subtotal > 20 ? 0 : 2.99;
-        } else {
-            shipping = 0;
         }
-
-        const total = subtotal + shipping;
-
         document.getElementById("shipping-value").innerText = shipping.toFixed(2);
-        document.getElementById("total-value").innerText = total.toFixed(2);
+        document.getElementById("total-value").innerText = (subtotal + shipping).toFixed(2);
+
+        const fields = ["address", "city", "zip"];
+        fields.forEach(id => {
+            const input = document.getElementById(id + "-input");
+            if (delivery === "PICK_UP") {
+                input.disabled = true;
+                input.value = "";
+            } else {
+                input.disabled = false;
+                input.value = input.dataset.original;
+            }
+        });
     }
 
-    document.addEventListener('DOMContentLoaded', updateShipping);
-
-    document.querySelector("select[name='delivery_option']").addEventListener('change', updateShipping);
-</script>
-
+    document.addEventListener('DOMContentLoaded', updateShippingAndAddress);
+    </script>
 {% endblock %}

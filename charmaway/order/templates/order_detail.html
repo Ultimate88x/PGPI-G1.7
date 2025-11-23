@@ -76,8 +76,16 @@
         <h2 style="font-size:18px; color:#555;">Estado: {{ order.get_status_display }}</h2>
         <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
         <p><strong>Correo electrónico:</strong> {{ order.email }}</p>
+        <p><strong>Método de envío:</strong>
+            {% if order.delivery_option == "DELIVERY" %}
+                Envío a domicilio
+            {% else %}
+                Recogida en tienda
+            {% endif %}
+        </p>
     </div>
 
+    {% if order.delivery_option == "DELIVERY" %}
     <div class="order-section">
         <h3>Dirección de envío</h3>
         <p>
@@ -85,6 +93,7 @@
             {{ order.city }}, {{ order.zip_code }}
         </p>
     </div>
+    {% endif %}
 
     <div class="order-section">
         <h3>Productos</h3>
@@ -119,7 +128,13 @@
         <p><strong>Subtotal:</strong> {{ order.subtotal }} €</p>
         <p><strong>Gastos de envío:</strong> {{ order.shipping_cost }} €</p>
         <p><strong>Total:</strong> {{ order.final_price }} €</p>
-        <p><strong>Método de pago:</strong> {{ order.payment_method }}</p>
+        <p><strong>Método de pago:</strong> 
+            {% if order.payment_method == "credit_card" %}
+                Tarjeta de crédito
+            {% elif order.payment_method == "contrarreembolso" %}
+                Contrareembolso
+            {% endif %}
+        </p>
         {% if order.notes %}
         <p><strong>Notas:</strong> {{ order.notes }}</p>
         {% endif %}
