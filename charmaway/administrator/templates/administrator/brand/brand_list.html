@@ -29,6 +29,24 @@
     <main>
         <div class="admin-header">
             <h1 class="admin-title">Marcas ({{ brands|length }})</h1>
+
+            <form method="get" class="search-form" style="margin-bottom: 1.5rem;">
+                <input type="text" 
+                    name="q" 
+                    class="search-input" 
+                    placeholder="🔍 Buscar por nombre de marca..." 
+                    value="{{ request.GET.q|default:'' }}">
+                
+                <button type="submit" class="search-btn">
+                    Buscar
+                </button>
+
+                {% if request.GET.q %}
+                    <a href="{% url 'administrator:brand_list' %}" class="btn-clear" title="Limpiar filtros">
+                        ✕
+                    </a>
+                {% endif %}
+            </form>
         </div>
 
         <div class="admin-grid">

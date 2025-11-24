@@ -44,8 +44,24 @@
 
         <div class="admin-header">
             <h1 class="admin-title">Productos ({{ products|length }})</h1>
-            <div class="search-box">
-                </div>
+
+            <form method="get" class="search-form">
+                <input type="text" 
+                    name="q" 
+                    class="search-input" 
+                    placeholder="🔍 Buscar por nombre, marca o categoría..." 
+                    value="{{ request.GET.q|default:'' }}">
+                
+                <button type="submit" class="search-btn">
+                    Buscar
+                </button>
+
+                {% if request.GET.q %}
+                    <a href="{% url 'administrator:product_list' %}" class="btn-clear" title="Limpiar filtros">
+                        ✕
+                    </a>
+                {% endif %}
+            </form>
         </div>
         <div class="admin-grid">
             {% for product in products %}

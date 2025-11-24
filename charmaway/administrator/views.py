@@ -17,7 +17,7 @@ def admin_dashboard(request):
     total_orders = Order.objects.count()
     total_revenue = Order.objects.filter(status='DELIVERED').aggregate(total_revenue=Sum('final_price'))['total_revenue'] or 0
     average_order_value = Order.objects.filter(status='DELIVERED').aggregate(average_value=Sum('final_price') / Sum(1))['average_value'] or 0
-    total_expected_revenue = Order.objects.aggregate(expected_revenue=Sum('final_price'))['expected_revenue'] or 0
+    total_expected_revenue = Order.objects.filter(status__in=['PROCESSING', 'SHIPPED','DELIVERED']).aggregate(expected_revenue=Sum('final_price'))['expected_revenue'] or 0
     
     context = {
         'total_products': total_products,
@@ -32,6 +32,14 @@ def admin_dashboard(request):
 @admin_required
 def product_list(request):
     products = Product.objects.all().select_related('brand', 'category')
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(brand__name__icontains=query) |
+            Q(category__name__icontains=query)
+        ).distinct()
     return render(request, 'administrator/product/product_list.html', {'products': products})
 
 @admin_required
@@ -111,6 +119,11 @@ def product_delete(request, pk):
 @admin_required
 def category_list(request):
     categories = Category.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        categories = categories.filter(
+            Q(name__icontains=query)
+        ).distinct()
     context = {
         'categories': categories
     }
@@ -155,6 +168,11 @@ def category_edit(request, pk):
 @admin_required
 def brand_list(request):
     brands = Brand.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        brands = brands.filter(
+            Q(name__icontains=query)
+        ).distinct()
     context = {
         'brands': brands
     }
@@ -261,17 +279,32 @@ def order_list(request):
     orders = Order.objects.all().order_by('-created_at').select_related('customer')
     query = request.GET.get('q')
     if query:
+        status_mapping = {
+            'procesando': 'PROCESSING',
+            'enviado': 'SHIPPED',
+            'entregado': 'DELIVERED',
+            'cancelado': 'CANCELLED',
+        }
+        matching_statuses = []
+        for es_term, db_value in status_mapping.items():
+            if query.lower() in es_term:
+                matching_statuses.append(db_value)
+        search_filters = (
+            Q(public_id__icontains=query) |
+            Q(email__icontains=query) |
+            Q(search_name__icontains=query)
+        )
+        if matching_statuses:
+            search_filters |= Q(status__in=matching_statuses)
         orders = orders.annotate(
             search_name=Concat(
                 'customer__name', 
                 Value(' '), 
                 'customer__surnames',
                 output_field=CharField()
-            )
+            ),
         ).filter(
-            Q(public_id__icontains=query) |
-            Q(email__icontains=query) |
-            Q(search_name__icontains=query)
+            search_filters
         ).distinct()
     context = {
         'orders': orders
