@@ -22,6 +22,7 @@
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link active">Categorías</a></li>
                 <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
                 <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Productos</a></li>
             </ul>
         </div>
@@ -61,6 +62,17 @@
                         </div>
                     {% endif %}
                 </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Departamento Asociado</label>
+                    
+                    {{ form.department }}
+
+                    {% if form.department.errors %}
+                        <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.4rem; font-weight: 500;">
+                            {{ form.department.errors }}
+                        </div>
+                    {% endif %}
 
                 <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 2rem 0;">
 

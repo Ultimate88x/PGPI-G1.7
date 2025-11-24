@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Gestión de Marcas{% endblock %}
+{% block title %}Gestión de Departamentos{% endblock %}
 {% load static %}
 
 {% block content %}
@@ -7,8 +7,7 @@
 
 <div class="admin-container">
     <aside class="admin-sidebar">
-        <a href="{% url 'administrator:brand_create' %}" class="admin-menu-link active create">+ Marca</a>
-
+        <a href="{% url 'administrator:department_create' %}" class="admin-menu-link active create">+ Departamento</a>
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Inventario</h3>
             <ul class="admin-menu-list">
@@ -20,8 +19,8 @@
             <h3 class="admin-menu-title">Gestión</h3>
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link">Categorías</a></li>
-                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link active">Marcas</a></li>
-                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
+                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link active">Departamentos</a></li>
                 <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">← Volver al Dashboard</a></li>
             </ul>
         </div>
@@ -29,13 +28,13 @@
 
     <main>
         <div class="admin-header">
-            <h1 class="admin-title">Marcas ({{ brands|length }})</h1>
+            <h1 class="admin-title">Departamentos ({{ departments|length }})</h1>
 
             <form method="get" class="search-form" style="margin-bottom: 1.5rem;">
                 <input type="text" 
                     name="q" 
                     class="search-input" 
-                    placeholder="🔍 Buscar por nombre de marca..." 
+                    placeholder="🔍 Buscar por nombre de departamento..." 
                     value="{{ request.GET.q|default:'' }}">
                 
                 <button type="submit" class="search-btn">
@@ -43,7 +42,7 @@
                 </button>
 
                 {% if request.GET.q %}
-                    <a href="{% url 'administrator:brand_list' %}" class="btn-clear" title="Limpiar filtros">
+                    <a href="{% url 'administrator:department_list' %}" class="btn-clear" title="Limpiar filtros">
                         ✕
                     </a>
                 {% endif %}
@@ -51,30 +50,30 @@
         </div>
 
         <div class="admin-grid">
-            {% for brand in brands %}
+            {% for department in departments %}
             <article class="admin-card">
 
                 <div class="card-body">
-                    <h3 class="card-title" style="text-align: center;">{{ brand.name }}</h3>
+                    <h3 class="card-title" style="text-align: center;">{{ department.name }}</h3>
                     <p style="text-align: center; color: var(--muted); font-size: 0.85rem;">
-                        ID: {{ brand.id }}
+                        ID: {{ department.id }}
                     </p>
                 </div>
 
                 <div class="card-footer" style="display: flex; justify-content: space-between; gap: 0.5rem;">
-                    <a href="{% url 'administrator:brand_edit' brand.pk %}" class="btn-sm btn-edit" style="flex: 1; text-align: center;">Editar</a>
+                    <a href="{% url 'administrator:department_edit' department.pk %}" class="btn-sm btn-edit" style="flex: 1; text-align: center;">Editar</a>
                     
-                    <a href="{% url 'administrator:brand_delete' brand.pk %}" 
+                    <a href="{% url 'administrator:department_delete' department.pk %}" 
                     class="btn-sm btn-delete" 
                     style="flex: 1; text-align: center;"
-                    onclick="return confirm('¿Estás seguro de que quieres eliminar la marca: {{ brand.name }}? Esta acción no se puede deshacer.');">
+                    onclick="return confirm('¿Estás seguro de que quieres eliminar el departamento: {{ department.name }}? Esta acción no se puede deshacer.');">
                     Eliminar
                     </a>
                 </div>
             </article>
             {% empty %}
             <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
-                <p style="color: var(--muted);">No hay marcas registradas.</p>
+                <p style="color: var(--muted);">No hay departamentos registradas.</p>
             </div>
             {% endfor %}
         </div>

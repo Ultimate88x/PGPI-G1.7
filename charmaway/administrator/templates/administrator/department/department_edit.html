@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-    {% if brand %}Editar Marca{% else %}Nueva Marca{% endif %}
+    {% if department %}Editar Departamento{% else %}Nuevo Departamento{% endif %}
 {% endblock %}
 {% load static %}
 
@@ -13,7 +13,7 @@
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Acciones</h3>
             <ul class="admin-menu-list">
-                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">← Volver al listado</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">← Volver al listado</a></li>
             </ul>
         </div>
 
@@ -21,8 +21,8 @@
             <h3 class="admin-menu-title">Gestión</h3>
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link">Categorías</a></li>
-                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link active">Marcas</a></li>
-                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
+                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link active">Departamentos</a></li>
                 <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Productos</a></li>
             </ul>
         </div>
@@ -31,10 +31,10 @@
     <main>
         <div class="admin-header">
             <h1 class="admin-title">
-                {% if brand %}
-                    Editando: <span style="color: var(--coral);">{{ brand.name }}</span>
+                {% if department %}
+                    Editando: <span style="color: var(--coral);">{{ department.name }}</span>
                 {% else %}
-                    Crear Nueva Marca
+                    Crear Nuevo Departamento
                 {% endif %}
             </h1>
         </div>
@@ -49,10 +49,10 @@
                     </div>
                 {% endif %}
                 
-                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información de la Marca</h4>
+                <h4 style="margin-bottom: 1rem; color: var(--coral);">Información del Departamento</h4>
                 
                 <div class="form-group full-width">
-                    <label class="form-label">Nombre de la Marca</label>
+                    <label class="form-label">Nombre del Departamento</label>
                     
                     {{ form.name }}
 
@@ -66,9 +66,9 @@
                 <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 2rem 0;">
 
                 <div style="display: flex; justify-content: flex-end; gap: 1rem;">
-                    <a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Cancelar</a>
+                    <a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Cancelar</a>
                     <button type="submit" class="btn-save">
-                        {% if brand %}Guardar Cambios{% else %}Crear Marca{% endif %}
+                        {% if department %}Guardar Cambios{% else %}Crear Departamento{% endif %}
                     </button>
                 </div>
             </form>

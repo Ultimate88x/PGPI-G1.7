@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from catalog.models import Product, Brand, Category
+from catalog.models import Product, Brand, Category, Department
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm
 from .decorators import admin_required
 from django.contrib import messages
 from django.db.models import Q, CharField, Value, Sum
@@ -213,6 +213,55 @@ def brand_edit(request, pk):
         'brand': brand
     }
     return render(request, 'administrator/brand/brand_edit.html', context)
+
+@admin_required
+def department_list(request):
+    departments = Department.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        departments = departments.filter(
+            Q(name__icontains=query)
+        ).distinct()
+    context = {
+        'departments': departments
+    }
+    return render(request, 'administrator/department/department_list.html', context)
+
+@admin_required
+def department_create(request):
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:department_list')
+    else:
+        form = DepartmentForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/department/department_edit.html', context)
+
+@admin_required
+def department_delete(request, pk):
+    department = get_object_or_404(Department, pk=pk)
+    department.delete()
+    return redirect('administrator:department_list')
+
+@admin_required
+def department_edit(request, pk):
+    department = get_object_or_404(Department, pk=pk)
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:department_list')
+    else:
+        form = DepartmentForm(instance=department)
+    context = {
+        'form': form,
+        'department': department
+    }
+    return render(request, 'administrator/department/department_edit.html', context)
 
 @admin_required
 def customer_list(request):

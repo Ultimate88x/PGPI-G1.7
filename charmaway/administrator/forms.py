@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
-from catalog.models import Product, ProductImage, ProductSize, Category, Brand
+from catalog.models import Product, ProductImage, ProductSize, Category, Brand, Department
 from customer.models import Customer
 from order.models import Order
 
@@ -56,12 +56,10 @@ class ProductForm(ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['name', 'department']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'Ej: Calzado, Camisetas...'
-            })
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Calzado, Camisetas...'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
         }
 
     def clean_name(self):
@@ -74,6 +72,30 @@ class CategoryForm(forms.ModelForm):
             
         if cat.exists():
             raise forms.ValidationError(f"La categoría '{name}' ya existe.")
+            
+        return name
+    
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Ropa, Electrónica...'
+            }),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        dept = Department.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            dept = dept.exclude(pk=self.instance.pk)
+            
+        if dept.exists():
+            raise forms.ValidationError(f"El departamento '{name}' ya existe.")
             
         return name
     

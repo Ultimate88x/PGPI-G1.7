@@ -31,7 +31,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     image = models.CharField(max_length=255, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='categories', null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='categories', null=True, blank=True)
     order_position = models.IntegerField(default=0)
 
     def __str__(self):

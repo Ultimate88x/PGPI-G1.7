@@ -7,7 +7,7 @@
 
 <div class="admin-container">
     <aside class="admin-sidebar">
-        <a href="{% url 'administrator:category_create' %}" class="admin-menu-link active create">+ Nueva Categoría</a>
+        <a href="{% url 'administrator:category_create' %}" class="admin-menu-link active create">+ Categoría</a>
 
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Inventario</h3>
@@ -21,6 +21,7 @@
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link active">Categorías</a></li>
                 <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
                 <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">← Volver al Dashboard</a></li>
             </ul>
         </div>
