@@ -5,14 +5,27 @@ from order.models import Order
 from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm
 from .decorators import admin_required
 from django.contrib import messages
+from django.db.models import Q, CharField, Value, Sum
+from django.db.models.functions import Concat
 from django.db.models.deletion import ProtectedError
 
 @admin_required
 def admin_dashboard(request):
+    
     total_products = Product.objects.count()
+    total_clients = Customer.objects.count()
+    total_orders = Order.objects.count()
+    total_revenue = Order.objects.filter(status='DELIVERED').aggregate(total_revenue=Sum('final_price'))['total_revenue'] or 0
+    average_order_value = Order.objects.filter(status='DELIVERED').aggregate(average_value=Sum('final_price') / Sum(1))['average_value'] or 0
+    total_expected_revenue = Order.objects.aggregate(expected_revenue=Sum('final_price'))['expected_revenue'] or 0
     
     context = {
-        'total_products': total_products
+        'total_products': total_products,
+        'total_clients': total_clients,
+        'total_orders': total_orders,
+        'total_revenue': total_revenue,
+        'average_order_value': average_order_value,
+        'total_expected_revenue': total_expected_revenue
     }
     return render(request, 'administrator/admin_dashboard.html', context)
 
@@ -186,6 +199,19 @@ def brand_edit(request, pk):
 @admin_required
 def customer_list(request):
     customers = Customer.objects.all().order_by('-is_superuser')
+    query = request.GET.get('q')
+    if query:
+        customers = customers.annotate(
+            search_name=Concat(
+                'name', 
+                Value(' '), 
+                'surnames',
+                output_field=CharField()
+            )
+        ).filter(
+            Q(email__icontains=query) |
+            Q(search_name__icontains=query)
+        ).distinct()
     context = {
         'customers': customers
     }
@@ -233,6 +259,20 @@ def customer_create(request):
 @admin_required
 def order_list(request):
     orders = Order.objects.all().order_by('-created_at').select_related('customer')
+    query = request.GET.get('q')
+    if query:
+        orders = orders.annotate(
+            search_name=Concat(
+                'customer__name', 
+                Value(' '), 
+                'customer__surnames',
+                output_field=CharField()
+            )
+        ).filter(
+            Q(public_id__icontains=query) |
+            Q(email__icontains=query) |
+            Q(search_name__icontains=query)
+        ).distinct()
     context = {
         'orders': orders
     }

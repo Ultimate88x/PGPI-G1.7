@@ -26,6 +26,25 @@
             <h1 class="admin-title">Clientes Registrados ({{ customers|length }})</h1>
             <div class="search-box">
                 </div>
+
+            
+            <form method="get" class="search-form">
+                <input type="text" 
+                    name="q" 
+                    class="search-input" 
+                    placeholder="🔍 Buscar por email o cliente..." 
+                    value="{{ request.GET.q|default:'' }}">
+                
+                <button type="submit" class="search-btn">
+                    Buscar
+                </button>
+
+                {% if request.GET.q %}
+                    <a href="{% url 'administrator:customer_list' %}" class="btn-clear" title="Limpiar filtros">
+                        ✕
+                    </a>
+                {% endif %}
+            </form>
         </div>
 
         <div style="overflow-x: auto;">

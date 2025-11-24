@@ -87,20 +87,43 @@
 
             <article class="admin-card">
                 <div class="card-body" style="text-align: center; padding: 2rem;">
-                    <div style="font-size: 2.5rem; font-weight: 700; color: #50e3c2; line-height: 1;">{{ total_clients|default:"0" }}</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #50e3c2; line-height: 1;">{{ total_clients }}</div>
                     <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Clientes</div>
                 </div>
             </article>
 
             <article class="admin-card">
                 <div class="card-body" style="text-align: center; padding: 2rem;">
-                    <div style="font-size: 2.5rem; font-weight: 700; color: #f5a623; line-height: 1;">{{ total_orders|default:"0" }}</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #f5a623; line-height: 1;">{{ total_orders }}</div>
                     <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Pedidos</div>
                 </div>
             </article>
 
         </div>
 
+        <div class="admin-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            
+            <article class="admin-card">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #7ed321; line-height: 1;">{{ total_revenue }}€</div>
+                    <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Ingresos Totales</div>
+                </div>
+            </article>
+
+            <article class="admin-card">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #bd10e0; line-height: 1;">{{ average_order_value|floatformat:2 }}€</div>
+                    <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Valor Promedio de Pedido</div>
+                </div>
+            </article>
+
+            <article class="admin-card">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #ff0000ff; line-height: 1;">{{ total_expected_revenue }}€</div>
+                    <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Ingresos Totales Esperados</div>
+                </div>
+            </article>
+        </div>
     </main>
 </div>
 {% endblock %}

@@ -21,6 +21,24 @@
     <main>
         <div class="admin-header">
             <h1 class="admin-title">Pedidos Recientes ({{ orders|length }})</h1>
+
+            <form method="get" class="search-form">
+                <input type="text" 
+                    name="q" 
+                    class="search-input" 
+                    placeholder="🔍 Buscar por ID, email o cliente..." 
+                    value="{{ request.GET.q|default:'' }}">
+                
+                <button type="submit" class="search-btn">
+                    Buscar
+                </button>
+
+                {% if request.GET.q %}
+                    <a href="{% url 'administrator:order_list' %}" class="btn-clear" title="Limpiar filtros">
+                        ✕
+                    </a>
+                {% endif %}
+            </form>
         </div>
 
         <div style="overflow-x: auto;">
@@ -39,7 +57,7 @@
                     {% for order in orders %}
                     <tr>
                         <td style="font-family: monospace; font-weight: bold; color: var(--dark-btn);">
-                            #{{ order.public_id }}
+                            {{ order.public_id }}
                         </td>
                         <td>
                             {% if order.customer %}
