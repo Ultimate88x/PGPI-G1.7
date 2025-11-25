@@ -3,7 +3,9 @@ from catalog.models import Product, Category, Brand, Department
 
 def home(request):
     # Get featured products
-    featured_products = Product.objects.filter(
+    featured_products = Product.objects.exclude(
+        category__department__name='Servicios'
+    ).filter(
         is_available=True,
         is_featured=True
     ).select_related('brand', 'category').prefetch_related('images')[:8]
@@ -18,7 +20,9 @@ def home(request):
     ).select_related('brand', 'category').prefetch_related('images')[:4]
 
     # Get newest products
-    newest_products = Product.objects.filter(
+    newest_products = Product.objects.exclude(
+        category__department__name='Servicios'
+    ).filter(
         is_available=True
     ).select_related('brand', 'category').prefetch_related('images').order_by('-created_at')[:4]
 
