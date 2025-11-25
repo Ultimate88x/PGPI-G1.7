@@ -3,7 +3,7 @@ from django.forms import ModelForm, inlineformset_factory
 from catalog.models import Product, ProductImage, ProductSize, Category, Brand, Department
 from customer.models import Customer
 from order.models import Order
-from services.models import Service, ServiceCategory
+from services.models import Service
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -53,6 +53,11 @@ class ProductForm(ModelForm):
             'brand': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['category'].queryset = Category.objects.exclude(department__name='Servicios')
         
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -167,27 +172,6 @@ class ServiceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['category'].queryset = Category.objects.filter(department__name='Servicios')
-        
-class ServiceCategoryForm(forms.ModelForm):
-    class Meta:
-        model = ServiceCategory
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        
-        cat = ServiceCategory.objects.filter(name__iexact=name)
-        
-        if self.instance.pk:
-            cat = cat.exclude(pk=self.instance.pk)
-            
-        if cat.exists():
-            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
-            
-        return name
 
 class CustomerBaseForm(forms.ModelForm):
     class Meta:

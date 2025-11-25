@@ -3,7 +3,7 @@ from catalog.models import Product, Brand, Category, Department
 from services.models import Service
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm, ServiceForm, ServiceCategoryForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm, ServiceForm
 from .decorators import admin_required
 from django.contrib import messages
 from django.db.models import Q, CharField, Value, Sum
@@ -13,7 +13,7 @@ from django.db.models.deletion import ProtectedError
 @admin_required
 def admin_dashboard(request):
     
-    total_products = Product.objects.count()
+    total_products = Product.objects.exclude(category__department__name='Servicios').count()
     total_clients = Customer.objects.count()
     total_orders = Order.objects.count()
     total_services = Service.objects.count()
@@ -36,7 +36,9 @@ def admin_dashboard(request):
 
 @admin_required
 def product_list(request):
-    products = Product.objects.all().select_related('brand', 'category')
+    products = Product.objects.exclude(
+            category__department__name='Servicios'
+        ).select_related('brand', 'category')
     query = request.GET.get('q')
     if query:
         products = products.filter(
@@ -494,6 +496,7 @@ def order_detail(request, pk):
     context = {
         'form': form,
         'order': order,
-        'details': order.details.all().select_related('product')
+        'details': order.details.filter(product__isnull=False).select_related('product'),
+        'services': order.details.filter(service__isnull=False).select_related('service'),
     }
     return render(request, 'administrator/order/order_detail.html', context)
