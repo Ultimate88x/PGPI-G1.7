@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Servicios{% endblock %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <a href="{% url 'administrator:service_create' %}" class="admin-menu-link active create">+ Servicio</a>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Inventario</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Todos los Productos</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Servicios</h3>
+            <ul class="admin-menu-list">    
+                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link active">Servicios</a></li>
+                <li><a href="{% url 'administrator:service_category_list' %}" class="admin-menu-link">Categorías</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Gestión</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link">Categorías</a></li>
+                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
+                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
+                <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">← Volver al Dashboard</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main>
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <div class="alert">
+                        {% if message.tags == 'success' %}
+                            <strong>¡Éxito!</strong>
+                        {% endif %}
+                        {% if message.tags == 'error' %}
+                            <strong>¡Error!</strong>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="admin-header">
+            <h1 class="admin-title">Servicios ({{ services|length }})</h1>
+
+            <form method="get" class="search-form">
+                <input type="text" 
+                    name="q" 
+                    class="search-input" 
+                    placeholder="🔍 Buscar por nombre o categoría..." 
+                    value="{{ request.GET.q|default:'' }}">
+                
+                <button type="submit" class="search-btn">
+                    Buscar
+                </button>
+
+                {% if request.GET.q %}
+                    <a href="{% url 'administrator:service_list' %}" class="btn-clear" title="Limpiar filtros">
+                        ✕
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="admin-grid">
+            {% for service in services %}
+            <article class="admin-card">
+                <div style="height: 180px; overflow: hidden;">
+                    <img src="{{ service.image|default:'/static/images/no-image.svg' }}" 
+                         alt="{{ service.name }}" 
+                         class="card-img-top"
+                         onerror="this.src='{% static 'images/no-image.svg' %}'">
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">{{ service.name }}</h3>
+                    <div class="card-price">
+                            ${{ service.price }}
+                    </div>
+                </div>
+
+                <div class="card-footer" style="display: flex; justify-content: space-between; gap: 0.5rem;">
+                    <a href="{% url 'administrator:service_edit' service.pk %}" class="btn-sm btn-edit" style="flex: 1; text-align: center;">Editar</a>
+                    
+                    <a href="{% url 'administrator:service_delete' service.pk %}" 
+                    class="btn-sm btn-delete" 
+                    style="flex: 1; text-align: center;"
+                    onclick="return confirm('¿Estás seguro de que quieres eliminar el servicio: {{ service.name }}? Esta acción no se puede deshacer.');">
+                    Eliminar
+                    </a>
+                </div>
+
+            </article>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                <p style="color: var(--muted);">No hay servicios registrados.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </main>
+</div>
+{% endblock %}

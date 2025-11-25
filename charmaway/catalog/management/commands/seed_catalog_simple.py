@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from catalog.models import Department, Brand, Category, Product, ProductImage, ProductSize
+from order.models import Order
 import random
 
 
@@ -10,6 +11,7 @@ class Command(BaseCommand):
         self.stdout.write('Starting catalog seeding (simplified)...')
 
         # Clear existing data
+        Order.objects.all().delete()
         ProductImage.objects.all().delete()
         ProductSize.objects.all().delete()
         Product.objects.all().delete()

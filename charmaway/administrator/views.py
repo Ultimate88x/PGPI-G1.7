@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category, Department
-from services.models import Service, ServiceCategory
+from services.models import Service
 from customer.models import Customer
 from order.models import Order
 from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm, ServiceForm, ServiceCategoryForm
@@ -16,7 +16,9 @@ def admin_dashboard(request):
     total_products = Product.objects.count()
     total_clients = Customer.objects.count()
     total_orders = Order.objects.count()
+    total_services = Service.objects.count()
     total_revenue = Order.objects.filter(status='DELIVERED').aggregate(total_revenue=Sum('final_price'))['total_revenue'] or 0
+    total_lost = Order.objects.filter(status='CANCELLED').aggregate(total_lost=Sum('final_price'))['total_lost'] or 0
     average_order_value = Order.objects.filter(status='DELIVERED').aggregate(average_value=Sum('final_price') / Sum(1))['average_value'] or 0
     total_expected_revenue = Order.objects.filter(status__in=['PROCESSING', 'SHIPPED','DELIVERED']).aggregate(expected_revenue=Sum('final_price'))['expected_revenue'] or 0
     
@@ -24,7 +26,9 @@ def admin_dashboard(request):
         'total_products': total_products,
         'total_clients': total_clients,
         'total_orders': total_orders,
+        'total_services': total_services,
         'total_revenue': total_revenue,
+        'total_lost': total_lost,
         'average_order_value': average_order_value,
         'total_expected_revenue': total_expected_revenue
     }
@@ -331,7 +335,7 @@ def service_delete(request, pk):
 
 @admin_required
 def service_category_list(request):
-    service_categories = ServiceCategory.objects.all().order_by('name')
+    service_categories = Category.objects.filter(department__name='Servicios').order_by('name')
     query = request.GET.get('q')
     if query:
         service_categories = service_categories.filter(
@@ -345,12 +349,12 @@ def service_category_list(request):
 @admin_required
 def service_category_create(request):
     if request.method == 'POST':
-        form = ServiceCategoryForm(request.POST)
+        form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('administrator:service_category_list')
     else:
-        form = ServiceCategoryForm()
+        form = CategoryForm()
     context = {
         'form': form
     }
@@ -358,14 +362,14 @@ def service_category_create(request):
 
 @admin_required
 def service_category_edit(request, pk):
-    service_category = get_object_or_404(ServiceCategory, pk=pk)
+    service_category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
-        form = ServiceCategoryForm(request.POST, instance=service_category)
+        form = CategoryForm(request.POST, instance=service_category)
         if form.is_valid():
             form.save()
-            return redirect('administrator:service-category_list')
+            return redirect('administrator:service_category_list')
     else:
-        form = ServiceCategoryForm(instance=service_category)
+        form = CategoryForm(instance=service_category)
     context = {
         'form': form,
         'service_category': service_category
@@ -374,7 +378,7 @@ def service_category_edit(request, pk):
 
 @admin_required
 def service_category_delete(request, pk):
-    service_category = get_object_or_404(ServiceCategory, pk=pk)
+    service_category = get_object_or_404(Category, pk=pk)
     service_category.delete()
     return redirect('administrator:service_category_list')
 

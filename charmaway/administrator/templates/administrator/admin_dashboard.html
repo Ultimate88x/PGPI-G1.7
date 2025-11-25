@@ -21,6 +21,14 @@
         </div>
 
         <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Servicios</h3>
+            <ul class="admin-menu-list">    
+                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link">Servicios</a></li>
+                <li><a href="{% url 'administrator:service_category_list' %}" class="admin-menu-link">Categorías</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
             <h3 class="admin-menu-title">Negocio</h3>
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:customer_list' %}" class="admin-menu-link">Clientes</a></li>
@@ -48,6 +56,17 @@
                         <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Inventario, categorias, marcas y departamentos.</p>
                     </div>
                     <a href="{% url 'administrator:product_list' %}" class="btn-create" style="background-color: #4a90e2; margin-bottom: 0; font-size: 1.1rem;">Ir a Productos</a>
+                </div>
+            </article>
+
+            <article class="admin-card">
+                <div class="card-body" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; padding: 3rem 2rem;">
+                    <div>
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">💵</div>
+                        <h3 class="card-title" style="font-size: 1.8rem;">Servicios</h3>
+                        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Servicios y sus categorías.</p>
+                    </div>
+                    <a href="{% url 'administrator:service_list' %}" class="btn-create" style="background-color: #29dc58ff; margin-bottom: 0; font-size: 1.1rem;">Ver Pedidos</a>
                 </div>
             </article>
 
@@ -88,6 +107,13 @@
 
             <article class="admin-card">
                 <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #29dc58ff; line-height: 1;">{{ total_services }}</div>
+                    <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Servicios</div>
+                </div>
+            </article>
+
+            <article class="admin-card">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
                     <div style="font-size: 2.5rem; font-weight: 700; color: #50e3c2; line-height: 1;">{{ total_clients }}</div>
                     <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Clientes</div>
                 </div>
@@ -111,6 +137,13 @@
                 </div>
             </article>
 
+           <article class="admin-card">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #ff0000ff; line-height: 1;">{{ total_lost }}€</div>
+                    <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Ingresos Perdidos</div>
+                </div>
+            </article> 
+
             <article class="admin-card">
                 <div class="card-body" style="text-align: center; padding: 2rem;">
                     <div style="font-size: 2.5rem; font-weight: 700; color: #bd10e0; line-height: 1;">{{ average_order_value|floatformat:2 }}€</div>
@@ -120,7 +153,7 @@
 
             <article class="admin-card">
                 <div class="card-body" style="text-align: center; padding: 2rem;">
-                    <div style="font-size: 2.5rem; font-weight: 700; color: #ff0000ff; line-height: 1;">{{ total_expected_revenue }}€</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #8cff00ff; line-height: 1;">{{ total_expected_revenue }}€</div>
                     <div style="color: var(--muted); text-transform: uppercase; font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;">Ingresos Totales Esperados</div>
                 </div>
             </article>

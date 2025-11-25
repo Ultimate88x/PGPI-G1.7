@@ -153,7 +153,7 @@ SizeFormSet = inlineformset_factory(
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ['name', 'description', 'category', 'price', 'offer_price', 'duration', 'image']
+        fields = ['name', 'description', 'category', 'price', 'offer_price', 'duration', 'image', 'is_available', 'is_featured']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -163,6 +163,10 @@ class ServiceForm(forms.ModelForm):
             'duration': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.URLInput(attrs={'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['category'].queryset = Category.objects.filter(department__name='Servicios')
         
 class ServiceCategoryForm(forms.ModelForm):
     class Meta:
