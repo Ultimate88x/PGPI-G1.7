@@ -1,24 +1,25 @@
-.card{
-  width:100%;
-  max-width:560px;
-  text-align:center;
-  box-shadow: none;
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff; 
+    padding:16px;
+    box-sizing: border-box;
 }
 
-.avatar{
-  width:160px;
-  height:160px;
-  border-radius:50%;
-  border:10px solid #000;
-  margin:14px auto 22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:transparent;
+.auth-container {
+    width: 100%;
+    max-width: 560px;
+    background-color: #ff9292;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
-.avatar svg{width:64px;height:64px}
 
-form{
+.auth-container form{
   margin-top:8px;
   display:flex;
   flex-direction:column;
@@ -32,6 +33,7 @@ form{
   flex-direction:column;
   gap:6px;
   align-items:stretch;
+  color:#ffffff;
 }
 .input input{
   height:38px;
@@ -88,19 +90,31 @@ form{
 
 @media (max-width:760px){
   .search{width:100%}
-  .nav{display:none}
   .avatar{width:130px;height:130px;border-width:8px}
   .input input{height:40px}
   .btn{min-width:100px;padding:9px 12px}
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 16px; 
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 8px;
 }
 
-.form-grid .input input {
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+.form-grid .input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     width: 100%;
 }
 
