@@ -61,11 +61,9 @@ def add_product_to_cart(request, product_id):
 
     quantity = max(1, quantity)
 
-    # stock check
     if product.stock < quantity:
         return HttpResponse("Not enough stock", status=400)
 
-    # build query
     if request.user.is_authenticated:
         filter_kwargs = {"customer": request.user, "product": product, "service": None}
     else:
@@ -82,7 +80,6 @@ def add_product_to_cart(request, product_id):
     cart_item.current_price = product.price
     cart_item.save()
 
-    # decrease stock
     product.stock -= quantity
     product.save()
 
@@ -129,7 +126,6 @@ def decrease_product_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
 
-    # restore stock
     product.stock += 1
     product.save()
 
@@ -169,7 +165,6 @@ def remove_product_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
 
-    # restore stock
     product.stock += cart_item.quantity
     product.save()
 
@@ -343,6 +338,7 @@ def payment_complete_view(request):
 def payment_success_cod(request):
     cart_items = get_cart_queryset(request)
     checkout_data = request.session.get('checkout_data')
+    delivery_option = checkout_data.get("delivery_option")
 
     if not checkout_data:
         return redirect("view_cart")
@@ -363,9 +359,10 @@ def payment_success_cod(request):
         city=checkout_data['city'],
         zip_code=checkout_data['zip_code'],
         email=checkout_data['email'],
-        payment_method="contrarreembolso",
+        payment_method=checkout_data['payment_method'],
         notes=checkout_data.get('notes', ''),
         shipping_cost=shipping,
+        delivery_option=delivery_option,
     )
 
     for item in cart_items:
