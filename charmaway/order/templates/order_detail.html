@@ -116,7 +116,10 @@
                             {{ item.product.name }}
                             </a>
                         {% elif item.service %}
+                            <a href="{% url 'services:service_detail' item.service.id %}" 
+                            style="color:#ff6969; text-decoration:none; font-weight:bold;">
                             {{ item.service.name }}
+                            </a>
                         {% endif %}
                     </td>
                     <td>{{ item.quantity }}</td>
