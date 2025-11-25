@@ -66,6 +66,16 @@
                             {{ form.email.errors }}
                         </div>
                     </div>
+                    {% if not customer.pk %}
+                        <div class="form-group">
+                            <label class="form-label">Contraseña</label>
+                            {{ form.password }}
+                            {% if form.password.help_text %}
+                                <small class="text-muted" style="font-size: 0.75rem; color: var(--muted);">{{ form.password.help_text }}</small>
+                            {% endif %}
+                            {{ form.password.errors }}
+                        </div>
+                    {% endif %}
                     <div class="form-group">
                         <label class="form-label">Teléfono</label>
                         {{ form.phone }}

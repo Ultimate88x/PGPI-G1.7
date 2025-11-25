@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Brand, Category, Department
+from services.models import Service, ServiceCategory
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm, ServiceForm, ServiceCategoryForm
 from .decorators import admin_required
 from django.contrib import messages
 from django.db.models import Q, CharField, Value, Sum
@@ -40,7 +41,10 @@ def product_list(request):
             Q(brand__name__icontains=query) |
             Q(category__name__icontains=query)
         ).distinct()
-    return render(request, 'administrator/product/product_list.html', {'products': products})
+    context = {
+        'products': products
+    }
+    return render(request, 'administrator/product/product_list.html', context)
 
 @admin_required
 def product_create(request):
@@ -71,7 +75,6 @@ def product_create(request):
 @admin_required
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         image_formset = ImageFormSet(request.POST, instance=product)
@@ -262,6 +265,118 @@ def department_edit(request, pk):
         'department': department
     }
     return render(request, 'administrator/department/department_edit.html', context)
+
+@admin_required
+def service_list(request):
+    services = Service.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        services = services.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        ).distinct()
+    context = {
+        'services': services
+    }
+    return render(request, 'administrator/service/service_list.html', context)
+
+@admin_required
+def service_create(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:service_list')
+    else:
+        form = ServiceForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/service/service_edit.html', context)
+
+@admin_required
+def service_edit(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:service_list')
+    else:
+        form = ServiceForm(instance=service)
+    context = {
+        'form': form,
+        'service': service
+    }
+    return render(request, 'administrator/service/service_edit.html', context)
+
+@admin_required
+def service_delete(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    try:
+        service.delete()
+        messages.success(request, "El servicio ha sido eliminado correctamente.")
+    except ProtectedError as e:
+        objetos_bloqueantes = e.args[1]
+        ids_pedidos = set(detalle.order.order_id for detalle in objetos_bloqueantes)
+        lista_pedidos_str = ", ".join(str(id) for id in ids_pedidos)
+        mensaje_error = (
+            f"⚠️ No se puede eliminar '{service.name}'. "
+            f"Aparece en los siguientes Pedidos (IDs): {lista_pedidos_str} ."
+        )
+        
+        messages.error(request, mensaje_error)
+    return redirect('administrator:service_list')
+
+@admin_required
+def service_category_list(request):
+    service_categories = ServiceCategory.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        service_categories = service_categories.filter(
+            Q(name__icontains=query)
+        ).distinct()
+    context = {
+        'service_categories': service_categories
+    }
+    return render(request, 'administrator/service-category/service_category_list.html', context)
+
+@admin_required
+def service_category_create(request):
+    if request.method == 'POST':
+        form = ServiceCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:service_category_list')
+    else:
+        form = ServiceCategoryForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'administrator/service-category/service_category_edit.html', context)
+
+@admin_required
+def service_category_edit(request, pk):
+    service_category = get_object_or_404(ServiceCategory, pk=pk)
+    if request.method == 'POST':
+        form = ServiceCategoryForm(request.POST, instance=service_category)
+        if form.is_valid():
+            form.save()
+            return redirect('administrator:service-category_list')
+    else:
+        form = ServiceCategoryForm(instance=service_category)
+    context = {
+        'form': form,
+        'service_category': service_category
+    }
+    return render(request, 'administrator/service-category/service_category_edit.html', context)
+
+@admin_required
+def service_category_delete(request, pk):
+    service_category = get_object_or_404(ServiceCategory, pk=pk)
+    service_category.delete()
+    return redirect('administrator:service_category_list')
 
 @admin_required
 def customer_list(request):

@@ -3,6 +3,7 @@ from django.forms import ModelForm, inlineformset_factory
 from catalog.models import Product, ProductImage, ProductSize, Category, Brand, Department
 from customer.models import Customer
 from order.models import Order
+from services.models import Service, ServiceCategory
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -149,6 +150,41 @@ SizeFormSet = inlineformset_factory(
     }
 )
 
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['name', 'description', 'category', 'price', 'offer_price', 'duration', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'offer_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'duration': forms.TextInput(attrs={'class': 'form-control'}),
+            'image': forms.URLInput(attrs={'class': 'form-control'}),
+        }
+        
+class ServiceCategoryForm(forms.ModelForm):
+    class Meta:
+        model = ServiceCategory
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        
+        cat = ServiceCategory.objects.filter(name__iexact=name)
+        
+        if self.instance.pk:
+            cat = cat.exclude(pk=self.instance.pk)
+            
+        if cat.exists():
+            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
+            
+        return name
+
 class CustomerBaseForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -181,10 +217,26 @@ class CustomerBaseForm(forms.ModelForm):
         return email
     
 class CustomerCreateForm(CustomerBaseForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Contraseña",
+        help_text="La contraseña se guardará de forma segura."
+    )
+    
     class Meta(CustomerBaseForm.Meta):
-        fields = CustomerBaseForm.Meta.fields + ['is_superuser']
+        fields = CustomerBaseForm.Meta.fields + ['is_superuser', 'password']
         widgets = CustomerBaseForm.Meta.widgets.copy()
         widgets['is_superuser'] = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        
+    def save(self, commit=True):
+        customer = super().save(commit=False)
+        password = self.cleaned_data.get('password')
+        customer.set_password(password)
+        
+        if commit:
+            customer.save()
+            
+        return customer
         
 class OrderStatusForm(forms.ModelForm):
     class Meta:
