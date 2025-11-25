@@ -145,7 +145,7 @@
                     </div>
                 </a>
 
-                <form action="{% url 'add_to_cart' product.id %}" 
+                <form action="{% url 'add_product' product.id %}" 
                     onclick="setTimeout(() => location.reload(), 50);" 
                     method="post">
                     {% csrf_token %}

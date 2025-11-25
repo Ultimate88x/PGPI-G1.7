@@ -189,10 +189,17 @@
         {% if items %}
             {% for item in items %}
                 <div class="cart-item">
-                    <img src="{{ item.product.images.first.image|default:'/static/images/no-image.svg' }}">
-                    <div style="flex-grow:1; text-align:left;">
-                        <strong>{{ item.product.name }}</strong>
-                    </div>
+                    {% if item.product %}
+                        <img src="{{ item.product.images.first.image|default:'/static/images/no-image.svg' }}">
+                        <div style="flex-grow:1; text-align:left;">
+                            <strong>{{ item.product.name }}</strong>
+                        </div>
+                    {% elif item.service %}
+                        <img src="{{ item.service.image|default:'/static/images/no-image.svg' }}">
+                        <div style="flex-grow:1; text-align:left;">
+                            <strong>{{ item.service.name }}</strong>
+                        </div>
+                    {% endif %}
                     <div class="cart-item-price">
                         {{ item.quantity }} x {{ item.current_price|floatformat:2 }} €
                     </div>
@@ -232,13 +239,15 @@
             if (delivery === "PICK_UP") {
                 input.disabled = true;
                 input.value = "";
+                input.removeAttribute("required");
             } else {
                 input.disabled = false;
                 input.value = input.dataset.original;
+                input.setAttribute("required", "required");
             }
         });
     }
 
     document.addEventListener('DOMContentLoaded', updateShippingAndAddress);
-    </script>
+</script>
 {% endblock %}

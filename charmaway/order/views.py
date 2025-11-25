@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from .models import Cart, Order, OrderDetail, Product, DeliveryOption
+from services.models import Service
 from charmaway.utils.mailjet_api import send_mail_via_mailjet
 import threading
 
@@ -49,9 +50,9 @@ def view_cart(request):
     })
 
 
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+def add_product_to_cart(request, product_id):
     session_key = get_session_key(request)
+    product = get_object_or_404(Product, pk=product_id)
 
     try:
         quantity = int(request.POST.get("quantity", 1))
@@ -60,13 +61,15 @@ def add_to_cart(request, product_id):
 
     quantity = max(1, quantity)
 
+    # stock check
     if product.stock < quantity:
         return HttpResponse("Not enough stock", status=400)
 
+    # build query
     if request.user.is_authenticated:
-        filter_kwargs = {"customer": request.user, "product": product}
+        filter_kwargs = {"customer": request.user, "product": product, "service": None}
     else:
-        filter_kwargs = {"session_key": session_key, "product": product}
+        filter_kwargs = {"session_key": session_key, "product": product, "service": None}
 
     cart_item, created = Cart.objects.get_or_create(
         defaults={"current_price": product.price, "quantity": quantity},
@@ -74,28 +77,59 @@ def add_to_cart(request, product_id):
     )
 
     if not created:
-        if product.stock < quantity:
-            return HttpResponse("Not enough stock", status=400)
         cart_item.quantity += quantity
 
     cart_item.current_price = product.price
     cart_item.save()
 
+    # decrease stock
     product.stock -= quantity
     product.save()
 
     return HttpResponse(status=204)
 
 
-def decrease_from_cart(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+def add_service_to_cart(request, service_id):
     session_key = get_session_key(request)
+    service = get_object_or_404(Service, pk=service_id)
+    final_price = service.get_final_price()
+
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except:
+        quantity = 1
+
+    quantity = max(1, quantity)
 
     if request.user.is_authenticated:
-        cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+        filter_kwargs = {"customer": request.user, "product": None, "service": service}
     else:
-        cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
+        filter_kwargs = {"session_key": session_key, "product": None, "service": service}
 
+    cart_item, created = Cart.objects.get_or_create(
+        defaults={"current_price": final_price, "quantity": quantity},
+        **filter_kwargs
+    )
+
+    if not created:
+        cart_item.quantity += quantity
+
+    cart_item.current_price = final_price
+    cart_item.save()
+
+    return HttpResponse(status=204)
+
+
+def decrease_product_from_cart(request, product_id):
+    session_key = get_session_key(request)
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(Cart, customer=request.user, product=product, service=None)
+    else:
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
+
+    # restore stock
     product.stock += 1
     product.save()
 
@@ -108,17 +142,49 @@ def decrease_from_cart(request, product_id):
     return HttpResponse(status=204)
 
 
-def remove_from_cart(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+def decrease_service_from_cart(request, service_id):
     session_key = get_session_key(request)
+    service = get_object_or_404(Service, pk=service_id)
 
     if request.user.is_authenticated:
-        cart_item = get_object_or_404(Cart, customer=request.user, product=product)
+        cart_item = get_object_or_404(Cart, customer=request.user, product=None, service=service)
     else:
-        cart_item = get_object_or_404(Cart, session_key=session_key, product=product)
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=None, service=service)
 
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+
+    return HttpResponse(status=204)
+
+
+def remove_product_from_cart(request, product_id):
+    session_key = get_session_key(request)
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(Cart, customer=request.user, product=product, service=None)
+    else:
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
+
+    # restore stock
     product.stock += cart_item.quantity
     product.save()
+
+    cart_item.delete()
+    return HttpResponse(status=204)
+
+
+def remove_service_from_cart(request, service_id):
+    session_key = get_session_key(request)
+    service = get_object_or_404(Service, pk=service_id)
+
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(Cart, customer=request.user, product=None, service=service)
+    else:
+        cart_item = get_object_or_404(Cart, session_key=session_key, product=None, service=service)
 
     cart_item.delete()
     return HttpResponse(status=204)
@@ -131,8 +197,9 @@ def clear_cart(request):
         items = Cart.objects.filter(session_key=get_session_key(request))
 
     for item in items:
-        item.product.stock += item.quantity
-        item.product.save()
+        if item.product:
+            item.product.stock += item.quantity
+            item.product.save()
 
     items.delete()
     return HttpResponse(status=204)
@@ -246,7 +313,8 @@ def payment_complete_view(request):
     for item in cart_items:
         OrderDetail.objects.create(
             order=order,
-            product=item.product,
+            product=item.product if item.product else None,
+            service=item.service if item.service else None,
             quantity=item.quantity,
             unit_price=item.current_price,
             subtotal=item.quantity * item.current_price
@@ -303,7 +371,8 @@ def payment_success_cod(request):
     for item in cart_items:
         OrderDetail.objects.create(
             order=order,
-            product=item.product,
+            product=item.product if item.product else None,
+            service=item.service if item.service else None,
             quantity=item.quantity,
             unit_price=item.current_price,
             subtotal=item.quantity * item.current_price

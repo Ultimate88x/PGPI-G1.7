@@ -128,45 +128,7 @@
         <h1>Tu Carrito</h1>
     </div>
 
-    {% if items %}
-        
-        <div class="cart-items-list">
-            {% for item in items %}
-            <div class="cart-item">
-                
-                {% with main_image=item.product.images.all|first %}
-                    {% if main_image %}
-                        <img src="{{ main_image.image }}" alt="{{ item.product.name }}" class="cart-item-image" onerror="this.onerror=null; this.src='{% static 'images/no-image.svg' %}'; this.style.objectFit='contain'; this.style.padding='0.5rem';">
-                    {% else %}
-                        <img src="{% static 'images/no-image.svg' %}" alt="Sin imagen" class="cart-item-image" style="object-fit: contain; padding: 0.5rem;">
-                    {% endif %}
-                {% endwith %}
-
-                <div class="cart-item-info">
-                    <h3>{{ item.product.name }}</h3>
-                    <p>{{ item.quantity }} x {{ item.current_price|floatformat:2 }} €</p>
-                </div>
-                
-                <div class="cart-item-actions">
-                    <a href="{% url 'add_to_cart' item.product.id %}" class="btn-adjust">+</a>
-                    <a href="{% url 'decrease_from_cart' item.product.id %}" class="btn-adjust">-</a>
-                    <a href="{% url 'remove_from_cart' item.product.id %}" class="btn-remove">Eliminar</a>
-                </div>
-
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="cart-summary">
-            <h3 class="cart-total">Total: {{ total|floatformat:2 }} €</h3>
-            
-            <div class="cart-final-actions">
-                <a href="{% url 'clear_cart' %}" class="btn-clear">Vaciar Carrito</a>
-                <a href="{% url 'checkout' %}" class="btn-checkout">Ir a Checkout</a>
-            </div>
-        </div>
-
-    {% else %}
+    {% if not items %}
         <h2 style="text-align: center;">Tu carrito está vacío.</h2>
         <p style="text-align: center;">
             <a href="{% url 'catalog:catalog' %}">Volver al catálogo</a>

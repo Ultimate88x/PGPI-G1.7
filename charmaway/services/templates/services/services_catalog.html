@@ -95,8 +95,16 @@
                     </div>
                 </a>
 
-                <!-- TODO: Implement add to cart functionality for services -->
-                <!-- The Cart model needs to be modified to support services -->
+                <form action="{% url 'add_service' service.id %}" 
+                    onclick="setTimeout(() => location.reload(), 50);" 
+                    method="post">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="btn-add-cart"
+                            {% if not service.is_available %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}>
+                        Añadir al carro
+                    </button>
+                </form>
             </article>
             {% empty %}
             <div class="no-products">

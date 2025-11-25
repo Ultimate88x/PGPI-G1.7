@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from customer.models import Customer
 from catalog.models import Product
+from services.models import Service
 import shortuuid
 
 
@@ -99,7 +100,13 @@ class OrderDetail(models.Model):
     )
     product = models.ForeignKey(
         Product,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        null=True, blank=True
+    )
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.PROTECT,
+        null=True, blank=True
     )
 
     quantity = models.PositiveIntegerField()
@@ -127,7 +134,8 @@ class Cart(models.Model):
 
     session_key = models.CharField(max_length=40, null=True, blank=True)
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
 
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(default=timezone.now)

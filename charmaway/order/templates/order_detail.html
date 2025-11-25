@@ -109,14 +109,23 @@
             <tbody>
                 {% for item in order.details.all %}
                 <tr>
-                    <td><a href="{% url 'catalog:product_detail' item.product.id %}" style="color:#ff6969; text-decoration:none; font-weight:bold;">{{ item.product.name }}</a></td>
+                    <td>
+                        {% if item.product %}
+                            <a href="{% url 'catalog:product_detail' item.product.id %}" 
+                            style="color:#ff6969; text-decoration:none; font-weight:bold;">
+                            {{ item.product.name }}
+                            </a>
+                        {% elif item.service %}
+                            {{ item.service.name }}
+                        {% endif %}
+                    </td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.unit_price }} €</td>
                     <td>{{ item.subtotal }} €</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">No hay productos en este pedido.</td>
+                    <td colspan="4">No hay productos ni servicios en este pedido.</td>
                 </tr>
                 {% endfor %}
             </tbody>

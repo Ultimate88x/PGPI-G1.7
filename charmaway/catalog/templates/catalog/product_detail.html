@@ -141,7 +141,7 @@
 
             <!-- Add to Cart -->
             <div class="product-actions">
-                <form action="{% url 'add_to_cart' product.id %}" method="post" class="quantity-selector">
+                <form action="{% url 'add_product' product.id %}" method="post" class="quantity-selector">
                     {% csrf_token %}
                     <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                     <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
