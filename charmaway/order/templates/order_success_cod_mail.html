@@ -7,7 +7,7 @@
 
     <h2>Resumen del pedido</h2>
     <div>
-        {% for detail in order.orderdetail_set.all %}
+        {% for detail in order.details.all %}
             <div style="display:flex; justify-content:space-between; padding:4px 0;">
                 <span>{{ detail.product.name }} (x{{ detail.quantity }})</span>
                 <span>{{ detail.subtotal|floatformat:2 }} €</span>
