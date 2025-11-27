@@ -235,3 +235,35 @@ def test_order_lookup_invalid(client, db):
     response = client.post(url, {"order_public_id": "NOEXISTE"})
     assert response.status_code == 200
     assert "error" in response.context
+
+# ------------------------------
+# BUY NOW TESTS
+# ------------------------------
+
+def test_buy_now_product_redirects_to_checkout(client, db, customer, product):
+    client.login(email=customer.email, password="password1234")
+
+    url = reverse("buy_now_product", args=[product.id])
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert "items" in response.context
+
+    cart_items = Cart.objects.filter(customer=customer)
+    assert cart_items.count() == 1
+    assert cart_items.first().product == product
+
+
+def test_buy_now_service_redirects_to_checkout(client, db, customer, service):
+    client.login(email=customer.email, password="password1234")
+
+    url = reverse("buy_now_service", args=[service.id])
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert "items" in response.context
+
+    cart_items = Cart.objects.filter(customer=customer)
+    assert cart_items.count() == 1
+    assert cart_items.first().service == service
+
