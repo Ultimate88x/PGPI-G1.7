@@ -13,13 +13,25 @@
                 <span>{{ detail.subtotal|floatformat:2 }} €</span>
             </div>
         {% endfor %}
+
+        {% if order.delivery_option == "DELIVERY" %}
+            <div style="display:flex; justify-content:space-between; padding:4px 0; border-top:1px solid #ccc; margin-top:8px;">
+                <strong style="margin-right: 2px;">Dirección de envío: </strong>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="margin-right: 2px;">{{ order.address }}, </div>
+                    <div style="margin-right: 2px;">{{ order.city }}, </div>
+                    <div>{{ order.zip_code }}</div>
+                </div>
+            </div>
+        {% endif %}
+
         <div style="display:flex; justify-content:space-between; padding:4px 0; border-top:1px solid #ccc; margin-top:8px;">
-            <strong>Gastos de envío:</strong>
-            <strong>{{ order.shipping_cost|floatformat:2 }} €</strong>
+            <strong style="margin-right: 2px;">Gastos de envío:</strong>
+            <div>{{ order.shipping_cost|floatformat:2 }} €</div>
         </div>
         <div style="display:flex; justify-content:space-between; padding:4px 0; border-top:1px solid #000; margin-top:4px;">
-            <strong>Total:</strong>
-            <strong>{{ order.final_price|floatformat:2 }} €</strong>
+            <strong style="margin-right: 2px;">Total:</strong>
+            <div>{{ order.final_price|floatformat:2 }} €</div>
         </div>
     </div>
 </div>
