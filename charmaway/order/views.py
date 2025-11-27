@@ -83,7 +83,7 @@ def add_product_to_cart(request, product_id):
     product.stock -= quantity
     product.save()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def add_service_to_cart(request, service_id):
