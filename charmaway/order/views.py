@@ -243,6 +243,26 @@ def checkout(request):
         "total": total
     })
 
+def buy_now_product(request, product_id):
+
+    clear_cart(request)
+
+    add_product_to_cart(request, product_id)
+
+    response = checkout(request)
+
+    return response
+
+def buy_now_service(request, service_id):
+
+    clear_cart(request)
+
+    add_service_to_cart(request, service_id)
+
+    response = checkout(request)
+
+    return response
+
 
 def order_detail(request, public_id):
     order = get_object_or_404(Order, public_id=public_id)
