@@ -114,7 +114,7 @@ def add_service_to_cart(request, service_id):
     cart_item.current_price = final_price
     cart_item.save()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def decrease_product_from_cart(request, product_id):
@@ -135,7 +135,7 @@ def decrease_product_from_cart(request, product_id):
     else:
         cart_item.delete()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def decrease_service_from_cart(request, service_id):
@@ -153,7 +153,7 @@ def decrease_service_from_cart(request, service_id):
     else:
         cart_item.delete()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def remove_product_from_cart(request, product_id):
@@ -169,7 +169,7 @@ def remove_product_from_cart(request, product_id):
     product.save()
 
     cart_item.delete()
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def remove_service_from_cart(request, service_id):
@@ -182,7 +182,7 @@ def remove_service_from_cart(request, service_id):
         cart_item = get_object_or_404(Cart, session_key=session_key, product=None, service=service)
 
     cart_item.delete()
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def clear_cart(request):
@@ -197,7 +197,7 @@ def clear_cart(request):
             item.product.save()
 
     items.delete()
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def checkout(request):
