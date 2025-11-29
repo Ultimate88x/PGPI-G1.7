@@ -8,18 +8,35 @@
 <div class="admin-container">
     
     <aside class="admin-sidebar">
-        <a href="{% url 'administrator:customer_create' %}" class="btn-create" style="background: var(--dark-btn);">+ Crear Usuario</a>
-
         <div class="admin-menu-group">
-            <h3 class="admin-menu-title">Gestión</h3>
+            <h3 class="admin-menu-title">Inventario</h3>
             <ul class="admin-menu-list">
-                <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">Dashboard</a></li>
-                <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Productos</a></li>
-                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link">Servicios</a></li>
-                <li><a href="{% url 'administrator:customer_list' %}" class="admin-menu-link active">Clientes</a></li>
-                <li><a href="{% url 'administrator:order_list' %}" class="admin-menu-link">Pedidos</a></li>
+                <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Todos los Productos</a></li>
             </ul>
         </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Servicios</h3>
+            <ul class="admin-menu-list">    
+                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link">Todos los Servicios</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Negocio</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:customer_list' %}" class="admin-menu-link active">Clientes</a></li>
+                <li><a href="{% url 'administrator:order_list' %}" class="admin-menu-link">Pedidos</a></li>
+                <li><a href="{% url 'administrator:admin_dashboard' %}" class="admin-menu-link">Dashboard Principal</a></li>
+            </ul>
+        </div>
+
+        <div class="admin-menu-group">
+            <h3 class="admin-menu-title">Creación</h3>
+            <ul class="admin-menu-list">
+                <li><a href="{% url 'administrator:customer_create' %}" class="admin-menu-link active create">+ Usuario</a></li>
+            </ul>
+        </div> 
     </aside>
 
     <main>
