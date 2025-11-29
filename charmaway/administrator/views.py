@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from catalog.models import Product, Brand, Category, Department
+from catalog.models import Product
 from services.models import Service
 from customer.models import Customer
 from order.models import Order
-from .forms import ProductForm, ImageFormSet, SizeFormSet, CategoryForm, BrandForm, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, DepartmentForm, ServiceForm, ServiceCategoryForm
+from .forms import ProductForm, ImageFormSet, SizeFormSet, CustomerBaseForm, CustomerCreateForm, OrderStatusForm, ServiceForm
 from .decorators import admin_required
 from django.contrib import messages
 from django.db.models import Q, CharField, Value, Sum
@@ -84,6 +84,25 @@ def product_edit(request, pk):
         image_formset = ImageFormSet(request.POST, instance=product)
         size_formset = SizeFormSet(request.POST, instance=product)
         if form.is_valid() and image_formset.is_valid() and size_formset.is_valid():
+            main_stock = form.cleaned_data.get('stock', 0)
+            sizes_stock_sum = 0
+            has_sizes = False
+            
+            for size_form in size_formset:
+                if size_form.cleaned_data and not size_form.cleaned_data.get('DELETE'):
+                    sizes_stock_sum += size_form.cleaned_data.get('stock', 0)
+                    has_sizes = True
+            
+            if has_sizes and main_stock != sizes_stock_sum:
+                form.add_error('stock', f"El Stock Total ({main_stock}) no coincide con la suma de las tallas ({sizes_stock_sum}).")                
+                context = {
+                    'form': form,
+                    'image_formset': image_formset,
+                    'size_formset': size_formset,
+                    'product': product
+                }
+                return render(request, 'administrator/product/product_edit.html', context)
+
             form.save()
             image_formset.save()
             size_formset.save()
@@ -122,153 +141,6 @@ def product_delete(request, pk):
         messages.error(request, mensaje_error)
         
     return redirect('administrator:product_list')
-
-@admin_required
-def category_list(request):
-    categories = Category.objects.all().order_by('name')
-    query = request.GET.get('q')
-    if query:
-        categories = categories.filter(
-            Q(name__icontains=query)
-        ).distinct()
-    context = {
-        'categories': categories
-    }
-    return render(request, 'administrator/category/category_list.html', context)
-
-@admin_required
-def category_create(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:category_list')
-    else:
-        form = CategoryForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'administrator/category/category_edit.html', context)
-
-@admin_required
-def category_delete(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    category.delete()
-    return redirect('administrator:category_list')
-
-@admin_required
-def category_edit(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:category_list')
-    else:
-        form = CategoryForm(instance=category)
-    context = {
-        'form': form,
-        'category': category
-    }
-    return render(request, 'administrator/category/category_edit.html', context)
-
-@admin_required
-def brand_list(request):
-    brands = Brand.objects.all().order_by('name')
-    query = request.GET.get('q')
-    if query:
-        brands = brands.filter(
-            Q(name__icontains=query)
-        ).distinct()
-    context = {
-        'brands': brands
-    }
-    return render(request, 'administrator/brand/brand_list.html', context)
-
-@admin_required
-def brand_create(request):
-    if request.method == 'POST':
-        form = BrandForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:brand_list')
-    else:
-        form = BrandForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'administrator/brand/brand_edit.html', context)
-
-@admin_required
-def brand_delete(request, pk):
-    brand = get_object_or_404(Brand, pk=pk)
-    brand.delete()
-    return redirect('administrator:brand_list')
-
-@admin_required
-def brand_edit(request, pk):
-    brand = get_object_or_404(Brand, pk=pk)
-    if request.method == 'POST':
-        form = BrandForm(request.POST, instance=brand)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:brand_list')
-    else:
-        form = BrandForm(instance=brand)
-    context = {
-        'form': form,
-        'brand': brand
-    }
-    return render(request, 'administrator/brand/brand_edit.html', context)
-
-@admin_required
-def department_list(request):
-    departments = Department.objects.all().order_by('name')
-    query = request.GET.get('q')
-    if query:
-        departments = departments.filter(
-            Q(name__icontains=query)
-        ).distinct()
-    context = {
-        'departments': departments
-    }
-    return render(request, 'administrator/department/department_list.html', context)
-
-@admin_required
-def department_create(request):
-    if request.method == 'POST':
-        form = DepartmentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:department_list')
-    else:
-        form = DepartmentForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'administrator/department/department_edit.html', context)
-
-@admin_required
-def department_delete(request, pk):
-    department = get_object_or_404(Department, pk=pk)
-    department.delete()
-    return redirect('administrator:department_list')
-
-@admin_required
-def department_edit(request, pk):
-    department = get_object_or_404(Department, pk=pk)
-    if request.method == 'POST':
-        form = DepartmentForm(request.POST, instance=department)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:department_list')
-    else:
-        form = DepartmentForm(instance=department)
-    context = {
-        'form': form,
-        'department': department
-    }
-    return render(request, 'administrator/department/department_edit.html', context)
 
 @admin_required
 def service_list(request):
@@ -332,55 +204,6 @@ def service_delete(request, pk):
         
         messages.error(request, mensaje_error)
     return redirect('administrator:service_list')
-
-@admin_required
-def service_category_list(request):
-    service_categories = Category.objects.filter(department__name='Servicios').order_by('name')
-    query = request.GET.get('q')
-    if query:
-        service_categories = service_categories.filter(
-            Q(name__icontains=query)
-        ).distinct()
-    context = {
-        'service_categories': service_categories
-    }
-    return render(request, 'administrator/service-category/service_category_list.html', context)
-
-@admin_required
-def service_category_create(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:service_category_list')
-    else:
-        form = CategoryForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'administrator/service-category/service_category_edit.html', context)
-
-@admin_required
-def service_category_edit(request, pk):
-    service_category = get_object_or_404(Category, pk=pk)
-    if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=service_category)
-        if form.is_valid():
-            form.save()
-            return redirect('administrator:service_category_list')
-    else:
-        form = CategoryForm(instance=service_category)
-    context = {
-        'form': form,
-        'service_category': service_category
-    }
-    return render(request, 'administrator/service-category/service_category_edit.html', context)
-
-@admin_required
-def service_category_delete(request, pk):
-    service_category = get_object_or_404(Category, pk=pk)
-    service_category.delete()
-    return redirect('administrator:service_category_list')
 
 @admin_required
 def customer_list(request):

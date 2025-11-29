@@ -8,23 +8,17 @@
 <div class="admin-container">
     
     <aside class="admin-sidebar">
-
-
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Inventario</h3>
             <ul class="admin-menu-list">
                 <li><a href="{% url 'administrator:product_list' %}" class="admin-menu-link">Todos los Productos</a></li>
-                <li><a href="{% url 'administrator:category_list' %}" class="admin-menu-link">Categorías</a></li>
-                <li><a href="{% url 'administrator:brand_list' %}" class="admin-menu-link">Marcas</a></li>
-                <li><a href="{% url 'administrator:department_list' %}" class="admin-menu-link">Departamentos</a></li>
             </ul>
         </div>
 
         <div class="admin-menu-group">
             <h3 class="admin-menu-title">Servicios</h3>
             <ul class="admin-menu-list">    
-                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link">Servicios</a></li>
-                <li><a href="{% url 'administrator:service_category_list' %}" class="admin-menu-link">Categorías</a></li>
+                <li><a href="{% url 'administrator:service_list' %}" class="admin-menu-link">Todos los Servicios</a></li>
             </ul>
         </div>
 
@@ -53,7 +47,7 @@
                     <div>
                         <div style="font-size: 4rem; margin-bottom: 1rem;">📦</div>
                         <h3 class="card-title" style="font-size: 1.8rem;">Productos</h3>
-                        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Inventario, categorias, marcas y departamentos.</p>
+                        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Inventario de los productos.</p>
                     </div>
                     <a href="{% url 'administrator:product_list' %}" class="btn-create" style="background-color: #4a90e2; margin-bottom: 0; font-size: 1.1rem;">Ir a Productos</a>
                 </div>
@@ -64,7 +58,7 @@
                     <div>
                         <div style="font-size: 4rem; margin-bottom: 1rem;">💵</div>
                         <h3 class="card-title" style="font-size: 1.8rem;">Servicios</h3>
-                        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Servicios y sus categorías.</p>
+                        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem;">Servicios y sus datos.</p>
                     </div>
                     <a href="{% url 'administrator:service_list' %}" class="btn-create" style="background-color: #29dc58ff; margin-bottom: 0; font-size: 1.1rem;">Ver Pedidos</a>
                 </div>

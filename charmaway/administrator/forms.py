@@ -1,9 +1,10 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
-from catalog.models import Product, ProductImage, ProductSize, Category, Brand, Department
+from django.core.exceptions import NON_FIELD_ERRORS
+from catalog.models import Product, ProductImage, ProductSize, Category
 from customer.models import Customer
 from order.models import Order
-from services.models import Service, ServiceCategory
+from services.models import Service
 
 class ProductImageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -47,82 +48,12 @@ class ProductForm(ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'offer_price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'stock': forms.NumberInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'step': '0.01'}),
+            'offer_price': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'step': '0.01'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
             'brand': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
         }
-        
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ['name', 'department']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Calzado, Camisetas...'}),
-            'department': forms.Select(attrs={'class': 'form-select'}),
-        }
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        
-        cat = Category.objects.filter(name__iexact=name)
-        
-        if self.instance.pk:
-            cat = cat.exclude(pk=self.instance.pk)
-            
-        if cat.exists():
-            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
-            
-        return name
-    
-class DepartmentForm(forms.ModelForm):
-    class Meta:
-        model = Department
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'Ej: Ropa, Electrónica...'
-            }),
-        }
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        
-        dept = Department.objects.filter(name__iexact=name)
-        
-        if self.instance.pk:
-            dept = dept.exclude(pk=self.instance.pk)
-            
-        if dept.exists():
-            raise forms.ValidationError(f"El departamento '{name}' ya existe.")
-            
-        return name
-    
-class BrandForm(forms.ModelForm):
-    class Meta:
-        model = Brand
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'Ej: Nike, Adidas...'
-            })
-        }
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        
-        brand = Brand.objects.filter(name__iexact=name)
-        
-        if self.instance.pk:
-            brand = brand.exclude(pk=self.instance.pk)
-            
-        if brand.exists():
-            raise forms.ValidationError(f"La marca '{name}' ya existe.")
-            
-        return name
        
 ImageFormSet = inlineformset_factory(
     Product, 
@@ -143,10 +74,16 @@ SizeFormSet = inlineformset_factory(
     ProductSize,
     fields=['size', 'stock'],
     extra=0,
+    min_num=1,
     can_delete=True,
     widgets={
         'size': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Estándar, 40g, 50ml'}),
-        'stock': forms.NumberInput(attrs={'class': 'form-control'}),
+        'stock': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+    },
+    error_messages = {
+        NON_FIELD_ERRORS: {
+            'unique_together': "Este nombre de talla ya está registrado para este producto.",
+        }
     }
 )
 
@@ -158,8 +95,8 @@ class ServiceForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'category': forms.Select(attrs={'class': 'form-select'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'offer_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'step': '0.01'}),
+            'offer_price': forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'step': '0.01'}),
             'duration': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.URLInput(attrs={'class': 'form-control'}),
         }
@@ -167,27 +104,6 @@ class ServiceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['category'].queryset = Category.objects.filter(department__name='Servicios')
-        
-class ServiceCategoryForm(forms.ModelForm):
-    class Meta:
-        model = ServiceCategory
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        
-        cat = ServiceCategory.objects.filter(name__iexact=name)
-        
-        if self.instance.pk:
-            cat = cat.exclude(pk=self.instance.pk)
-            
-        if cat.exists():
-            raise forms.ValidationError(f"La categoría '{name}' ya existe.")
-            
-        return name
 
 class CustomerBaseForm(forms.ModelForm):
     class Meta:
