@@ -303,6 +303,11 @@ def payment_complete_view(request):
     if not cart_items.exists():
         return redirect("view_cart")
     
+    for item in cart_items:
+        if item.product:
+            if item.product.stock < item.quantity:
+                return HttpResponse("Not enough stock", status=400)
+    
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
     else:
@@ -365,6 +370,11 @@ def payment_success_cod(request):
 
     if not cart_items.exists():
         return redirect("view_cart")
+    
+    for item in cart_items:
+        if item.product:
+            if item.product.stock < item.quantity:
+                return HttpResponse("Not enough stock", status=400)
 
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
