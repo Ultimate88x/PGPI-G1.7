@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -185,7 +185,7 @@ def remove_service_from_cart(request, service_id):
     return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
-def clear_cart(request):
+def clear_cart(request, skip_redirect=False):
     if request.user.is_authenticated:
         items = Cart.objects.filter(customer=request.user)
     else:
@@ -197,6 +197,10 @@ def clear_cart(request):
             item.product.save()
 
     items.delete()
+
+    if skip_redirect:
+        return None
+
     return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
@@ -244,20 +248,46 @@ def checkout(request):
     })
 
 def buy_now_product(request, product_id):
+    clear_cart(request, skip_redirect=True)
 
-    clear_cart(request)
+    # Get quantity from URL query parameter
+    quantity = request.GET.get('quantity', '1')
+
+    # Create a mutable copy of request.POST
+    post_data = QueryDict('', mutable=True)
+    post_data['quantity'] = quantity
+
+    # Temporarily replace request.POST with our data
+    original_post = request.POST
+    request.POST = post_data
 
     add_product_to_cart(request, product_id)
+
+    # Restore original POST
+    request.POST = original_post
 
     response = checkout(request)
 
     return response
 
 def buy_now_service(request, service_id):
+    clear_cart(request, skip_redirect=True)
 
-    clear_cart(request)
+    # Get quantity from URL query parameter
+    quantity = request.GET.get('quantity', '1')
+
+    # Create a mutable copy of request.POST
+    post_data = QueryDict('', mutable=True)
+    post_data['quantity'] = quantity
+
+    # Temporarily replace request.POST with our data
+    original_post = request.POST
+    request.POST = post_data
 
     add_service_to_cart(request, service_id)
+
+    # Restore original POST
+    request.POST = original_post
 
     response = checkout(request)
 

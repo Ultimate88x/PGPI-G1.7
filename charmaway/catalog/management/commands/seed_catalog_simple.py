@@ -19,7 +19,7 @@ class Command(BaseCommand):
         Brand.objects.all().delete()
         Department.objects.all().delete()
 
-        # Create Departments (7 departments)
+        # Create Departments (9 departments: 7 product departments + 3 service departments)
         self.stdout.write('Creating departments...')
         departments_data = [
             {'name': 'Maquillaje', 'order_position': 1, 'description': 'Productos de maquillaje para ojos, labios y rostro', 'image': 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=400&q=80'},
@@ -29,7 +29,10 @@ class Command(BaseCommand):
             {'name': 'Fragancias', 'order_position': 5, 'description': 'Perfumes y fragancias para hombre y mujer', 'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=400&q=80'},
             {'name': 'Cuidado de Uñas', 'order_position': 6, 'description': 'Esmaltes y productos para el cuidado de uñas', 'image': 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=400&q=80'},
             {'name': 'Accesorios y Herramientas', 'order_position': 7, 'description': 'Brochas, esponjas, herramientas y accesorios de belleza', 'image': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=80'},
-            {'name': 'Servicios', 'order_position': 8, 'description': 'Servicios de belleza, asesoramiento y entrega', 'image': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80'},
+            # Service Departments
+            {'name': 'Beauty Academy', 'order_position': 8, 'description': 'Formación y asesoramiento personalizado', 'image': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=400&q=80'},
+            {'name': 'Premium Services', 'order_position': 9, 'description': 'Servicios de entrega y personalización exclusivos', 'image': 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?auto=format&fit=crop&w=400&q=80'},
+            {'name': 'Club Exclusivo', 'order_position': 10, 'description': 'Membresías y suscripciones VIP', 'image': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80'},
         ]
 
         departments = {}
@@ -121,12 +124,23 @@ class Command(BaseCommand):
             {'name': 'Pinzas y tijeras', 'description': 'Pinzas de depilar y tijeras', 'department': departments['Accesorios y Herramientas'], 'order_position': 5},
             {'name': 'Rizadores y planchas', 'description': 'Rizadores, planchas y herramientas térmicas', 'department': departments['Accesorios y Herramientas'], 'order_position': 6},
 
-            # Departamento 8: SERVICIOS (5 categorías)
-            {'name': 'Asesoramiento y Consultoría', 'description': 'Servicios de asesoramiento personalizado', 'department': departments['Servicios'], 'order_position': 1},
-            {'name': 'Tutoriales y Masterclass', 'description': 'Clases y tutoriales de maquillaje', 'department': departments['Servicios'], 'order_position': 2},
-            {'name': 'Servicios de Entrega', 'description': 'Opciones de envío y empaquetado', 'department': departments['Servicios'], 'order_position': 3},
-            {'name': 'Personalización', 'description': 'Servicios de personalización de productos', 'department': departments['Servicios'], 'order_position': 4},
-            {'name': 'Suscripciones', 'description': 'Cajas y membresías mensuales', 'department': departments['Servicios'], 'order_position': 5},
+            # Departamento 8: BEAUTY ACADEMY (4 categorías)
+            {'name': 'Consultoría Personalizada', 'description': 'Asesoramiento de belleza one-to-one', 'department': departments['Beauty Academy'], 'order_position': 1},
+            {'name': 'Masterclass en Vivo', 'description': 'Clases en directo con expertos', 'department': departments['Beauty Academy'], 'order_position': 2},
+            {'name': 'Tutoriales Especializados', 'description': 'Tutoriales avanzados de maquillaje y cuidado', 'department': departments['Beauty Academy'], 'order_position': 3},
+            {'name': 'Análisis de Piel y Color', 'description': 'Análisis profesional personalizado', 'department': departments['Beauty Academy'], 'order_position': 4},
+
+            # Departamento 9: PREMIUM SERVICES (4 categorías)
+            {'name': 'Gift & Wrapping', 'description': 'Envoltorio de regalo premium', 'department': departments['Premium Services'], 'order_position': 1},
+            {'name': 'Envío Express', 'description': 'Envío urgente 24-48h', 'department': departments['Premium Services'], 'order_position': 2},
+            {'name': 'Personalización de Productos', 'description': 'Grabado y personalización exclusiva', 'department': departments['Premium Services'], 'order_position': 3},
+            {'name': 'Kits y Muestras', 'description': 'Kits personalizados y muestras premium', 'department': departments['Premium Services'], 'order_position': 4},
+
+            # Departamento 10: CLUB EXCLUSIVO (4 categorías)
+            {'name': 'Beauty Boxes', 'description': 'Cajas mensuales sorpresa', 'department': departments['Club Exclusivo'], 'order_position': 1},
+            {'name': 'Membresías VIP', 'description': 'Acceso VIP y beneficios exclusivos', 'department': departments['Club Exclusivo'], 'order_position': 2},
+            {'name': 'Suscripciones Especializadas', 'description': 'Suscripciones temáticas mensuales', 'department': departments['Club Exclusivo'], 'order_position': 3},
+            {'name': 'Ediciones Limitadas', 'description': 'Acceso prioritario a lanzamientos', 'department': departments['Club Exclusivo'], 'order_position': 4},
         ]
 
         categories = {}
