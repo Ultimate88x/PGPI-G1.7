@@ -75,13 +75,14 @@ def add_product_to_cart(request, product_id):
     )
 
     if not created:
-        cart_item.quantity += quantity
+        new_quantity = cart_item.quantity + quantity
+        if product.stock < new_quantity:
+            return HttpResponse("Not enough stock", status=400)
+        else:
+            cart_item.quantity = new_quantity
 
     cart_item.current_price = product.price
     cart_item.save()
-
-    product.stock -= quantity
-    product.save()
 
     return redirect(request.META.get("HTTP_REFERER", request.path))
 
@@ -126,9 +127,6 @@ def decrease_product_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
 
-    product.stock += 1
-    product.save()
-
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
         cart_item.save()
@@ -164,9 +162,6 @@ def remove_product_from_cart(request, product_id):
         cart_item = get_object_or_404(Cart, customer=request.user, product=product, service=None)
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
-
-    product.stock += cart_item.quantity
-    product.save()
 
     cart_item.delete()
     return redirect(request.META.get("HTTP_REFERER", request.path))
@@ -336,7 +331,11 @@ def payment_complete_view(request):
     for item in cart_items:
         if item.product:
             if item.product.stock < item.quantity:
-                return HttpResponse("Not enough stock", status=400)
+                clear_cart(request)
+                return render(request, "stock_error.html", {
+                    "product_name": item.product.name,
+                    "back_url": request.META.get("/")}
+                )
     
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
@@ -369,6 +368,10 @@ def payment_complete_view(request):
             unit_price=item.current_price,
             subtotal=item.quantity * item.current_price
         )
+
+        if item.product:
+            item.product.stock -= item.quantity
+            item.product.save()
 
     order.calculate_total()
     order.save()
@@ -404,7 +407,11 @@ def payment_success_cod(request):
     for item in cart_items:
         if item.product:
             if item.product.stock < item.quantity:
-                return HttpResponse("Not enough stock", status=400)
+                clear_cart(request)
+                return render(request, "stock_error.html", {
+                    "product_name": item.product.name,
+                    "back_url": request.META.get("/")}
+                )
 
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
@@ -434,6 +441,10 @@ def payment_success_cod(request):
             unit_price=item.current_price,
             subtotal=item.quantity * item.current_price
         )
+
+        if item.product:
+            item.product.stock -= item.quantity
+            item.product.save()
 
     order.calculate_total()
     order.save()
