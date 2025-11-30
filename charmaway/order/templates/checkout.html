@@ -152,13 +152,13 @@
                 </label>
 
                 <label class="checkout-label">Código postal
-                    <input class="checkout-input" type="text" id="zip-input" name="zip_code"
+                    <input class="checkout-input" type="text" id="zip-input" name="zip_code" pattern="\d+" title="Introduce un código postal válido (solo dígitos)."
                            data-original="{{ request.user.zip_code|default:'' }}" value="{{ request.user.zip_code|default:'' }}">
                 </label>
 
                 <label class="checkout-label">Correo electrónico
                     <div style="font-weight: normal; font-size: 13px;">Si quieres recibir un correo electrónico de confirmación, usa un correo de dominio público (@gmail, @outlook...) </div>
-                    <input class="checkout-input" type="text" id="email-input" name="email"
+                    <input class="checkout-input" type="email" id="email-input" name="email"
                            value="{{ request.user.email|default:'' }}">
                 </label>
             </div>
