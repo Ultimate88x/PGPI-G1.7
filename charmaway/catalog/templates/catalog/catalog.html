@@ -243,7 +243,11 @@ function updatePerPage(value) {
 
 function buyNow(productId) {
     const quantity = document.getElementById('quantity-' + productId).value;
-    window.location.href = '/order/buy-now/product/' + productId + '/?quantity=' + quantity;
+    fetch('/order/buy-now/product/' + productId + '/?quantity=' + quantity)
+        .then(() => {
+            window.location.href = '/order/cart/checkout/';
+        })
+        .catch(error => console.error(error));
 }
 
 // Sincronizar el input con el hidden input y validar stock
