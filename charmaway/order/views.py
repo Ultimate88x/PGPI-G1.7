@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -75,15 +75,16 @@ def add_product_to_cart(request, product_id):
     )
 
     if not created:
-        cart_item.quantity += quantity
+        new_quantity = cart_item.quantity + quantity
+        if product.stock < new_quantity:
+            return HttpResponse("No hay sufuciente stock", status=400)
+        else:
+            cart_item.quantity = new_quantity
 
     cart_item.current_price = product.price
     cart_item.save()
 
-    product.stock -= quantity
-    product.save()
-
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def add_service_to_cart(request, service_id):
@@ -114,7 +115,7 @@ def add_service_to_cart(request, service_id):
     cart_item.current_price = final_price
     cart_item.save()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def decrease_product_from_cart(request, product_id):
@@ -126,16 +127,13 @@ def decrease_product_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
 
-    product.stock += 1
-    product.save()
-
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
         cart_item.save()
     else:
         cart_item.delete()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def decrease_service_from_cart(request, service_id):
@@ -153,7 +151,7 @@ def decrease_service_from_cart(request, service_id):
     else:
         cart_item.delete()
 
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def remove_product_from_cart(request, product_id):
@@ -165,11 +163,8 @@ def remove_product_from_cart(request, product_id):
     else:
         cart_item = get_object_or_404(Cart, session_key=session_key, product=product, service=None)
 
-    product.stock += cart_item.quantity
-    product.save()
-
     cart_item.delete()
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def remove_service_from_cart(request, service_id):
@@ -182,10 +177,10 @@ def remove_service_from_cart(request, service_id):
         cart_item = get_object_or_404(Cart, session_key=session_key, product=None, service=service)
 
     cart_item.delete()
-    return HttpResponse(status=204)
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
-def clear_cart(request):
+def clear_cart(request, skip_redirect=False):
     if request.user.is_authenticated:
         items = Cart.objects.filter(customer=request.user)
     else:
@@ -197,7 +192,11 @@ def clear_cart(request):
             item.product.save()
 
     items.delete()
-    return HttpResponse(status=204)
+
+    if skip_redirect:
+        return None
+
+    return redirect(request.META.get("HTTP_REFERER", request.path))
 
 
 def checkout(request):
@@ -243,6 +242,52 @@ def checkout(request):
         "total": total
     })
 
+def buy_now_product(request, product_id):
+    clear_cart(request, skip_redirect=True)
+
+    # Get quantity from URL query parameter
+    quantity = request.GET.get('quantity', '1')
+
+    # Create a mutable copy of request.POST
+    post_data = QueryDict('', mutable=True)
+    post_data['quantity'] = quantity
+
+    # Temporarily replace request.POST with our data
+    original_post = request.POST
+    request.POST = post_data
+
+    add_product_to_cart(request, product_id)
+
+    # Restore original POST
+    request.POST = original_post
+
+    response = checkout(request)
+
+    return response
+
+def buy_now_service(request, service_id):
+    clear_cart(request, skip_redirect=True)
+
+    # Get quantity from URL query parameter
+    quantity = request.GET.get('quantity', '1')
+
+    # Create a mutable copy of request.POST
+    post_data = QueryDict('', mutable=True)
+    post_data['quantity'] = quantity
+
+    # Temporarily replace request.POST with our data
+    original_post = request.POST
+    request.POST = post_data
+
+    add_service_to_cart(request, service_id)
+
+    # Restore original POST
+    request.POST = original_post
+
+    response = checkout(request)
+
+    return response
+
 
 def order_detail(request, public_id):
     order = get_object_or_404(Order, public_id=public_id)
@@ -283,6 +328,15 @@ def payment_complete_view(request):
     if not cart_items.exists():
         return redirect("view_cart")
     
+    for item in cart_items:
+        if item.product:
+            if item.product.stock < item.quantity:
+                clear_cart(request)
+                return render(request, "stock_error.html", {
+                    "product_name": item.product.name,
+                    "back_url": request.META.get("/")}
+                )
+    
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
     else:
@@ -315,6 +369,10 @@ def payment_complete_view(request):
             subtotal=item.quantity * item.current_price
         )
 
+        if item.product:
+            item.product.stock -= item.quantity
+            item.product.save()
+
     order.calculate_total()
     order.save()
 
@@ -345,6 +403,15 @@ def payment_success_cod(request):
 
     if not cart_items.exists():
         return redirect("view_cart")
+    
+    for item in cart_items:
+        if item.product:
+            if item.product.stock < item.quantity:
+                clear_cart(request)
+                return render(request, "stock_error.html", {
+                    "product_name": item.product.name,
+                    "back_url": request.META.get("/")}
+                )
 
     if request.user.is_authenticated:
         subtotal = Cart.calculate_total(request.user)
@@ -374,6 +441,10 @@ def payment_success_cod(request):
             unit_price=item.current_price,
             subtotal=item.quantity * item.current_price
         )
+
+        if item.product:
+            item.product.stock -= item.quantity
+            item.product.save()
 
     order.calculate_total()
     order.save()

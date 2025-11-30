@@ -33,20 +33,16 @@
 
                     {% if item.product %}
                         <a href="{% url 'add_product' item.product.id %}"
-                           onclick="setTimeout(() => location.reload(), 50);"
                            class="btn-adjust">+</a>
 
                         <a href="{% url 'decrease_product_from_cart' item.product.id %}"
-                           onclick="setTimeout(() => location.reload(), 50);"
                            class="btn-adjust">-</a>
 
                     {% elif item.service %}
                         <a href="{% url 'add_service' item.service.id %}"
-                           onclick="setTimeout(() => location.reload(), 50);"
                            class="btn-adjust">+</a>
 
                         <a href="{% url 'decrease_service_from_cart' item.service.id %}"
-                           onclick="setTimeout(() => location.reload(), 50);"
                            class="btn-adjust">-</a>
                     {% endif %}
 
@@ -54,12 +50,10 @@
 
                 {% if item.product %}
                     <a href="{% url 'remove_product_from_cart' item.product.id %}"
-                       onclick="setTimeout(() => location.reload(), 50);"
                        class="btn-remove">Eliminar</a>
 
                 {% elif item.service %}
                     <a href="{% url 'remove_service_from_cart' item.service.id %}"
-                       onclick="setTimeout(() => location.reload(), 50);"
                        class="btn-remove">Eliminar</a>
                 {% endif %}
             </div>
@@ -73,7 +67,7 @@
     <strong style="font-size:1.2em; display:block; margin-top:10px;">Total: {{ total|floatformat:2 }} €</strong>
 
     <div class="cart-final-actions">
-        <a href="{% url 'clear_cart' %}" onclick="setTimeout(() => location.reload(), 50);" class="btn-clear">Vaciar Carrito</a>
+        <a href="{% url 'clear_cart' %}" class="btn-clear">Vaciar Carrito</a>
         <a href="{% url 'checkout' %}" class="btn-checkout">Ir a Checkout</a>
     </div>
 

@@ -20,22 +20,31 @@
     </nav>
 
     <div class="search-wrap">
-      <form action="{% url 'catalog:catalog' %}" method="get" class="search" role="search" id="search-form">
-        <select name="department" class="search-filter" aria-label="Filtrar por departamento">
-          <option value="">Todos los departamentos</option>
+      <form action="{% if is_services_view %}{% url 'services:services_catalog' %}{% else %}{% url 'catalog:catalog' %}{% endif %}" method="get" class="search" role="search" id="search-form">
+        <select name="department" class="search-filter" aria-label="{% if is_services_view %}Filtrar por servicio{% else %}Filtrar por departamento{% endif %}">
+          <option value="">{% if is_services_view %}Todos los servicios{% else %}Todos los departamentos{% endif %}</option>
           {% for department in all_departments %}
           <option value="{{ department.id }}" {% if request.GET.department == department.id|stringformat:'s' %}selected{% endif %}>{{ department.name }}</option>
           {% endfor %}
         </select>
 
+        {% if is_services_view %}
+        <select name="category" class="search-filter" id="category-filter" aria-label="Filtrar por categoría">
+          <option value="">Todas las categorías</option>
+          {% for category in all_categories %}
+          <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        {% else %}
         <select name="brand" class="search-filter" id="brand-filter" aria-label="Filtrar por marca">
           <option value="">Todas las marcas</option>
           {% for brand in all_brands %}
           <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:'s' %}selected{% endif %}>{{ brand.name }}</option>
           {% endfor %}
         </select>
+        {% endif %}
 
-        <input type="search" name="q" id="search-input" placeholder="Buscar producto" aria-label="Buscar producto" value="{{ request.GET.q }}" />
+        <input type="search" name="q" id="search-input" placeholder="{% if is_services_view %}Buscar servicio{% else %}Buscar producto{% endif %}" aria-label="{% if is_services_view %}Buscar servicio{% else %}Buscar producto{% endif %}" value="{{ request.GET.q }}" />
 
         <button type="submit" class="search-btn" aria-label="Buscar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -94,37 +103,5 @@ document.addEventListener("click", function(e) {
         dropdown.classList.add("hidden");
     }
 });
-
-// Search form dynamic routing based on department
-const searchForm = document.getElementById("search-form");
-const departmentSelect = searchForm.querySelector('select[name="department"]');
-const brandFilter = document.getElementById("brand-filter");
-const searchInput = document.getElementById("search-input");
-
-// Get department ID for "Servicios"
-const serviciosDepartmentId = {% if all_departments %}{% for dept in all_departments %}{% if dept.name == "Servicios" %}"{{ dept.id }}"{% endif %}{% endfor %}{% endif %};
-
-function updateSearchForm(isServiciosDepartment) {
-    if (isServiciosDepartment) {
-        searchForm.action = "{% url 'services:services_catalog' %}";
-        brandFilter.style.display = "none";
-        searchInput.style.width = "420px";
-        searchInput.placeholder = "Buscar servicio";
-        searchInput.setAttribute("aria-label", "Buscar servicio");
-    } else {
-        searchForm.action = "{% url 'catalog:catalog' %}";
-        brandFilter.style.display = "";
-        searchInput.style.width = "";
-        searchInput.placeholder = "Buscar producto";
-        searchInput.setAttribute("aria-label", "Buscar producto");
-    }
-}
-
-departmentSelect.addEventListener("change", function() {
-    updateSearchForm(this.value === serviciosDepartmentId);
-});
-
-// Set initial form state based on current selection
-updateSearchForm(departmentSelect.value === serviciosDepartmentId);
 </script>
 

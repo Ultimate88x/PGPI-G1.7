@@ -102,17 +102,15 @@ def test_add_product_to_cart_increases_quantity(client, db, customer, product):
     client.login(email=customer.email, password="password1234")
     url = reverse("add_product", args=[product.id])
     response = client.post(url, {"quantity": 2})
-    assert response.status_code == 204
+    assert response.status_code == 302
     cart_item = Cart.objects.get(customer=customer, product=product)
     assert cart_item.quantity == 2
-    product.refresh_from_db()
-    assert product.stock == 18
 
 def test_add_service_to_cart(client, db, customer, service):
     client.login(email=customer.email, password="password1234")
     url = reverse("add_service", args=[service.id])
     response = client.post(url, {"quantity": 1})
-    assert response.status_code == 204
+    assert response.status_code == 302
     cart_item = Cart.objects.get(customer=customer, service=service)
     assert cart_item.quantity == 1
 
@@ -121,16 +119,14 @@ def test_decrease_product_from_cart(client, db, cart_product):
     product = cart_product.product
     url = reverse("decrease_product_from_cart", args=[product.id])
     response = client.post(url)
-    assert response.status_code == 204
+    assert response.status_code == 302
     assert not Cart.objects.filter(customer=cart_product.customer, product=product).exists()
-    product.refresh_from_db()
-    assert product.stock == 21
 
 def test_decrease_service_from_cart(client, db, cart_service):
     client.login(email=cart_service.customer.email, password="password1234")
     url = reverse("decrease_service_from_cart", args=[cart_service.service.id])
     response = client.post(url)
-    assert response.status_code == 204
+    assert response.status_code == 302
     assert not Cart.objects.filter(customer=cart_service.customer, service=cart_service.service).exists()
 
 def test_remove_product_from_cart(client, db, cart_product):
@@ -138,26 +134,22 @@ def test_remove_product_from_cart(client, db, cart_product):
     product = cart_product.product
     url = reverse("remove_product_from_cart", args=[product.id])
     response = client.post(url)
-    assert response.status_code == 204
+    assert response.status_code == 302
     assert not Cart.objects.filter(customer=cart_product.customer, product=product).exists()
-    product.refresh_from_db()
-    assert product.stock == 21
 
 def test_remove_service_from_cart(client, db, cart_service):
     client.login(email=cart_service.customer.email, password="password1234")
     url = reverse("remove_service_from_cart", args=[cart_service.service.id])
     response = client.post(url)
-    assert response.status_code == 204
+    assert response.status_code == 302
     assert not Cart.objects.filter(customer=cart_service.customer, service=cart_service.service).exists()
 
 def test_clear_cart(client, db, cart_product, cart_service):
     client.login(email=cart_product.customer.email, password="password1234")
     url = reverse("clear_cart")
     response = client.post(url)
-    assert response.status_code == 204
+    assert response.status_code == 302
     assert not Cart.objects.filter(customer=cart_product.customer).exists()
-    cart_product.product.refresh_from_db()
-    assert cart_product.product.stock == 21
 
 # ------------------------------
 # CHECKOUT / PAYMENT TESTS
@@ -201,10 +193,14 @@ def test_payment_complete_creates_order(client, db, customer, cart_product):
         "notes": "Test note"
     }
     session.save()
+    product = cart_product.product
+    initial_stock = product.stock 
     url = reverse("payment_complete")
     response = client.post(url, {"payment_method": "tarjeta_credito"})
     assert response.status_code in [200, 302]
     assert Order.objects.filter(customer=customer).exists()
+    product.refresh_from_db()
+    assert product.stock == initial_stock - cart_product.quantity
 
 def test_payment_success_cod_creates_order(client, db, customer, cart_product):
     client.login(email=customer.email, password="password1234")
@@ -219,12 +215,93 @@ def test_payment_success_cod_creates_order(client, db, customer, cart_product):
         "notes": ""
     }
     session.save()
+    product = cart_product.product
+    initial_stock = product.stock 
     url = reverse("payment_success_cod")
     response = client.get(url)
     assert response.status_code == 200
     order = Order.objects.get(customer=customer)
     assert order.details.exists()
     assert not Cart.objects.filter(customer=customer).exists()
+    product.refresh_from_db()
+    assert product.stock == initial_stock - cart_product.quantity
+
+# ------------------------------
+# STOCK VALIDATION TESTS
+# ------------------------------
+
+def test_payment_complete_fails_when_not_enough_stock(client, db, customer, product):
+    """
+    Si el producto tiene menos stock que la cantidad del carrito,
+    payment_complete_view debe devolver 400 y NO crear pedido.
+    """
+    client.login(email=customer.email, password="password1234")
+
+    product.stock = 1
+    product.save()
+
+    Cart.objects.create(
+        customer=customer,
+        product=product,
+        quantity=5,
+        current_price=product.price
+    )
+
+    session = client.session
+    session['checkout_data'] = {
+        "delivery_option": "DELIVERY",
+        "address": "Calle Falsa 123",
+        "city": "Madrid",
+        "zip_code": "28001",
+        "email": customer.email,
+        "payment_method": "tarjeta_credito",
+        "notes": ""
+    }
+    session.save()
+
+    url = reverse("payment_complete")
+    response = client.post(url)
+
+    assert response.status_code == 200
+    assert "stock_error.html" in [t.name for t in response.templates]
+    assert not Order.objects.filter(customer=customer).exists()
+
+
+def test_payment_success_cod_fails_when_not_enough_stock(client, db, customer, product):
+    """
+    Si no hay suficiente stock en COD, debe devolver 400 y NO crear pedido.
+    """
+    client.login(email=customer.email, password="password1234")
+
+    product.stock = 2
+    product.save()
+
+    Cart.objects.create(
+        customer=customer,
+        product=product,
+        quantity=10,
+        current_price=product.price
+    )
+
+    session = client.session
+    session['checkout_data'] = {
+        "delivery_option": "DELIVERY",
+        "address": "Calle Falsa 123",
+        "city": "Madrid",
+        "zip_code": "28001",
+        "email": customer.email,
+        "payment_method": "contrarreembolso",
+        "notes": ""
+    }
+    session.save()
+
+    url = reverse("payment_success_cod")
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert "stock_error.html" in [t.name for t in response.templates]
+    assert not Order.objects.filter(customer=customer).exists()
+
 
 # ------------------------------
 # ORDER LOOKUP
@@ -235,3 +312,35 @@ def test_order_lookup_invalid(client, db):
     response = client.post(url, {"order_public_id": "NOEXISTE"})
     assert response.status_code == 200
     assert "error" in response.context
+
+# ------------------------------
+# BUY NOW TESTS
+# ------------------------------
+
+def test_buy_now_product_redirects_to_checkout(client, db, customer, product):
+    client.login(email=customer.email, password="password1234")
+
+    url = reverse("buy_now_product", args=[product.id])
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert "items" in response.context
+
+    cart_items = Cart.objects.filter(customer=customer)
+    assert cart_items.count() == 1
+    assert cart_items.first().product == product
+
+
+def test_buy_now_service_redirects_to_checkout(client, db, customer, service):
+    client.login(email=customer.email, password="password1234")
+
+    url = reverse("buy_now_service", args=[service.id])
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert "items" in response.context
+
+    cart_items = Cart.objects.filter(customer=customer)
+    assert cart_items.count() == 1
+    assert cart_items.first().service == service
+

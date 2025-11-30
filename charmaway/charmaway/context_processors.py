@@ -17,9 +17,26 @@ def cart_item_count(request):
     return {"cart_item_count": total_items}
 
 def search_filters(request):
-    """Provide departments and brands for search filters in all templates"""
-    # Include all departments (including Services) in the search dropdown
+    """Provide departments, categories and brands for search filters in all templates"""
+    # Check if we're in the services view
+    is_services_view = request.path.startswith('/services/')
+
+    if is_services_view:
+        # For services view, only show service departments and their categories
+        service_dept_names = ['Beauty Academy', 'Premium Services', 'Club Exclusivo']
+        departments = Department.objects.filter(name__in=service_dept_names).order_by('order_position')
+        categories = Category.objects.filter(department__name__in=service_dept_names).select_related('department').order_by('department__order_position', 'order_position')
+        brands = Brand.objects.none()  # No brands in services
+    else:
+        # For other views, exclude service departments
+        service_dept_names = ['Beauty Academy', 'Premium Services', 'Club Exclusivo']
+        departments = Department.objects.exclude(name__in=service_dept_names).order_by('order_position', 'name')
+        categories = Category.objects.none()  # Categories not needed in header for products
+        brands = Brand.objects.all().order_by('name')
+
     return {
-        "all_departments": Department.objects.all().order_by('order_position', 'name'),
-        "all_brands": Brand.objects.all().order_by('name')
+        "all_departments": departments,
+        "all_categories": categories,
+        "all_brands": brands,
+        "is_services_view": is_services_view
     }

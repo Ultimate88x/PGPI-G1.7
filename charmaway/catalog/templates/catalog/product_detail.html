@@ -144,7 +144,7 @@
                 <form action="{% url 'add_product' product.id %}" method="post" class="quantity-selector">
                     {% csrf_token %}
                     <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+                    <input type="text" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input" inputmode="numeric" pattern="[0-9]*">
                     <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                     <button type="submit" class="btn-add-cart" {% if product.stock <= 0 %}disabled{% endif %}>
                         Añadir al carro
@@ -206,7 +206,36 @@ function decreaseQty() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form.quantity-selector");
-    if (!form) return;
+    const qtyInput = document.getElementById("quantity");
+
+    if (!form || !qtyInput) return;
+
+    // Validación para solo permitir números
+    qtyInput.addEventListener('input', function(e) {
+        // Eliminar cualquier caracter que no sea número
+        this.value = this.value.replace(/[^0-9]/g, '');
+
+        const max = parseInt(this.getAttribute('max'));
+        const min = parseInt(this.getAttribute('min')) || 1;
+
+        // Si el campo está vacío, establecer en 1
+        if (this.value === '' || parseInt(this.value) < min) {
+            this.value = min.toString();
+        }
+
+        // Si excede el máximo, establecer al máximo
+        if (parseInt(this.value) > max) {
+            this.value = max.toString();
+        }
+    });
+
+    qtyInput.addEventListener('blur', function(e) {
+        const min = parseInt(this.getAttribute('min')) || 1;
+        // Al perder el foco, asegurar que tenga al menos el valor mínimo
+        if (this.value === '' || parseInt(this.value) < min) {
+            this.value = min.toString();
+        }
+    });
 
     form.addEventListener("submit", function (e) {
         const input = document.getElementById("quantity");
@@ -228,10 +257,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             input.insertAdjacentElement("afterend", error);
             input.focus();
-        } else {
-            setTimeout(() => location.reload(), 50);
         }
     });
 });
 </script>
+{% endblock %}
+
+{% block footer %}
+<div class="copyright-footer">
+    &copy; 2025 Charmaway. Todos los derechos reservados.
+</div>
 {% endblock %}

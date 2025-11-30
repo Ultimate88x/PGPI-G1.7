@@ -94,7 +94,7 @@
                 <form action="{% url 'add_service' service.id %}" method="post" class="quantity-selector">
                     {% csrf_token %}
                     <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+                    <input type="text" id="quantity" name="quantity" value="1" min="1" class="qty-input" inputmode="numeric" pattern="[0-9]*">
                     <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                     <button type="submit" class="btn-add-cart" {% if not service.is_available %}disabled{% endif %}>
                         Añadir al carro
@@ -114,22 +114,47 @@
 <script>
 function increaseQty() {
     const input = document.getElementById('quantity');
-    const max = parseInt(input.getAttribute('max'));
-    const currentValue = parseInt(input.value);
-
-    if (currentValue < max) {
-        input.value = currentValue + 1;
-    }
+    const currentValue = parseInt(input.value) || 1;
+    input.value = currentValue + 1;
 }
 
 function decreaseQty() {
     const input = document.getElementById('quantity');
-    const min = parseInt(input.getAttribute('min'));
-    const currentValue = parseInt(input.value);
+    const min = parseInt(input.getAttribute('min')) || 1;
+    const currentValue = parseInt(input.value) || 1;
 
     if (currentValue > min) {
         input.value = currentValue - 1;
     }
 }
+
+// Validación para solo permitir números
+document.addEventListener('DOMContentLoaded', function() {
+    const qtyInput = document.getElementById('quantity');
+    if (qtyInput) {
+        qtyInput.addEventListener('input', function(e) {
+            // Eliminar cualquier caracter que no sea número
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Si el campo está vacío, establecer en 1
+            if (this.value === '' || parseInt(this.value) < 1) {
+                this.value = '1';
+            }
+        });
+
+        qtyInput.addEventListener('blur', function(e) {
+            // Al perder el foco, asegurar que tenga al menos el valor mínimo
+            if (this.value === '' || parseInt(this.value) < 1) {
+                this.value = '1';
+            }
+        });
+    }
+});
 </script>
+{% endblock %}
+
+{% block footer %}
+<div class="copyright-footer">
+    &copy; 2025 Charmaway. Todos los derechos reservados.
+</div>
 {% endblock %}

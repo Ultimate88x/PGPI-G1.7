@@ -3,22 +3,23 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}?v=202501231730">
 <link rel="stylesheet" href="{% static 'css/services.css' %}?v=202501231730">
 
 <div class="catalog-container">
     <aside class="filters-sidebar">
         <!-- Category Filter -->
         <div class="filter-section">
-            <h3 class="filter-heading">CATEGORÍAS</h3>
+            <h3 class="filter-heading">{% if selected_department_obj %}{{ selected_department_obj.name|upper }}{% else %}CATEGORÍAS{% endif %}</h3>
             <ul class="filter-list">
                 <li>
-                    <a href="{% url 'services:services_catalog' %}" class="filter-link {% if not selected_category %}active{% endif %}">
+                    <a href="{% url 'services:services_catalog' %}{% if selected_department %}?department={{ selected_department }}{% endif %}" class="filter-link {% if not selected_category %}active{% endif %}">
                         Todas
                     </a>
                 </li>
                 {% for category in categories %}
                 <li>
-                    <a href="?category={{ category.id }}" class="filter-link {% if selected_category == category.id|stringformat:'s' %}active{% endif %}">
+                    <a href="?{% if selected_department %}department={{ selected_department }}&{% endif %}category={{ category.id }}" class="filter-link {% if selected_category == category.id|stringformat:'s' %}active{% endif %}">
                         {{ category.name }}
                     </a>
                 </li>
@@ -88,18 +89,26 @@
                         </div>
 
                         {% if service.is_available %}
-                        <p class="product-stock in-stock">En stock</p>
+                        <p class="product-stock in-stock">Disponible</p>
                         {% else %}
                         <p class="product-stock out-of-stock">No disponible</p>
                         {% endif %}
                     </div>
                 </a>
 
-                <form action="{% url 'add_service' service.id %}" 
-                    onclick="setTimeout(() => location.reload(), 50);" 
-                    method="post">
+                <div class="product-actions-wrapper">
+                    <input type="number" id="quantity-service-{{ service.id }}" value="1" min="1" class="qty-input-card">
+                    <a href="#" onclick="event.preventDefault(); buyNowService({{ service.id }});"
+                        class="btn-quick-buy"
+                        {% if not service.is_available %}style="opacity:0.5; cursor:not-allowed; pointer-events:none;"{% endif %}>
+                        Compra rápida
+                    </a>
+                </div>
+
+                <form action="{% url 'add_service' service.id %}" method="post" id="form-add-service-{{ service.id }}">
                     {% csrf_token %}
-                    <button type="submit" 
+                    <input type="hidden" name="quantity" id="quantity-hidden-service-{{ service.id }}" value="1">
+                    <button type="submit"
                             class="btn-add-cart"
                             {% if not service.is_available %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}>
                         Añadir al carro
@@ -123,13 +132,13 @@
 
             <div class="pagination-controls">
                 {% if page_obj.has_previous %}
-                <a href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
+                <a href="?page=1{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                         <path d="M18 6L6 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     Primera
                 </a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
+                <a href="?page={{ page_obj.previous_page_number }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                         <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -141,18 +150,18 @@
                         {% if page_obj.number == num %}
                         <span class="page-number active">{{ num }}</span>
                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-number">{{ num }}</a>
+                        <a href="?page={{ num }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-number">{{ num }}</a>
                         {% endif %}
                     {% endfor %}
                 </div>
 
                 {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
+                <a href="?page={{ page_obj.next_page_number }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                         <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="page-link">
                     Última
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                         <path d="M6 6L18 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -179,5 +188,60 @@ function updatePerPage(value) {
     url.searchParams.delete('page');
     window.location.href = url.toString();
 }
+
+function buyNowService(serviceId) {
+    const quantity = document.getElementById('quantity-service-' + serviceId).value;
+    fetch('/order/buy-now/service/' + serviceId + '/?quantity=' + quantity)
+        .then(() => {
+            window.location.href = '/order/cart/checkout/';
+        })
+        .catch(error => console.error(error));
+}
+
+// Sincronizar el input con el hidden input y validar cantidad
+document.addEventListener('DOMContentLoaded', function() {
+    const qtyInputs = document.querySelectorAll('.qty-input-card');
+    qtyInputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            if (this.id.includes('service')) {
+                const serviceId = this.id.replace('quantity-service-', '');
+                const hiddenInput = document.getElementById('quantity-hidden-service-' + serviceId);
+
+                // Eliminar cualquier caracter que no sea número
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                const min = parseInt(this.getAttribute('min')) || 1;
+
+                // Si el campo está vacío, establecer en 1
+                if (this.value === '' || parseInt(this.value) < min) {
+                    this.value = min.toString();
+                }
+
+                hiddenInput.value = this.value;
+            }
+        });
+
+        input.addEventListener('blur', function() {
+            if (this.id.includes('service')) {
+                const serviceId = this.id.replace('quantity-service-', '');
+                const hiddenInput = document.getElementById('quantity-hidden-service-' + serviceId);
+                const min = parseInt(this.getAttribute('min')) || 1;
+
+                // Al perder el foco, asegurar que tenga al menos el valor mínimo
+                if (this.value === '' || parseInt(this.value) < min) {
+                    this.value = min.toString();
+                }
+
+                hiddenInput.value = this.value;
+            }
+        });
+    });
+});
 </script>
+{% endblock %}
+
+{% block footer %}
+<div class="copyright-footer">
+    &copy; 2025 Charmaway. Todos los derechos reservados.
+</div>
 {% endblock %}

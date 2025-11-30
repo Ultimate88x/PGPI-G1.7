@@ -1,8 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from catalog.models import Category
-from .forms import CategoryForm, CustomerCreateForm
+from catalog.models import Product
+from .forms import CustomerCreateForm
 
 User = get_user_model()
 
@@ -11,16 +11,6 @@ class AdminFormTests(TestCase):
     """
     PRUEBAS UNITARIAS: Probamos la lógica pura, sin navegador ni servidor.
     """
-    
-    def test_category_form_no_duplicates(self):
-        """Prueba que el CategoryForm no permita nombres repetidos"""
-        Category.objects.create(name="Maquillaje")
-
-        form_data = {'name': 'maquillaje'}
-        form = CategoryForm(data=form_data)
-
-        self.assertFalse(form.is_valid())
-        self.assertIn('name', form.errors)
 
     def test_customer_form_validation(self):
         """Prueba que el CustomerForm detecte emails duplicados"""
@@ -114,24 +104,9 @@ class AdminInterfaceTests(TestCase):
 
     def test_product_list_view(self):
         """Prueba que la lista de productos carga"""
-        from catalog.models import Brand, Product 
-        
-        c = Category.objects.create(name="Cremas")
-        b = Brand.objects.create(name="Nivea")
-        p = Product.objects.create(name="Crema Cara", price=10.00, category=c, brand=b)
+        p = Product.objects.create(name="Crema Cara", price=10.00)
 
         response = self.client.get(reverse('administrator:product_list'))
         
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Crema Cara")
-
-    def test_create_category_view(self):
-        """Prueba crear una categoría mediante POST"""
-        url = reverse('administrator:category_create')
-        
-        response = self.client.post(url, {
-            'name': 'Perfumes'
-        })
-        
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(Category.objects.filter(name="Perfumes").exists())

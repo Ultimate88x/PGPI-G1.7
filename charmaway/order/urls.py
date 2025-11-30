@@ -15,6 +15,9 @@ urlpatterns = [
     path("payment-complete/", views.payment_complete_view, name="payment_complete"),
     path("payment-success-cod/", views.payment_success_cod, name="payment_success_cod"),
     path("<str:public_id>/", views.order_detail, name="order_detail"),
+    path("buy-now/product/<int:product_id>/", views.buy_now_product, name="buy_now_product"),
+    path("buy-now/service/<int:service_id>/", views.buy_now_service, name="buy_now_service"),
+
     
 ]
 
