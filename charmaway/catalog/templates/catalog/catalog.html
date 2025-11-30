@@ -138,31 +138,33 @@
                         </div>
 
                         {% if product.stock > 0 %}
-                        <p class="product-stock in-stock">En stock</p>
+                        <p class="product-stock in-stock">En stock: {{ product.stock }} unidades</p>
                         {% else %}
                         <p class="product-stock out-of-stock">Agotado</p>
                         {% endif %}
                     </div>
                 </a>
 
-                <a href="{% url 'buy_now_product' product.id %}"
-                    onmouseover="this.style.background='#005bbd'"
-                    onmouseout="this.style.background='#0070f3'"
-                    {% if product.stock <= 0 %} disabled style="display:flex;align-items:center;margin-top:0.5rem;margin-bottom:0.5rem;margin-left:0.5rem;background:#2a84ea;color:#fff;padding:0.3rem 1rem;width:8rem;border-radius:6px;font-weight:600;font-size:12px;transition: background 0.2s ease;text-decoration:none;justify-content:center;opacity:0.5; cursor:not-allowed;" {% else %} style="display:flex;align-items:center;margin-top:0.5rem;margin-bottom:0.5rem;margin-left:0.5rem;background:#2a84ea;color:#fff;padding:0.3rem 1rem;width:8rem;border-radius:6px;font-weight:600;font-size:12px;transition: background 0.2s ease;text-decoration:none;justify-content:center;"{% endif %}>
-                    Compra rápida
-                </a>
-                
-                <form action="{% url 'add_product' product.id %}" 
-                    method="post">
+                <div class="product-actions-wrapper">
+                    <input type="number" id="quantity-{{ product.id }}" value="1" min="1" max="{{ product.stock }}" class="qty-input-card">
+                    <a href="#" onclick="event.preventDefault(); buyNow({{ product.id }});"
+                        class="btn-quick-buy"
+                        {% if product.stock <= 0 %}style="opacity:0.5; cursor:not-allowed; pointer-events:none;"{% endif %}>
+                        Compra rápida
+                    </a>
+                </div>
+
+                <form action="{% url 'add_product' product.id %}" method="post" id="form-add-{{ product.id }}">
                     {% csrf_token %}
-                    <button type="submit" 
+                    <input type="hidden" name="quantity" id="quantity-hidden-{{ product.id }}" value="1">
+                    <button type="submit"
                             class="btn-add-cart"
                             {% if product.stock <= 0 %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}>
                         Añadir al carro
                     </button>
                 </form>
 
-                
+
 
             </article>
             {% empty %}
@@ -238,5 +240,58 @@ function updatePerPage(value) {
     url.searchParams.delete('page');
     window.location.href = url.toString();
 }
+
+function buyNow(productId) {
+    const quantity = document.getElementById('quantity-' + productId).value;
+    window.location.href = '/order/buy-now/product/' + productId + '/?quantity=' + quantity;
+}
+
+// Sincronizar el input con el hidden input y validar stock
+document.addEventListener('DOMContentLoaded', function() {
+    const qtyInputs = document.querySelectorAll('.qty-input-card');
+    qtyInputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            const productId = this.id.replace('quantity-', '');
+            const hiddenInput = document.getElementById('quantity-hidden-' + productId);
+
+            // Eliminar cualquier caracter que no sea número
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            const max = parseInt(this.getAttribute('max'));
+            const min = parseInt(this.getAttribute('min')) || 1;
+
+            // Si el campo está vacío, establecer en 1
+            if (this.value === '' || parseInt(this.value) < min) {
+                this.value = min.toString();
+            }
+
+            // Si excede el máximo, establecer al máximo
+            if (parseInt(this.value) > max) {
+                this.value = max.toString();
+            }
+
+            hiddenInput.value = this.value;
+        });
+
+        input.addEventListener('blur', function() {
+            const productId = this.id.replace('quantity-', '');
+            const hiddenInput = document.getElementById('quantity-hidden-' + productId);
+            const min = parseInt(this.getAttribute('min')) || 1;
+
+            // Al perder el foco, asegurar que tenga al menos el valor mínimo
+            if (this.value === '' || parseInt(this.value) < min) {
+                this.value = min.toString();
+            }
+
+            hiddenInput.value = this.value;
+        });
+    });
+});
 </script>
+{% endblock %}
+
+{% block footer %}
+<div class="copyright-footer">
+    &copy; 2025 Charmaway. Todos los derechos reservados.
+</div>
 {% endblock %}
