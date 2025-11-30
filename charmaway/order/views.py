@@ -77,7 +77,7 @@ def add_product_to_cart(request, product_id):
     if not created:
         new_quantity = cart_item.quantity + quantity
         if product.stock < new_quantity:
-            return HttpResponse("Not enough stock", status=400)
+            return HttpResponse("No hay sufuciente stock", status=400)
         else:
             cart_item.quantity = new_quantity
 
