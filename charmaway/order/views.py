@@ -81,7 +81,7 @@ def add_product_to_cart(request, product_id):
         else:
             cart_item.quantity = new_quantity
 
-    cart_item.current_price = product.price
+    cart_item.current_price = product.offer_price if product.offer_price else product.price
     cart_item.save()
 
     return redirect(request.META.get("HTTP_REFERER", request.path))
