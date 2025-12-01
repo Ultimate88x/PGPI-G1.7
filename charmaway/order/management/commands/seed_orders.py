@@ -61,7 +61,7 @@ class Command(BaseCommand):
             public_id=shortuuid.uuid()[:12], customer=user, email=user.email,
             address=user.address, city=user.city, zip_code=user.zip_code,
             payment_method='paypal', status=OrderStatus.SHIPPED,
-            delivery_option="PICKUP"
+            delivery_option="DELIVERY"
         )
         OrderDetail.objects.create(order=o2, product=p2, quantity=2, unit_price=p2.price, subtotal=p2.price*2)
         OrderDetail.objects.create(order=o2, service=s2, quantity=1, unit_price=s2.price, subtotal=s2.price)
@@ -111,7 +111,7 @@ class Command(BaseCommand):
             public_id=shortuuid.uuid()[:12], customer=c1, email=c1.email,
             address='Calle del Río 10', city=c1.city, zip_code=c1.zip_code,
             payment_method='paypal', status=OrderStatus.SHIPPED,
-            delivery_option="PICKUP"
+            delivery_option="DELIVERY"
         )
         OrderDetail.objects.create(order=o_extra2, product=p3, quantity=1, unit_price=p3.price, subtotal=p3.price)
         OrderDetail.objects.create(order=o_extra2, product=p4, quantity=2, unit_price=p4.price, subtotal=p4.price*2)
@@ -161,7 +161,7 @@ class Command(BaseCommand):
             public_id=shortuuid.uuid()[:12], customer=c3, email=c3.email,
             address='Paseo de la Luna 18', city=c3.city, zip_code=c3.zip_code,
             payment_method='paypal', status=OrderStatus.SHIPPED,
-            delivery_option="PICKUP"
+            delivery_option="DELIVERY"
         )
         OrderDetail.objects.create(order=o8, product=p2, quantity=2, unit_price=p2.price, subtotal=p2.price*2)
         OrderDetail.objects.create(order=o8, service=s5, quantity=1, unit_price=s5.price, subtotal=s5.price)
@@ -211,7 +211,7 @@ class Command(BaseCommand):
             public_id=shortuuid.uuid()[:12], customer=c5, email=c5.email,
             address='Calle del Sol 105', city=c5.city, zip_code=c5.zip_code,
             payment_method='paypal', status=OrderStatus.SHIPPED,
-            delivery_option="PICKUP"
+            delivery_option="DELIVERY"
         )
         OrderDetail.objects.create(order=o12, product=p2, quantity=2, unit_price=p2.price, subtotal=p2.price*2)
         OrderDetail.objects.create(order=o12, service=s3, quantity=1, unit_price=s3.price, subtotal=s3.price)
