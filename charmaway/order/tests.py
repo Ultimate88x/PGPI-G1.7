@@ -171,7 +171,7 @@ def test_checkout_post_cod_redirects(client, db, customer, cart_product):
         "city": "Madrid",
         "zip_code": "28001",
         "email": customer.email,
-        "payment_method": "contrarreembolso",
+        "payment_method": "contrareembolso",
         "notes": ""
     }
     session.save()
@@ -211,7 +211,7 @@ def test_payment_success_cod_creates_order(client, db, customer, cart_product):
         "city": "Madrid",
         "zip_code": "28001",
         "email": customer.email,
-        "payment_method": "contrarreembolso",
+        "payment_method": "contrareembolso",
         "notes": ""
     }
     session.save()
@@ -290,7 +290,7 @@ def test_payment_success_cod_fails_when_not_enough_stock(client, db, customer, p
         "city": "Madrid",
         "zip_code": "28001",
         "email": customer.email,
-        "payment_method": "contrarreembolso",
+        "payment_method": "contrareembolso",
         "notes": ""
     }
     session.save()

@@ -46,7 +46,7 @@
           <label for="prefered_payment_method" style="font-size: 13px">Método de pago preferido</label>
           <select name="prefered_payment_method" required style="height:38px; padding:8px 12px; border-radius:6px; border:1px solid var(--input-border); outline:none; font-size:14px; background:white;">
             <option value="tarjeta_credito" {% if form.prefered_payment_method.value == "tarjeta_credito" %}selected{% endif %}>Tarjeta de crédito</option>
-            <option value="contrarreembolso" {% if form.prefered_payment_method.value == "contrarreembolso" %}selected{% endif %}>Contrareembolso</option>
+            <option value="contrareembolso" {% if form.prefered_payment_method.value == "contrareembolso" %}selected{% endif %}>Contrareembolso</option>
           </select>
         </div>
       </div>
