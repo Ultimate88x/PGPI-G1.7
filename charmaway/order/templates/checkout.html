@@ -166,8 +166,12 @@
             <div class="checkout-section">
                 <label class="checkout-label">Método de pago
                     <select name="payment_method" class="checkout-select" required>
-                        <option value="tarjeta_credito">Tarjeta de crédito</option>
-                        <option value="contrarreembolso">Contrareembolso</option>
+                        <option value="tarjeta_credito" {% if customer.prefered_payment_method == "tarjeta_de_credito" %}selected{% endif %}>
+                            Tarjeta de crédito
+                        </option>
+                        <option value="contrareembolso" {% if customer.prefered_payment_method == "contrareembolso" %}selected{% endif %}>
+                            Contrareembolso
+                        </option>
                     </select>
                 </label>
             </div>

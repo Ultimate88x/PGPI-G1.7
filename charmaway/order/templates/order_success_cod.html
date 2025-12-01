@@ -58,9 +58,9 @@
     <h1 class="success-title">¡Gracias por tu pedido!</h1>
 
     <p class="success-info">Tu pedido <strong>#{{ order.public_id }}</strong> se ha creado correctamente.</p>
-    <p class="success-info"><strong>Estado:</strong> {{ order.status }}</p>
+    <p class="success-info"><strong>Estado:</strong> {{ order.get_status_display }}</p>
     <p class="success-info"><strong>Identificador:</strong> {{ order.public_id }}</p>
-    <p class="success-info">Lo pagarás <strong>a contrarreembolso</strong>.</p>
+    <p class="success-info">Lo pagarás <strong>a contrareembolso</strong>.</p>
 
     <h2 class="success-title" style="font-size:22px; margin-top:25px;">Resumen del pedido</h2>
     <div class="order-summary" style="text-align:left; margin:20px auto; max-width:400px;">

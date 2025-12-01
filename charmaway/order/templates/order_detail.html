@@ -141,9 +141,9 @@
         <p><strong>Gastos de envío:</strong> {{ order.shipping_cost }} €</p>
         <p><strong>Total:</strong> {{ order.final_price }} €</p>
         <p><strong>Método de pago:</strong> 
-            {% if order.payment_method == "credit_card" %}
+            {% if order.payment_method == "tarjeta_credito" %}
                 Tarjeta de crédito
-            {% elif order.payment_method == "contrarreembolso" %}
+            {% elif order.payment_method == "contrareembolso" %}
                 Contrareembolso
             {% endif %}
         </p>

@@ -10,7 +10,7 @@ Date:   Sun Nov 16 18:22:16 2025 +0100
 
     feat: :sparkles: Finished Payments
     
-    Finished all realted payments; only left to do "contrarrembolso", also enhanced and upgraded some order views
+    Finished all realted payments; only left to do "contrarembolso", also enhanced and upgraded some order views
 
 [33mcommit f34988d18901475417e77860261dc0db6b969dc7[m
 Author: GUILLERMO CIRIA GONZÁLEZ <guicirgon@alum.us.es>

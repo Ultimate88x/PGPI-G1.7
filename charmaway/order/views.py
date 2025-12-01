@@ -202,8 +202,10 @@ def clear_cart(request, skip_redirect=False):
 def checkout(request):
     if request.user.is_authenticated:
         user_or_session = request.user
+        customer = request.user
     else:
         user_or_session = get_session_key(request)
+        customer = None
 
     items = get_cart_queryset(request)
 
@@ -230,7 +232,7 @@ def checkout(request):
 
         if payment_method == 'tarjeta_credito':
             return redirect('payment:checkout')
-        elif payment_method == 'contrarreembolso':
+        elif payment_method == 'contrareembolso':
             return redirect('payment_success_cod')
         else:
             return redirect('view_cart') 
@@ -239,7 +241,8 @@ def checkout(request):
         "items": items,
         "subtotal": subtotal,
         "shipping": shipping,
-        "total": total
+        "total": total,
+        "customer": customer
     })
 
 def buy_now_product(request, product_id):
@@ -452,7 +455,7 @@ def payment_success_cod(request):
     cart_items.delete()
     del request.session['checkout_data']
 
-    subject = f"Pedido a contrarreembolso #{order.public_id}"
+    subject = f"Pedido a contrareembolso #{order.public_id}"
     html_message = render_to_string("order_success_cod_mail.html", {
         "order": order
     })
